@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order - Cigar Lounge Tunisia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Open Sans', system-ui, -apple-system, sans-serif;
+            background: #0B0B0B;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .order-btn {
+            display: inline-block;
+            background: #3B82F6;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .order-btn:hover {
+            background: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0B0B0B;
+            border: 1px solid rgba(59, 47, 47, 0.6);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(59, 47, 47, 0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #C9A14A;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .form-label .required {
+            color: #EF4444;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(59, 47, 47, 0.3);
+            border: 1px solid rgba(59, 47, 47, 0.6);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-input[readonly] {
+            background: rgba(59, 47, 47, 0.4);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: not-allowed;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2563EB;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #3B82F6;
+            border: 1px solid #3B82F6;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 3rem 1.5rem;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: rgba(34, 197, 94, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-icon svg {
+            width: 32px;
+            height: 32px;
+            color: #22C55E;
+        }
+
+        .success-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .success-message p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #FCA5A5;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 0;
+                border-radius: 12px 12px 0 0;
+                max-height: 95vh;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: #C9A14A; font-size: 2.5rem; margin-bottom: 2rem;">Order Now</h1>
+        <p style="margin-bottom: 2rem; color: rgba(255,255,255,0.8);">Click the button below to place your order.</p>
+        <button class="order-btn" onclick="openModal()">Order Now</button>
+    </div>
+
+    <!-- Modal -->
+    <div id="orderModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Order Now</h2>
+                <button class="close-btn" onclick="closeModal()" aria-label="Close modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="successMessage" style="display: none;">
+                    <div class="success-message">
+                        <div class="success-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Thank you!</h3>
+                        <p>Your order has been sent!</p>
+                        <button class="btn btn-primary" onclick="closeModal()">Close</button>
+                    </div>
+                </div>
+
+                <form id="orderForm" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Full Name <span class="required">*</span>
+                        </label>
+                        <input type="text" name="name" class="form-input" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Email <span class="required">*</span>
+                        </label>
+                        <input type="email" name="email" class="form-input" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Phone Number <span class="required">*</span>
+                        </label>
+                        <input type="tel" name="phone" class="form-input" placeholder="+216 XX XXX XXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Address <span class="required">*</span>
+                        </label>
+                        <textarea name="address" class="form-textarea" placeholder="Enter your delivery address" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Age <span class="required">*</span>
+                        </label>
+                        <input type="number" name="age" class="form-input" placeholder="18" min="18" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Product <span class="required">*</span>
+                        </label>
+                        <input type="text" name="product" id="productName" class="form-input" value="Romeo y Julieta Short Churchill" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Quantity <span class="required">*</span>
+                        </label>
+                        <input type="number" name="quantity" class="form-input" value="1" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Additional Notes
+                        </label>
+                        <textarea name="notes" class="form-textarea" placeholder="Any special requests or notes..."></textarea>
+                    </div>
+
+                    <div id="errorMessage" class="error-message" style="display: none;">
+                        Something went wrong. Please try again or contact us directly.
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Submit Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Replace with your actual Formspree form ID
+        const FORMSPREE_URL = 'https://formspree.io/f/yourformid';
+
+        function openModal() {
+            document.getElementById('orderModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').classList.remove('active');
+            document.body.style.overflow = '';
+            // Reset form
+            document.getElementById('orderForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('orderForm').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function handleOverlayClick(event) {
+            if (event.target === event.currentTarget) {
+                closeModal();
+            }
+        }
+
+        // Get product name from URL or set default
+        function getProductName() {
+            const params = new URLSearchParams(window.location.search);
+            const product = params.get('product') || 'Romeo y Julieta Short Churchill';
+            document.getElementById('productName').value = product;
+            return product;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            errorMsg.style.display = 'none';
+
+            const formData = {
+                name: form.name.value,
+                email: form.email.value,
+                phone: form.phone.value,
+                address: form.address.value,
+                age: form.age.value,
+                product: form.product.value,
+                quantity: form.quantity.value,
+                notes: form.notes.value
+            };
+
+            try {
+                const response = await fetch(FORMSPREE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    document.getElementById('orderForm').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                } else {
+                    errorMsg.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Order';
+                }
+            } catch (error) {
+                errorMsg.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Order';
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize product name on page load
+        getProductName();
+    </script>
+</body>
+</html>
+
