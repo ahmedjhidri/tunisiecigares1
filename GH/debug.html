@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - GWorks Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-[Inter] bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">GWorks Website Debug Page</h1>
+        
+        <!-- Test Mobile Menu -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Mobile Menu</h2>
+            <button class="hamburger bg-blue-600 text-white p-3 rounded">
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white"></span>
+            </button>
+            <nav class="mt-4 p-4 bg-gray-100 rounded hidden">
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-600">About</a>
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-600">Contact</a>
+            </nav>
+        </div>
+        
+        <!-- Test Search Container -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Search Container</h2>
+            <button id="search-toggle" class="bg-blue-600 text-white px-4 py-2 rounded">
+                <i class="fas fa-search mr-2"></i>Toggle Search
+            </button>
+        </div>
+        
+        <!-- Test Modal -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Modal</h2>
+            <button onclick="openTestModal()" class="bg-green-600 text-white px-4 py-2 rounded">
+                Open Test Modal
+            </button>
+        </div>
+        
+        <!-- Test Notifications -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Notifications</h2>
+            <div class="space-x-4">
+                <button onclick="showNotification('This is a success message!', 'success')" class="bg-green-600 text-white px-4 py-2 rounded">
+                    Success
+                </button>
+                <button onclick="showNotification('This is an error message!', 'error')" class="bg-red-600 text-white px-4 py-2 rounded">
+                    Error
+                </button>
+                <button onclick="showNotification('This is a warning message!', 'warning')" class="bg-yellow-600 text-white px-4 py-2 rounded">
+                    Warning
+                </button>
+                <button onclick="showNotification('This is an info message!', 'info')" class="bg-blue-600 text-white px-4 py-2 rounded">
+                    Info
+                </button>
+            </div>
+        </div>
+        
+        <!-- Debug Info -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Debug Information</h2>
+            <div id="debug-info" class="text-sm text-gray-600">
+                <p>Page load time: <span id="load-time">Calculating...</span></p>
+                <p>Tailwind CSS loaded: <span id="tailwind-status">Checking...</span></p>
+                <p>Custom CSS loaded: <span id="custom-css-status">Checking...</span></p>
+                <p>JavaScript loaded: <span id="js-status">Checking...</span></p>
+            </div>
+        </div>
+        
+        <!-- Test Hidden Class -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Test Hidden Class</h2>
+            <div class="space-x-4 mb-4">
+                <button onclick="toggleHiddenTest()" class="bg-purple-600 text-white px-4 py-2 rounded">
+                    Toggle Hidden
+                </button>
+                <button onclick="debugElementVisibility('hidden-test', 'Hidden Test Element')" class="bg-orange-600 text-white px-4 py-2 rounded">
+                    Debug Visibility
+                </button>
+            </div>
+            <div id="hidden-test" class="p-4 bg-gray-200 rounded">
+                This element can be hidden/shown to test the .hidden class functionality.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Modal -->
+    <div id="testModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Test Modal</h3>
+                <button onclick="closeTestModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="text-gray-600 mb-4">This is a test modal to verify modal functionality.</p>
+            <button onclick="closeTestModal()" class="bg-blue-600 text-white px-4 py-2 rounded">
+                Close
+            </button>
+        </div>
+    </div>
+    
+    <script src="main.js"></script>
+    <script>
+        // Debug functions
+        function openTestModal() {
+            const modal = document.getElementById('testModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeTestModal() {
+            const modal = document.getElementById('testModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        function toggleHiddenTest() {
+            const element = document.getElementById('hidden-test');
+            if (element) {
+                element.classList.toggle('hidden');
+                console.log('Hidden class toggled:', element.classList.contains('hidden'));
+            }
+        }
+        
+        // Page load debugging
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            document.getElementById('load-time').textContent = Math.round(loadTime) + 'ms';
+            
+            // Check if Tailwind is loaded
+            const tailwindLoaded = document.querySelector('[class*="bg-"]') !== null;
+            document.getElementById('tailwind-status').textContent = tailwindLoaded ? 'Yes' : 'No';
+            
+            // Check if custom CSS is loaded
+            const customCSSLoaded = document.querySelector('link[href="styles.css"]') !== null;
+            document.getElementById('custom-css-status').textContent = customCSSLoaded ? 'Yes' : 'No';
+            
+            // Check if JavaScript is loaded
+            const jsLoaded = typeof window.GWorks !== 'undefined';
+            document.getElementById('js-status').textContent = jsLoaded ? 'Yes' : 'No';
+            
+            console.log('Debug page loaded successfully');
+            console.log('Load time:', loadTime, 'ms');
+            console.log('Tailwind loaded:', tailwindLoaded);
+            console.log('Custom CSS loaded:', customCSSLoaded);
+            console.log('JavaScript loaded:', jsLoaded);
+        });
+        
+        // Test mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('nav');
+            
+            if (hamburger && nav) {
+                hamburger.addEventListener('click', function() {
+                    console.log('Hamburger clicked');
+                    nav.classList.toggle('hidden');
+                    console.log('Nav hidden:', nav.classList.contains('hidden'));
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

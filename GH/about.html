@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - GWorks Industrial Gas Solutions</title>
+    <meta name="description" content="Learn about GWorks, a leading provider of industrial gas solutions with over 25 years of experience in safety, quality, and innovation.">
+    <meta name="keywords" content="about GWorks, industrial gas company, gas solutions history, company values, team">
+    <meta name="author" content="GWorks">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="About Us - GWorks Industrial Gas Solutions">
+    <meta property="og:description" content="Leading provider of industrial gas solutions with over 25 years of experience.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gworks.com/about">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About Us - GWorks Industrial Gas Solutions">
+    <meta name="twitter:description" content="Leading provider of industrial gas solutions with over 25 years of experience.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
+    <!-- CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="main.js" as="script">
+</head>
+<body class="font-[Inter] bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-blue-600">
+                        <i class="fas fa-industry mr-2"></i>GWorks
+                    </a>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="about.html" class="nav-link active">About</a>
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="industries.html" class="nav-link">Industries</a>
+                    <a href="sustainability.html" class="nav-link">QHSE</a>
+                    <a href="careers.html" class="nav-link">Careers</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </nav>
+
+                <!-- Header Buttons -->
+                <div class="header-buttons flex items-center space-x-4">
+                    <!-- Search Toggle -->
+                    <button id="search-toggle" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+
+                    <!-- Dark Mode Toggle -->
+                    <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-moon text-xl"></i>
+                    </button>
+
+                    <!-- Mobile Menu Toggle -->
+                    <div class="hamburger md:hidden">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-4 space-y-2">
+                <a href="index.html" class="block py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="about.html" class="block py-2 text-gray-700 hover:text-blue-600">About</a>
+                <a href="products.html" class="block py-2 text-gray-700 hover:text-blue-600">Products</a>
+                <a href="industries.html" class="block py-2 text-gray-700 hover:text-blue-600">Industries</a>
+                <a href="sustainability.html" class="block py-2 text-gray-700 hover:text-blue-600">QHSE</a>
+                <a href="careers.html" class="block py-2 text-gray-700 hover:text-blue-600">Careers</a>
+                <a href="news.html" class="block py-2 text-gray-700 hover:text-blue-600">News</a>
+                <a href="contact.html" class="block py-2 text-gray-700 hover:text-blue-600">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header pt-24">
+        <div class="container text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">About GWorks</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Leading the way in industrial gas solutions with innovation, safety, and quality at our core
+            </p>
+        </div>
+    </section>
+
+    <!-- Company Story -->
+    <section class="section bg-white">
+        <div class="container">
+            <div class="grid grid-2 gap-12 items-center">
+                <div>
+                    <h2 class="section-title text-left mb-6">Our Story</h2>
+                    <p class="text-gray-600 mb-4">
+                        Founded in 1999, GWorks began as a small family business with a vision to revolutionize 
+                        industrial gas solutions. What started with a single production facility has grown into 
+                        a global enterprise serving clients across 50+ countries.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        Our journey has been driven by a commitment to innovation, safety, and environmental 
+                        responsibility. We've consistently pushed the boundaries of what's possible in gas 
+                        production, distribution, and analysis.
+                    </p>
+                    <p class="text-gray-600">
+                        Today, GWorks stands as a testament to sustainable growth, technological advancement, 
+                        and unwavering dedication to our clients' success.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="text-8xl text-blue-600 mb-4">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">25+ Years</h3>
+                    <p class="text-gray-600">Of continuous innovation and growth</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section class="section bg-gray-50">
+        <div class="container">
+            <div class="grid grid-2 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">Our Mission</h3>
+                    <p class="text-gray-600">
+                        To provide innovative, safe, and sustainable industrial gas solutions that empower 
+                        industries to achieve their goals while protecting our environment and communities.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4">Our Vision</h3>
+                    <p class="text-gray-600">
+                        To be the global leader in sustainable industrial gas solutions, setting industry 
+                        standards for innovation, safety, and environmental stewardship.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="section bg-white">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Core Values</h2>
+                <p class="section-subtitle">
+                    The principles that guide everything we do
+                </p>
+            </div>
+
+            <div class="grid grid-4 gap-6">
+                <div class="text-center p-6">
+                    <div class="text-4xl text-blue-600 mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Safety First</h3>
+                    <p class="text-gray-600 text-sm">Uncompromising commitment to safety in all operations</p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="text-4xl text-blue-600 mb-4">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Quality Excellence</h3>
+                    <p class="text-gray-600 text-sm">Delivering the highest quality products and services</p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="text-4xl text-blue-600 mb-4">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Innovation</h3>
+                    <p class="text-gray-600 text-sm">Continuously improving and developing new solutions</p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="text-4xl text-blue-600 mb-4">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Sustainability</h3>
+                    <p class="text-gray-600 text-sm">Environmental responsibility in all our practices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leadership Team -->
+    <section class="section bg-gray-50">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Leadership Team</h2>
+                <p class="section-subtitle">
+                    Meet the experienced professionals guiding GWorks forward
+                </p>
+            </div>
+
+            <div class="grid grid-3 gap-8">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6 text-center">
+                        <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">SM</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Sarah Mitchell</h3>
+                        <p class="text-blue-600 font-medium mb-2">Chief Executive Officer</p>
+                        <p class="text-gray-600 text-sm">
+                            20+ years of experience in industrial gas management and business leadership
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6 text-center">
+                        <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">DJ</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">David Johnson</h3>
+                        <p class="text-blue-600 font-medium mb-2">Chief Technology Officer</p>
+                        <p class="text-gray-600 text-sm">
+                            Expert in gas production technology and process optimization
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6 text-center">
+                        <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">LW</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Lisa Wang</h3>
+                        <p class="text-blue-600 font-medium mb-2">Chief Operations Officer</p>
+                        <p class="text-gray-600 text-sm">
+                            Specialized in supply chain management and operational excellence
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Stats -->
+    <section class="section bg-blue-600 text-white">
+        <div class="container">
+            <div class="grid grid-4 gap-8">
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">
+                        <span class="counter" data-target="500">0</span>+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Employees</h3>
+                    <p class="text-blue-100">Dedicated professionals worldwide</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">
+                        <span class="counter" data-target="25">0</span>+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Years Experience</h3>
+                    <p class="text-blue-100">Industry expertise and knowledge</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">
+                        <span class="counter" data-target="50">0</span>+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Countries</h3>
+                    <p class="text-blue-100">Global presence and reach</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-4xl font-bold mb-2">
+                        <span class="counter" data-target="1000">0</span>+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Projects</h3>
+                    <p class="text-blue-100">Successfully completed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="section bg-white">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Certifications & Standards</h2>
+                <p class="section-subtitle">
+                    Our commitment to quality and safety is recognized by leading international organizations
+                </p>
+            </div>
+
+            <div class="grid grid-4 gap-6">
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">ISO 9001</h3>
+                    <p class="text-gray-600 text-sm">Quality Management Systems</p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">ISO 14001</h3>
+                    <p class="text-gray-600 text-sm">Environmental Management</p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">OHSAS 18001</h3>
+                    <p class="text-gray-600 text-sm">Occupational Health & Safety</p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">FDA Approved</h3>
+                    <p class="text-gray-600 text-sm">Medical Gas Standards</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section bg-gray-50">
+        <div class="container text-center">
+            <h2 class="text-3xl font-bold mb-4">Join the GWorks Family</h2>
+            <p class="text-xl mb-8 text-gray-600">
+                Discover opportunities to grow with us and be part of our mission
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="careers.html" class="btn btn-primary text-lg px-8 py-4">
+                    <i class="fas fa-briefcase mr-2"></i>View Careers
+                </a>
+                <a href="contact.html" class="btn btn-secondary text-lg px-8 py-4">
+                    <i class="fas fa-envelope mr-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container">
+            <div class="grid grid-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">GWorks</h3>
+                    <p class="text-gray-300 mb-4">
+                        Leading provider of industrial gas solutions with a commitment to quality, safety, and innovation.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Products</a></li>
+                        <li><a href="industries.html" class="text-gray-300 hover:text-white transition-colors">Industries</a></li>
+                        <li><a href="careers.html" class="text-gray-300 hover:text-white transition-colors">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Gas Production</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Distribution</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Analysis</a></li>
+                        <li><a href="sustainability.html" class="text-gray-300 hover:text-white transition-colors">QHSE</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+                    <div class="space-y-2 text-gray-300">
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>123 Gas Street, Industrial District</p>
+                        <p><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@gworks.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2024 GWorks. All rights reserved. | <a href="sustainability.html" class="hover:text-white">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html> 

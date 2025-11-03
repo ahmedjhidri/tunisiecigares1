@@ -1,0 +1,63 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node / JS
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+build/
+dist/
+.out/
+.next/
+.vercel/
+.svelte-kit/
+.cache/
+.temp/
+.tmp/
+
+# Vite
+vite.cache/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Cursor
+.cursor/
+
+# Firebase/Google
+.firebase/
+
+# Misc
+coverage/
+.cypress/
+playwright-report/
+
+# OS junk
+Thumbs.db
+Desktop.ini
+
+# Local data
+*.local
+
+

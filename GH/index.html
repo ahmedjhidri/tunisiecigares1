@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GWorks - Leading Industrial Gas Solutions</title>
+    <meta name="description" content="GWorks provides comprehensive industrial gas solutions including medical gases, industrial gases, and gas analysis services. Quality, safety, and innovation in every project.">
+    <meta name="keywords" content="industrial gases, medical gases, gas analysis, gas solutions, GWorks">
+    <meta name="author" content="GWorks">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="GWorks - Leading Industrial Gas Solutions">
+    <meta property="og:description" content="Comprehensive industrial gas solutions with quality, safety, and innovation.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gworks.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GWorks - Leading Industrial Gas Solutions">
+    <meta name="twitter:description" content="Comprehensive industrial gas solutions with quality, safety, and innovation.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="main.js" as="script">
+</head>
+<body class="font-[Inter] bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-blue-600">
+                        <i class="fas fa-industry mr-2"></i>GWorks
+                    </a>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="products.html" class="nav-link">Products</a>
+                    <a href="industries.html" class="nav-link">Industries</a>
+                    <a href="sustainability.html" class="nav-link">QHSE</a>
+                    <a href="careers.html" class="nav-link">Careers</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </nav>
+                
+                <!-- Header Buttons -->
+                <div class="header-buttons flex items-center space-x-4">
+                    <!-- Search Toggle -->
+                    <button id="search-toggle" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="text-gray-600 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-moon text-xl"></i>
+                    </button>
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <div class="hamburger md:hidden">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <nav class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-4 space-y-2">
+                <a href="index.html" class="block py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="about.html" class="block py-2 text-gray-700 hover:text-blue-600">About</a>
+                <a href="products.html" class="block py-2 text-gray-700 hover:text-blue-600">Products</a>
+                <a href="industries.html" class="block py-2 text-gray-700 hover:text-blue-600">Industries</a>
+                <a href="sustainability.html" class="block py-2 text-gray-700 hover:text-blue-600">QHSE</a>
+                <a href="careers.html" class="block py-2 text-gray-700 hover:text-blue-600">Careers</a>
+                <a href="news.html" class="block py-2 text-gray-700 hover:text-blue-600">News</a>
+                <a href="contact.html" class="block py-2 text-gray-700 hover:text-blue-600">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero pt-24">
+        <div class="hero-content">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
+                Leading Industrial Gas Solutions
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in-up" style="animation-delay: 0.2s;">
+                Quality, safety, and innovation in every project. From medical gases to industrial applications, 
+                we deliver reliable solutions that power progress.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style="animation-delay: 0.4s;">
+                <a href="products.html" class="btn btn-primary text-lg px-8 py-4">
+                    <i class="fas fa-flask mr-2"></i>Explore Products
+                </a>
+                <a href="contact.html" class="btn btn-secondary text-lg px-8 py-4">
+                    <i class="fas fa-phone mr-2"></i>Get a Quote
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section bg-white">
+        <div class="container">
+            <div class="grid grid-3">
+                <div class="stats-card text-center p-8">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">
+                        <span class="counter" data-target="25">0</span>+
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Years Experience</h3>
+                    <p class="text-gray-600">Decades of expertise in industrial gas solutions</p>
+                </div>
+                <div class="stats-card text-center p-8">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">
+                        <span class="counter" data-target="500">0</span>+
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Projects Completed</h3>
+                    <p class="text-gray-600">Successful implementations across industries</p>
+                </div>
+                <div class="stats-card text-center p-8">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">
+                        <span class="counter" data-target="50">0</span>+
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Countries Served</h3>
+                    <p class="text-gray-600">Global reach with local expertise</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section bg-gray-50">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Core Services</h2>
+                <p class="section-subtitle">
+                    Comprehensive solutions for all your industrial gas needs, from production to distribution
+                </p>
+            </div>
+            
+            <div class="grid grid-3">
+                <div class="service-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="text-4xl text-blue-600 mb-4">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Gas Production</h3>
+                        <p class="text-gray-600 mb-4">
+                            State-of-the-art production facilities for medical, industrial, and specialty gases
+                        </p>
+                        <a href="products.html" class="text-blue-600 hover:text-blue-800 font-medium">
+                            Learn More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="text-4xl text-blue-600 mb-4">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Gas Distribution</h3>
+                        <p class="text-gray-600 mb-4">
+                            Reliable delivery systems and logistics for safe gas transportation
+                        </p>
+                        <a href="products.html" class="text-blue-600 hover:text-blue-800 font-medium">
+                            Learn More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="service-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <div class="text-4xl text-blue-600 mb-4">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Gas Analysis</h3>
+                        <p class="text-gray-600 mb-4">
+                            Advanced analytical services for quality control and compliance
+                        </p>
+                        <a href="products.html" class="text-blue-600 hover:text-blue-800 font-medium">
+                            Learn More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Industries Section -->
+    <section class="section bg-white">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Industries We Serve</h2>
+                <p class="section-subtitle">
+                    From healthcare to manufacturing, we provide tailored solutions for diverse industry needs
+                </p>
+            </div>
+            
+            <div class="grid grid-4">
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Healthcare</h3>
+                    <p class="text-gray-600 text-sm">Medical gases and equipment</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Manufacturing</h3>
+                    <p class="text-gray-600 text-sm">Industrial process gases</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-flask-vial"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Laboratories</h3>
+                    <p class="text-gray-600 text-sm">Research and testing gases</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Food & Beverage</h3>
+                    <p class="text-gray-600 text-sm">Food grade gases</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section bg-gray-50">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Our Clients Say</h2>
+                <p class="section-subtitle">
+                    Trusted by leading companies worldwide for quality and reliability
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="testimonial-card bg-white rounded-lg shadow-md p-8 text-center">
+                    <div class="text-4xl text-gray-300 mb-6">"</div>
+                    <p class="text-lg text-gray-700 mb-6 italic">
+                        "GWorks has been our trusted partner for industrial gas solutions for over a decade. 
+                        Their commitment to quality and safety is unmatched in the industry."
+                    </p>
+                    <div class="flex items-center justify-center">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
+                            JD
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">John Davis</h4>
+                            <p class="text-gray-600 text-sm">Operations Manager, TechCorp</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section bg-blue-600 text-white">
+        <div class="container text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+            <p class="text-xl mb-8 opacity-90">
+                Contact us today to discuss your industrial gas requirements
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="contact.html" class="btn btn-secondary text-lg px-8 py-4">
+                    <i class="fas fa-envelope mr-2"></i>Contact Us
+                </a>
+                <button onclick="openQuoteModal()" class="btn btn-primary text-lg px-8 py-4">
+                    <i class="fas fa-calculator mr-2"></i>Get a Quote
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container">
+            <div class="grid grid-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">GWorks</h3>
+                    <p class="text-gray-300 mb-4">
+                        Leading provider of industrial gas solutions with a commitment to quality, safety, and innovation.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Products</a></li>
+                        <li><a href="industries.html" class="text-gray-300 hover:text-white transition-colors">Industries</a></li>
+                        <li><a href="careers.html" class="text-gray-300 hover:text-white transition-colors">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Gas Production</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Distribution</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Analysis</a></li>
+                        <li><a href="sustainability.html" class="text-gray-300 hover:text-white transition-colors">QHSE</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+                    <div class="space-y-2 text-gray-300">
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>123 Gas Street, Industrial District</p>
+                        <p><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@gworks.com</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2024 GWorks. All rights reserved. | <a href="sustainability.html" class="hover:text-white">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Quote Modal -->
+    <div id="quote-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Get a Quote</h3>
+                <button onclick="closeQuoteModal()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form onsubmit="handleQuoteSubmission(this)">
+                <div class="grid grid-2 gap-6 mb-6">
+                    <div class="form-group">
+                        <label class="form-label">First Name *</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name *</label>
+                        <input type="text" class="form-input" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-2 gap-6 mb-6">
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-group mb-6">
+                    <label class="form-label">Company</label>
+                    <input type="text" class="form-input">
+                </div>
+                
+                <div class="form-group mb-6">
+                    <label class="form-label">Service Required *</label>
+                    <select class="form-input" required>
+                        <option value="">Select a service</option>
+                        <option value="gas-production">Gas Production</option>
+                        <option value="gas-distribution">Gas Distribution</option>
+                        <option value="gas-analysis">Gas Analysis</option>
+                        <option value="consulting">Consulting</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group mb-6">
+                    <label class="form-label">Project Details *</label>
+                    <textarea class="form-input" rows="4" placeholder="Please describe your project requirements..." required></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="closeQuoteModal()" class="btn btn-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane mr-2"></i>Send Quote Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Contact Button -->
+    <div id="floating-contact" class="fixed bottom-6 left-6 z-40">
+        <button onclick="toggleContactMenu()" class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300">
+            <i class="fas fa-comments text-xl"></i>
+        </button>
+        
+        <div id="contact-menu" class="absolute bottom-16 left-0 bg-white rounded-lg shadow-xl p-4 min-w-[280px] hidden">
+            <h4 class="font-semibold mb-3 text-gray-800">Quick Contact</h4>
+            <div class="space-y-2 text-sm">
+                <p class="text-gray-700"><i class="fas fa-phone mr-2 text-blue-600"></i>+1 (555) 123-4567</p>
+                <p class="text-gray-700"><i class="fas fa-envelope mr-2 text-blue-600"></i>info@gworks.com</p>
+                <p class="text-gray-700"><i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>123 Gas Street</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-200">
+                <a href="contact.html" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    View Full Contact Info <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html> 
