@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ebony: #0B0B0B;
+  --color-cocoa: #3B2F2F;
+  --color-gold: #C9A14A;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ebony text-white font-body antialiased;
+}
+
+:focus-visible {
+  outline: 2px dashed var(--color-gold);
+  outline-offset: 3px;
+}
+
+.transition-base {
+  @apply transition ease-out duration-200;
+}
+
+.container-page {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-gold text-ebony px-5 py-2.5 font-medium transition-base hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md border border-gold text-gold px-5 py-2.5 font-medium transition-base hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60;
+}
+
+.card {
+  @apply bg-cocoa/30 border border-cocoa/60 rounded-xl overflow-hidden shadow-lg backdrop-blur;
+}
+
+.title-gold {
+  @apply font-display text-gold;
+}
+
+
