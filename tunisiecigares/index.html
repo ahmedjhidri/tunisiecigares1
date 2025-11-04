@@ -3,14 +3,81 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cigar Lounge Tunisia</title>
+    <title>Cigar Lounge Tunisia - Loading...</title>
     <meta name="description" content="Premium cigar boutique in Tunisia. Elegant selection and concierge ordering via Messenger." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* Fallback styles in case CSS doesn't load */
+      body {
+        margin: 0;
+        background: #0B0B0B;
+        color: white;
+        font-family: Inter, sans-serif;
+      }
+      #loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(201, 161, 74, 0.3);
+        border-top-color: #C9A14A;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      #error {
+        display: none;
+        padding: 2rem;
+        text-align: center;
+        color: #ff6b6b;
+      }
+    </style>
+    <script>
+      // Error detection
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').innerHTML = 
+          '<h1>Error Loading Site</h1><p>' + e.error?.message + '</p><p>Check browser console (F12) for details.</p>';
+      });
+      
+      // Timeout detection
+      setTimeout(function() {
+        if (document.getElementById('loading').style.display !== 'none') {
+          console.warn('App took too long to load');
+        }
+      }, 5000);
+    </script>
   </head>
-  <body class="bg-ebony text-white">
+  <body>
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Loading Cigar Lounge Tunisia...</p>
+    </div>
+    <div id="error"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Hide loading once React mounts
+      const observer = new MutationObserver(function() {
+        const root = document.getElementById('root');
+        if (root && root.children.length > 0) {
+          document.getElementById('loading').style.display = 'none';
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.getElementById('root'), { childList: true });
+    </script>
   </body>
 </html>
