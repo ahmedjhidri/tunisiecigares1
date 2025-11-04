@@ -26,6 +26,17 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError('');
+
+  // ← AJOUTE CETTE VÉRIFICATION
+  if (parseInt(formData.age) < 18) {
+    setError('❌ Vous devez avoir au moins 18 ans pour commander.');
+    setIsSubmitting(false);
+    return;
+  }
 
     try {
       // Check if Supabase is configured
