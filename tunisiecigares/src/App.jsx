@@ -9,12 +9,13 @@ import Home from './pages/Home.jsx';
 import Products from './pages/Products.jsx';
 import Product from './pages/Product.jsx';
 import Contact from './pages/Contact.jsx';
+import Cart from './pages/Cart.jsx';
 
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-ebony text-white">
       <AgeVerificationModal />
-      <CartNotification /> {/* ← AJOUTE */}
+      <CartNotification />
       <Header />
       <main className="flex-1">
         <Routes>
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Cart />} /> {/* ← This route must exist */}
         </Routes>
       </main>
       <Footer />
