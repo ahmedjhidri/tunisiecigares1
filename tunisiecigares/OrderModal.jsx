@@ -1,4 +1,4 @@
-import { useState } from 'react';
+//import { useState } from 'react';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js';
 
 const supabaseUrl = 'https://abcdxyz.supabase.co'; // ton URL
