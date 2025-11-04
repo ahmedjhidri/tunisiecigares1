@@ -3,8 +3,7 @@ export default {
   mode: 'jit',
   content: [
     './index.html',
-    './src/**/*.{js,jsx,ts,tsx}',
-    './**/*.{js,jsx,ts,tsx}',
+    './src/**/*.{js,jsx,ts,tsx}',  // ← Seulement src/
   ],
   theme: {
     extend: {
@@ -21,5 +20,26 @@ export default {
   },
   plugins: [],
 };
+```
 
+### 5. **Structure correcte des fichiers**
 
+Votre structure doit être :
+```
+tunisiecigares/
+├── src/
+│   ├── lib/
+│   │   └── supabase.js          ← CRÉEZ CELUI-CI
+│   ├── components/
+│   │   ├── OrderModal.jsx       ← Modifiez celui-ci
+│   │   ├── ProductCard.jsx
+│   │   ├── ProductDetail.jsx
+│   │   └── ...
+│   ├── pages/
+│   ├── data/
+│   └── main.jsx
+├── package.json
+├── tailwind.config.js
+└── vite.config.js
+
+PAS de fichiers .jsx à la racine de tunisiecigares/ !
