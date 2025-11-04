@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase'; // ← Ajoute ça
+import { supabase } from 'tunisiecigares1/tunisiecigares';//supabase'; // ← Ajoute ça
 
 export default function OrderModal({ isOpen, onClose, productName, productPrice }) {
   const [formData, setFormData] = useState({
