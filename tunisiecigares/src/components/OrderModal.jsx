@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 export default function OrderModal({ isOpen, onClose, productName, productPrice }) {
   const [formData, setFormData] = useState({
@@ -13,19 +14,47 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setError(''); // Clear error on input change
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
 
-    // Simuler l'envoi (remplacez par votre API Formspree ou backend)
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const total = productPrice * formData.quantity;
+
+      // Insérer dans Supabase
+      const { data, error: supabaseError } = await supabase
+        .from('orders')
+        .insert([
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            age: parseInt(formData.age),
+            product_name: productName,
+            product_price: productPrice,
+            quantity: parseInt(formData.quantity),
+            total: total,
+            notes: formData.notes || null,
+            status: 'pending'
+          }
+        ])
+        .select();
+
+      if (supabaseError) throw supabaseError;
+
+      // Succès !
+      console.log('Commande créée:', data);
       setIsSuccess(true);
       
       // Réinitialiser après 2 secondes
@@ -43,47 +72,13 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
         });
         onClose();
       }, 2000);
-    }, 1000);
 
-    // Pour utiliser Formspree, décommentez ceci :
-    /*
-    try {
-      const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          product: productName,
-          price: productPrice,
-          total: productPrice * formData.quantity
-        }),
-      });
-
-      if (response.ok) {
-        setIsSuccess(true);
-        setTimeout(() => {
-          setIsSuccess(false);
-          setFormData({
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            address: '',
-            age: '',
-            quantity: 1,
-            notes: ''
-          });
-          onClose();
-        }, 2000);
-      }
-    } catch (error) {
-      alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+    } catch (err) {
+      console.error('Erreur lors de la soumission:', err);
+      setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
-    */
   };
 
   if (!isOpen) return null;
@@ -126,6 +121,13 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Message d'erreur */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                  <p className="text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+
               {/* Prénom & Nom */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -271,6 +273,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                   type="button"
                   onClick={onClose}
                   className="flex-1 px-6 py-3 border border-cocoa/60 text-white rounded-lg hover:bg-cocoa/30 transition-base font-medium"
+                  disabled={isSubmitting}
                 >
                   Annuler
                 </button>
