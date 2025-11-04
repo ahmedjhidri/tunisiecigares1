@@ -1,6 +1,18 @@
-// Placeholder images from Unsplash — replace with real product images.
-const img = (q) => `https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop`; // generic fallback
-const cigarImg = (n = 1) => `https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1600&auto=format&fit=crop`;
+// tunisiecigares/src/data/products.js
+// Different cigar images from Unsplash
+const cigarImages = [
+  'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1556388685-d5c4c0f29f07?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1600788907416-456578634209?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1516570161787-2fd917215a3d?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1600&auto=format&fit=crop',
+];
+
+// Get image with variety
+const getCigarImg = (index) => cigarImages[index % cigarImages.length];
 
 export const products = [
   {
@@ -13,7 +25,7 @@ export const products = [
     long_desc:
       'The Cohiba Robusto is a benchmark of Cuban craftsmanship, offering a balanced profile of cedar, cocoa, and subtle spice. Perfect draw and consistent burn make it a true classic for aficionados.',
     tags: ['Premium', 'Balanced', 'Cuban'],
-    images: [cigarImg(1), cigarImg(2), cigarImg(3)],
+    images: [getCigarImg(0), getCigarImg(1), getCigarImg(2)],
     premium: true,
   },
   {
@@ -26,7 +38,7 @@ export const products = [
     long_desc:
       'A refined expression from Romeo y Julieta featuring medium body and approachable character. Delivers classic Cuban flavors with a modern, compact format for any occasion.',
     tags: ['Elegant', 'Medium'],
-    images: [cigarImg(4), cigarImg(5)],
+    images: [getCigarImg(3), getCigarImg(4)],
     premium: false,
   },
   {
@@ -39,7 +51,7 @@ export const products = [
     long_desc:
       'Montecristo No. 2 stands among the most revered cigars. Expect a dynamic evolution from creamy cedar to robust spice, all within a beautifully tapered torpedo format.',
     tags: ['Iconic', 'Torpedo', 'Robust'],
-    images: [cigarImg(6), cigarImg(7)],
+    images: [getCigarImg(5), getCigarImg(6)],
     premium: true,
   },
   {
@@ -52,7 +64,7 @@ export const products = [
     long_desc:
       'A powerhouse robusto from Partagas, the Serie D No. 4 delivers earthy richness, espresso, and black pepper with unmistakable Cuban intensity and impeccable balance.',
     tags: ['Full-bodied', 'Classic'],
-    images: [cigarImg(8), cigarImg(9)],
+    images: [getCigarImg(7), getCigarImg(0)],
     premium: true,
   },
   {
@@ -65,7 +77,7 @@ export const products = [
     long_desc:
       'Epicure No. 2 charms with a gentle, aromatic profile – hints of cream, honey sweetness, and floral undertones – backed by superb construction and an elegant burn.',
     tags: ['Aromatic', 'Silky'],
-    images: [cigarImg(10)],
+    images: [getCigarImg(1)],
     premium: false,
   },
   {
@@ -78,7 +90,7 @@ export const products = [
     long_desc:
       'An excellent value selection delivering classic notes of wood, cocoa powder, and a touch of baking spice. Ideal for daily enjoyment without compromise.',
     tags: ['Value', 'Approachable'],
-    images: [cigarImg(11)],
+    images: [getCigarImg(2)],
     premium: false,
   },
   {
@@ -91,7 +103,7 @@ export const products = [
     long_desc:
       'A refined expression from H. Upmann showcasing balance and finesse. Expect cedarwood, toasted almond, and a creamy finish that lingers gracefully.',
     tags: ['Refined', 'Balanced'],
-    images: [cigarImg(12)],
+    images: [getCigarImg(3)],
     premium: true,
   },
   {
@@ -104,11 +116,9 @@ export const products = [
     long_desc:
       'A bold, complex Cuban with deep earth, cocoa, and touches of dried fruit. The belicoso shape concentrates aroma and flavor for a memorable experience.',
     tags: ['Intense', 'Complex'],
-    images: [cigarImg(13), cigarImg(14)],
+    images: [getCigarImg(4), getCigarImg(5)],
     premium: true,
   },
 ];
 
 export default products;
-
-
