@@ -6,7 +6,7 @@ import OrderModal from '../components/OrderModal.jsx';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, getTotal, clearCart } = useCart();
-  const [checkoutProduct, setCheckoutProduct] = useState(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   if (cart.length === 0) {
     return (
@@ -135,7 +135,7 @@ export default function Cart() {
 
               <div className="mt-6 space-y-3">
                 <button
-                  onClick={() => setCheckoutProduct(cart[0])}
+                  onClick={() => setIsCheckoutModalOpen(true)}
                   className="btn-primary w-full"
                 >
                   Commander
@@ -158,14 +158,14 @@ export default function Cart() {
         </div>
       </div>
 
-      {checkoutProduct && (
-        <OrderModal
-          isOpen={true}
-          onClose={() => setCheckoutProduct(null)}
-          productName={`Commande de ${cart.length} produit(s)`}
-          productPrice={getTotal()}
-        />
-      )}
+      {/* Pass isCartOrder flag to save full cart details */}
+      <OrderModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+        productName="Commande panier"
+        productPrice={getTotal()}
+        isCartOrder={true}
+      />
     </>
   );
 }
