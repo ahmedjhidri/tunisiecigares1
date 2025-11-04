@@ -9,8 +9,10 @@ import Product from './pages/Product.jsx';
 import Contact from './pages/Contact.jsx';
 
 export default function App() {
+  console.log('App component rendering...');
+  
   return (
-    <div className="min-h-full flex flex-col">
+    <div className="min-h-screen flex flex-col bg-ebony text-white">
       <Header />
       <main className="flex-1">
         <Routes>
@@ -26,5 +28,3 @@ export default function App() {
     </div>
   );
 }
-
-
