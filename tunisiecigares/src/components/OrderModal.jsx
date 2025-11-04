@@ -1,7 +1,10 @@
+// tunisiecigares/src/components/OrderModal.jsx
 import { useState } from 'react';
+import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
-export default function OrderModal({ isOpen, onClose, productName, productPrice }) {
+export default function OrderModal({ isOpen, onClose, productName, productPrice, isCartOrder = false }) {
+  const { cart, clearCart } = useCart();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -35,36 +38,80 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
     }
 
     try {
-      // Check if Supabase is configured
       if (!isSupabaseConfigured()) {
         throw new Error('Supabase n\'est pas configuré. Veuillez configurer vos variables d\'environnement.');
       }
 
-      const total = productPrice * formData.quantity;
+      let orderData;
+
+      if (isCartOrder && cart.length > 0) {
+        // FULL CART ORDER - Save all items with details
+        const items = cart.map(item => ({
+          product_id: item.id,
+          product_name: item.name,
+          price: item.price_TND,
+          quantity: item.quantity,
+          subtotal: item.price_TND * item.quantity
+        }));
+
+        const total = cart.reduce((sum, item) => sum + (item.price_TND * item.quantity), 0);
+
+        orderData = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          age: parseInt(formData.age),
+          product_name: `Commande de ${cart.length} produit(s)`, // Summary
+          product_price: null, // Not applicable for cart orders
+          quantity: cart.reduce((sum, item) => sum + item.quantity, 0), // Total items
+          total: total,
+          notes: formData.notes || null,
+          order_items: JSON.stringify(items), // ← KEY: Save full cart as JSON
+          order_type: 'cart'
+        };
+      } else {
+        // SINGLE PRODUCT ORDER
+        const total = productPrice * formData.quantity;
+
+        orderData = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          age: parseInt(formData.age),
+          product_name: productName,
+          product_price: productPrice,
+          quantity: parseInt(formData.quantity),
+          total: total,
+          notes: formData.notes || null,
+          order_items: JSON.stringify([{
+            product_name: productName,
+            price: productPrice,
+            quantity: parseInt(formData.quantity),
+            subtotal: total
+          }]),
+          order_type: 'single'
+        };
+      }
 
       // Insert into Supabase
       const { data, error: supabaseError } = await supabase
         .from('orders')
-        .insert([
-          {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            phone: formData.phone,
-            address: formData.address,
-            age: parseInt(formData.age),
-            product_name: productName,
-            product_price: productPrice,
-            quantity: parseInt(formData.quantity),
-            total: total,
-            notes: formData.notes || null
-          }
-        ])
+        .insert([orderData])
         .select();
 
       if (supabaseError) throw supabaseError;
 
       console.log('Commande créée:', data);
+      
+      // Clear cart if it was a cart order
+      if (isCartOrder) {
+        clearCart();
+      }
+
       setIsSuccess(true);
       
       setTimeout(() => {
@@ -92,6 +139,15 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
 
   if (!isOpen) return null;
 
+  // Calculate display values
+  const displayTotal = isCartOrder 
+    ? cart.reduce((sum, item) => sum + (item.price_TND * item.quantity), 0)
+    : productPrice * formData.quantity;
+
+  const displayProductName = isCartOrder 
+    ? `Commande de ${cart.length} produit${cart.length > 1 ? 's' : ''}`
+    : productName;
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
@@ -101,10 +157,10 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-ebony border border-gold/30 rounded-xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-ebony border-b border-gold/30 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-ebony border-b border-gold/30 px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h2 className="title-gold text-2xl">Commander</h2>
-            <p className="text-white/60 text-sm mt-1">{productName} - {productPrice} TND</p>
+            <p className="text-white/60 text-sm mt-1">{displayProductName}</p>
           </div>
           <button
             onClick={onClose}
@@ -139,6 +195,25 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                   <p className="text-yellow-400 text-sm">
                     ⚠️ Base de données non configurée. Veuillez nous contacter via Messenger.
                   </p>
+                </div>
+              )}
+
+              {/* Show cart items if cart order */}
+              {isCartOrder && cart.length > 0 && (
+                <div className="bg-cocoa/20 border border-gold/20 rounded-lg p-4">
+                  <h4 className="font-semibold text-gold mb-3">Détails de la commande :</h4>
+                  <div className="space-y-2">
+                    {cart.map((item) => (
+                      <div key={item.id} className="flex justify-between text-sm">
+                        <span className="text-white/80">
+                          {item.quantity}x {item.name}
+                        </span>
+                        <span className="text-gold font-medium">
+                          {(item.price_TND * item.quantity).toFixed(2)} TND
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -235,20 +310,22 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                   />
                   <p className="text-xs text-white/50 mt-1">Vous devez avoir 18 ans ou plus</p>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Quantité <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={formData.quantity}
-                    onChange={handleChange}
-                    required
-                    min="1"
-                    className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
-                  />
-                </div>
+                {!isCartOrder && (
+                  <div>
+                    <label className="block text-sm font-medium text-white/90 mb-2">
+                      Quantité <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleChange}
+                      required
+                      min="1"
+                      className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                    />
+                  </div>
+                )}
               </div>
 
               <div>
@@ -269,7 +346,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 <div className="flex justify-between items-center">
                   <span className="text-white/90 font-medium">Total :</span>
                   <span className="text-2xl font-bold text-gold">
-                    {(productPrice * formData.quantity).toFixed(2)} TND
+                    {displayTotal.toFixed(2)} TND
                   </span>
                 </div>
               </div>
