@@ -3,18 +3,18 @@ import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import MessengerButton from './components/MessengerButton.jsx';
 import Toast from './components/Toast.jsx';
-import AgeVerificationModal from './components/AgeVerificationModal.jsx'; // ← AJOUTE
+import AgeVerificationModal from './components/AgeVerificationModal.jsx';
+import CartNotification from './components/CartNotification.jsx'; // ← AJOUTE
 import Home from './pages/Home.jsx';
 import Products from './pages/Products.jsx';
 import Product from './pages/Product.jsx';
 import Contact from './pages/Contact.jsx';
 
 export default function App() {
-  console.log('App component rendering...');
-  
   return (
     <div className="min-h-screen flex flex-col bg-ebony text-white">
-      <AgeVerificationModal /> {/* ← AJOUTE */}
+      <AgeVerificationModal />
+      <CartNotification /> {/* ← AJOUTE */}
       <Header />
       <main className="flex-1">
         <Routes>
