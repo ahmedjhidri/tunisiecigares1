@@ -55,6 +55,10 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
         }));
 
         const total = cart.reduce((sum, item) => sum + (item.price_TND * item.quantity), 0);
+        const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+        
+        // Calculate average price per item for database compatibility
+        const averagePrice = total / totalQuantity;
 
         orderData = {
           first_name: formData.firstName,
@@ -64,8 +68,8 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           address: formData.address,
           age: parseInt(formData.age),
           product_name: `Commande de ${cart.length} produit(s)`, // Summary
-          product_price: null, // Not applicable for cart orders
-          quantity: cart.reduce((sum, item) => sum + item.quantity, 0), // Total items
+          product_price: averagePrice, // ← CHANGED: Average price instead of null
+          quantity: totalQuantity, // Total items
           total: total,
           notes: formData.notes || null,
           order_items: JSON.stringify(items), // ← KEY: Save full cart as JSON
