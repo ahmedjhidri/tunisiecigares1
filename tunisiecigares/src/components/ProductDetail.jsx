@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
+import { useCart } from '../context/CartContext.jsx'; // ← AJOUTE
 import OrderModal from './OrderModal.jsx';
 
 export default function ProductDetail({ product }) {
   const [active, setActive] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { addToCart } = useCart(); // ← AJOUTE
   
   const images = useMemo(() => product.images?.length ? product.images : [
     'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1600&auto=format&fit=crop',
@@ -11,48 +13,31 @@ export default function ProductDetail({ product }) {
 
   return (
     <>
-      <div className="grid gap-8 md:grid-cols-2">
-        <div>
-          <div className="aspect-video w-full overflow-hidden rounded-lg border border-cocoa/60">
-            <img src={images[active]} alt={`${product.name} main`} className="h-full w-full object-cover" />
-          </div>
-          <div className="mt-3 grid grid-cols-5 gap-2">
-            {images.map((src, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                className={`aspect-video overflow-hidden rounded border ${i === active ? 'border-gold' : 'border-cocoa/60'} hover:brightness-110 transition-base`}
-                aria-label={`Afficher image ${i + 1}`}
-              >
-                <img src={src} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover" />
-              </button>
-            ))}
-          </div>
+      {/* ... code existant pour les images ... */}
+
+      <div>
+        {/* ... titre, prix, description ... */}
+
+        <div className="mt-6 flex gap-2">
+          {/* ← AJOUTE LE BOUTON PANIER */}
+          <button 
+            onClick={() => addToCart(product)}
+            className="btn-secondary flex-1 flex items-center justify-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Ajouter au panier
+          </button>
+          <button 
+            className="btn-primary flex-1" 
+            onClick={() => setIsModalOpen(true)}
+          >
+            Commander maintenant
+          </button>
         </div>
 
-        <div>
-          <h2 className="title-gold text-3xl">{product.name}</h2>
-          <p className="text-white/70 mt-1">{product.origin} • {product.format}</p>
-          <div className="text-gold font-semibold mt-3 text-xl">{product.price_TND} TND</div>
-          <p className="mt-4 text-white/90">{product.long_desc}</p>
-
-          <div className="mt-6 flex gap-2">
-            <button 
-              className="btn-primary flex-1" 
-              onClick={() => setIsModalOpen(true)}
-            >
-              Commander maintenant
-            </button>
-          </div>
-
-          {product.tags?.length ? (
-            <div className="mt-6 flex flex-wrap gap-2">
-              {product.tags.map((t) => (
-                <span key={t} className="text-xs rounded border border-gold/50 text-gold px-2 py-1">{t}</span>
-              ))}
-            </div>
-          ) : null}
-        </div>
+        {/* ... reste du code ... */}
       </div>
 
       <OrderModal
