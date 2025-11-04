@@ -26,16 +26,12 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError('');
 
-  // ← AJOUTE CETTE VÉRIFICATION
+    // Vérification de l'âge
     if (parseInt(formData.age) < 18) {
       setError('❌ Vous devez avoir au moins 18 ans pour commander.');
       setIsSubmitting(false);
-     return;}
+      return;
     }
 
     try {
