@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export default function OrderModal({ isOpen, onClose, productName, productPrice }) {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setError(''); // Clear error on input change
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -28,9 +28,14 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
     setError('');
 
     try {
+      // Check if Supabase is configured
+      if (!isSupabaseConfigured()) {
+        throw new Error('Supabase n\'est pas configuré. Veuillez configurer vos variables d\'environnement.');
+      }
+
       const total = productPrice * formData.quantity;
 
-      // Insérer dans Supabase
+      // Insert into Supabase
       const { data, error: supabaseError } = await supabase
         .from('orders')
         .insert([
@@ -45,19 +50,16 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
             product_price: productPrice,
             quantity: parseInt(formData.quantity),
             total: total,
-            notes: formData.notes || null,
-            status: 'pending'
+            notes: formData.notes || null
           }
         ])
         .select();
 
       if (supabaseError) throw supabaseError;
 
-      // Succès !
       console.log('Commande créée:', data);
       setIsSuccess(true);
       
-      // Réinitialiser après 2 secondes
       setTimeout(() => {
         setIsSuccess(false);
         setFormData({
@@ -75,7 +77,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
 
     } catch (err) {
       console.error('Erreur lors de la soumission:', err);
-      setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+      setError(err.message || 'Une erreur est survenue. Veuillez contacter via Messenger.');
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +94,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-ebony border border-gold/30 rounded-xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="sticky top-0 bg-ebony border-b border-gold/30 px-6 py-4 flex items-center justify-between">
           <div>
             <h2 className="title-gold text-2xl">Commander</h2>
@@ -107,7 +108,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
           </button>
         </div>
 
-        {/* Body */}
         <div className="p-6">
           {isSuccess ? (
             <div className="text-center py-12">
@@ -121,14 +121,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Message d'erreur */}
               {error && (
                 <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                   <p className="text-red-400 text-sm">{error}</p>
                 </div>
               )}
 
-              {/* Prénom & Nom */}
+              {!isSupabaseConfigured() && (
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                  <p className="text-yellow-400 text-sm">
+                    ⚠️ Base de données non configurée. Veuillez nous contacter via Messenger.
+                  </p>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-white/90 mb-2">
@@ -160,7 +166,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 </div>
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-white/90 mb-2">
                   Email <span className="text-red-500">*</span>
@@ -176,7 +181,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 />
               </div>
 
-              {/* Téléphone */}
               <div>
                 <label className="block text-sm font-medium text-white/90 mb-2">
                   Numéro de téléphone <span className="text-red-500">*</span>
@@ -192,7 +196,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 />
               </div>
 
-              {/* Adresse */}
               <div>
                 <label className="block text-sm font-medium text-white/90 mb-2">
                   Adresse de livraison <span className="text-red-500">*</span>
@@ -208,7 +211,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 />
               </div>
 
-              {/* Âge & Quantité */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-white/90 mb-2">
@@ -242,7 +244,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 </div>
               </div>
 
-              {/* Notes additionnelles */}
               <div>
                 <label className="block text-sm font-medium text-white/90 mb-2">
                   Notes additionnelles (optionnel)
@@ -257,7 +258,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 />
               </div>
 
-              {/* Total */}
               <div className="bg-gold/10 border border-gold/30 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <span className="text-white/90 font-medium">Total :</span>
@@ -267,7 +267,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 </div>
               </div>
 
-              {/* Buttons */}
               <div className="flex gap-3 pt-4">
                 <button
                   type="button"
@@ -279,7 +278,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice 
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isSupabaseConfigured()}
                   className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Envoi en cours...' : 'Confirmer la commande'}
