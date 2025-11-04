@@ -1,6 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
+// Supabase disabled for now - all orders via Messenger
+// To enable: add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const supabase = null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const isSupabaseConfigured = () => false;
+
+console.log('ℹ️ Orders via Messenger (Supabase disabled)');
