@@ -1,5 +1,6 @@
 // tunisiecigares/src/components/OrderModal.jsx
 import { useState } from 'react';
+import { sendOrderEmail, isEmailEnabled } from '../lib/email';
 import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
@@ -110,6 +111,23 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       if (supabaseError) throw supabaseError;
 
       console.log('Commande créée:', data);
+
+      // Fire and forget: send confirmation email if configured
+      try {
+        if (isEmailEnabled()) {
+          await sendOrderEmail({
+            toEmail: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone,
+            address: formData.address,
+            items: JSON.parse(orderData.order_items),
+            total: orderData.total
+          });
+        }
+      } catch (emailErr) {
+        console.warn('Email confirmation failed (non-blocking):', emailErr?.message || emailErr);
+      }
       
       // Clear cart if it was a cart order
       if (isCartOrder) {

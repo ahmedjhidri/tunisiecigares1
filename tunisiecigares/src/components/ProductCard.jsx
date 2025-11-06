@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx'; // ← AJOUTE
 import OrderModal from './OrderModal.jsx';
+import { trackEvent } from '../lib/analytics';
 
 export default function ProductCard({ product }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function ProductCard({ product }) {
     <>
       <div className="card group h-full flex flex-col">
         <div className="relative overflow-hidden">
-          <img src={img} alt={`${name} product image`} className="h-52 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+          <img src={img} alt={`${name} product image`} loading="lazy" decoding="async" className="h-52 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
           {premium && (
             <span className="absolute top-3 left-3 rounded bg-gold/90 text-ebony text-xs font-semibold px-2 py-1 shadow">Premium</span>
           )}
@@ -37,7 +38,7 @@ export default function ProductCard({ product }) {
           <div className="mt-4 flex items-center gap-2">
             {/* ← NOUVEAU BOUTON PANIER */}
             <button
-              onClick={() => addToCart(product)}
+              onClick={() => { addToCart(product); trackEvent('add_to_cart', 'ecommerce', product.name); }}
               className="btn-secondary flex-1 flex items-center justify-center gap-2"
               aria-label={`Ajouter ${name} au panier`}
             >

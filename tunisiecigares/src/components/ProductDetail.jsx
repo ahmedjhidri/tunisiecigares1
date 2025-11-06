@@ -21,6 +21,8 @@ export default function ProductDetail({ product }) {
             <img 
               src={images[active]} 
               alt={`${product.name} - view ${active + 1}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-96 object-cover"
             />
           </div>
@@ -34,7 +36,7 @@ export default function ProductDetail({ product }) {
                     active === idx ? 'border-gold' : 'border-cocoa/60 hover:border-gold/50'
                   }`}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-20 object-cover" />
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} loading="lazy" decoding="async" className="w-full h-20 object-cover" />
                 </button>
               ))}
             </div>

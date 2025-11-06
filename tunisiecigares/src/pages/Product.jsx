@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import products from '../data/products.js';
 import ProductDetail from '../components/ProductDetail.jsx';
@@ -24,6 +24,24 @@ export default function Product() {
 
   return (
     <div className="container-page py-12">
+      {/* JSON-LD Product schema for SEO */}
+      <script type="application/ld+json" suppressHydrationWarning>
+        {JSON.stringify({
+          '@context': 'https://schema.org/',
+          '@type': 'Product',
+          name: product.name,
+          brand: 'Cigar Lounge Tunisia',
+          category: 'Cigar',
+          image: product.images && product.images.length ? product.images : undefined,
+          description: product.long_desc,
+          offers: {
+            '@type': 'Offer',
+            price: String(product.price_TND),
+            priceCurrency: 'TND',
+            availability: 'https://schema.org/InStock'
+          }
+        })}
+      </script>
       <ProductDetail product={product} />
 
       {related.length > 0 && (
