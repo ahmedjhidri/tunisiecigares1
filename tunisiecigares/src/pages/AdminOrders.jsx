@@ -1,6 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
+function parseOrderItems(raw) {
+  try {
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string' && raw.trim()) {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    }
+    // jsonb from Supabase might come as object already
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function AdminOrders() {
   const [authed, setAuthed] = useState(false);
   const [orders, setOrders] = useState([]);
@@ -82,27 +97,40 @@ export default function AdminOrders() {
               <th className="text-left py-2 pr-4">Customer</th>
               <th className="text-left py-2 pr-4">Email</th>
               <th className="text-left py-2 pr-4">Phone</th>
+              <th className="text-right py-2 pr-4">Items</th>
               <th className="text-right py-2 pr-4">Total</th>
               <th className="text-left py-2 pr-4">Status</th>
               <th className="text-left py-2 pr-4">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(o => (
-              <tr key={o.id} className="border-b border-cocoa/60 hover:bg-cocoa/20">
-                <td className="py-2 pr-4 whitespace-nowrap">{o.order_ref || o.id}</td>
-                <td className="py-2 pr-4 whitespace-nowrap">{new Date(o.created_at).toLocaleString()}</td>
-                <td className="py-2 pr-4">{o.first_name} {o.last_name}</td>
-                <td className="py-2 pr-4">{o.email}</td>
-                <td className="py-2 pr-4">{o.phone}</td>
-                <td className="py-2 pr-4 text-right text-gold font-semibold">{o.total} TND</td>
-                <td className="py-2 pr-4">{o.status || 'pending'}</td>
-                <td className="py-2 pr-4 flex gap-2">
-                  <button className="btn-secondary" onClick={()=>setSelected(o)}>View</button>
-                  <button className="btn-primary" onClick={()=>markDelivered(o.id)}>Mark delivered</button>
-                </td>
-              </tr>
-            ))}
+            {filtered.map(o => {
+              const items = parseOrderItems(o.order_items);
+              const count = items.reduce((n, it) => n + (Number(it.quantity) || 0), 0) || items.length;
+              const badgeClass = (o.status || 'pending') === 'delivered'
+                ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                : (o.status === 'confirmed'
+                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                  : 'bg-yellow-500/20 text-yellow-200 border border-yellow-500/30');
+              return (
+                <tr key={o.id} className="border-b border-cocoa/60 hover:bg-cocoa/20">
+                  <td className="py-2 pr-4 whitespace-nowrap">{o.order_ref || o.id}</td>
+                  <td className="py-2 pr-4 whitespace-nowrap">{new Date(o.created_at).toLocaleString()}</td>
+                  <td className="py-2 pr-4">{o.first_name} {o.last_name}</td>
+                  <td className="py-2 pr-4">{o.email}</td>
+                  <td className="py-2 pr-4">{o.phone}</td>
+                  <td className="py-2 pr-4 text-right">{count}</td>
+                  <td className="py-2 pr-4 text-right text-gold font-semibold">{o.total} TND</td>
+                  <td className="py-2 pr-4">
+                    <span className={`px-2 py-1 text-xs rounded ${badgeClass}`}>{o.status || 'pending'}</span>
+                  </td>
+                  <td className="py-2 pr-4 flex gap-2">
+                    <button className="btn-secondary" onClick={()=>setSelected(o)}>View</button>
+                    <button className="btn-primary" onClick={()=>markDelivered(o.id)}>Mark delivered</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -131,7 +159,7 @@ export default function AdminOrders() {
             <div className="mt-4">
               <h4 className="text-gold mb-2">Items</h4>
               <div className="space-y-2">
-                {(selected.order_items || []).map((it, idx) => (
+                {parseOrderItems(selected.order_items).map((it, idx) => (
                   <div key={idx} className="flex justify-between text-sm">
                     <span className="text-white/80">{it.quantity} × {it.product_name}</span>
                     <span className="text-gold">{it.subtotal} TND</span>

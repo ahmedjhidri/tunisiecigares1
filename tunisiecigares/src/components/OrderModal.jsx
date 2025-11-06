@@ -1,5 +1,10 @@
 // tunisiecigares/src/components/OrderModal.jsx
 import { useEffect, useRef, useState } from 'react';
+console.log('EmailJS Config:', {
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID ? '✓ Set' : '✗ Missing',
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ? '✓ Set' : '✗ Missing',
+  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY ? '✓ Set' : '✗ Missing'
+});
 import { sendOrderEmail, isEmailEnabled } from '../lib/email';
 import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
