@@ -130,7 +130,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       try {
         if (isEmailEnabled()) {
           await sendOrderEmail({
-            toEmail: formData.email,
+            toEmail: (formData.email || '').trim(),
             firstName: formData.firstName,
             lastName: formData.lastName,
             phone: formData.phone,
