@@ -89,4 +89,15 @@ class Analytics {
   }
 }
 
-export default new Analytics();
+const analytics = new Analytics();
+
+// Named export for backward compatibility
+export const trackEvent = (eventName, category, label, value) => {
+  analytics.track(eventName, {
+    category,
+    label,
+    value
+  });
+};
+
+export default analytics;

@@ -43,7 +43,12 @@ export default function ProductCard({ product }) {
           <div className="mt-4 flex items-center gap-2">
             {/* ← NOUVEAU BOUTON PANIER */}
             <button
-              onClick={() => { if (stock > 0) { addToCart(product); trackEvent('add_to_cart', 'ecommerce', product.name); } }}
+              onClick={() => { 
+                if (stock > 0) { 
+                  addToCart(product); 
+                  trackEvent('add_to_cart', 'ecommerce', product.name); 
+                } 
+              }}
               className={`btn-secondary flex-1 flex items-center justify-center gap-2 ${stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               aria-label={`Ajouter ${name} au panier`}
               disabled={stock <= 0}
