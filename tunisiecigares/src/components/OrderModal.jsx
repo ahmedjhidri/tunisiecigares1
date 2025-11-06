@@ -45,6 +45,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       return;
     }
 
+    // Email presence/format validation
+    const email = (formData.email || '').trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setError('Veuillez renseigner une adresse email.');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError('Adresse email invalide.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       if (!isSupabaseConfigured()) {
         throw new Error('Supabase n\'est pas configuré. Veuillez configurer vos variables d\'environnement.');
@@ -129,8 +143,10 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       // Fire and forget: send confirmation email if configured
       try {
         if (isEmailEnabled()) {
+          // Log minimal payload for debug
+          console.log('Preparing email payload', { to: email, orderRef: orderData.order_ref, items: orderData.order_items?.length || 0 });
           await sendOrderEmail({
-            toEmail: (formData.email || '').trim(),
+            toEmail: email,
             firstName: formData.firstName,
             lastName: formData.lastName,
             phone: formData.phone,

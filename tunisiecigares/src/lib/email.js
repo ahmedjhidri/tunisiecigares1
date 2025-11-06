@@ -25,6 +25,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
           <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:right;">${i.subtotal} TND</td>
         </tr>`).join('');
 
+  const subject = `Order ${orderRef || ''} confirmed`;
   const html = `
     <div style="background:#0B0B0B;color:#fff;font-family:Inter,Arial,sans-serif;padding:24px;">
       <div style="max-width:640px;margin:0 auto;background:#111111;border:1px solid #3a2f1b;border-radius:12px;overflow:hidden;">
@@ -78,6 +79,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       to,
       user_email: to,
       reply_to: to,
+      subject,
       html_message: html
     }
   };
