@@ -1,5 +1,5 @@
 // tunisiecigares/src/components/OrderModal.jsx
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { sendOrderEmail, isEmailEnabled } from '../lib/email';
 import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
@@ -18,6 +18,8 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+  const confettiRef = useRef(null);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -44,6 +46,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       }
 
       let orderData;
+      const orderRef = `CLT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
       if (isCartOrder && cart.length > 0) {
         // FULL CART ORDER - Save all items with details
@@ -73,12 +76,21 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           quantity: totalQuantity, // Total items
           total: total,
           notes: formData.notes || null,
-          order_items: JSON.stringify(items), // ← KEY: Save full cart as JSON
-          order_type: 'cart'
+          order_items: items, // store as JSON array (not string)
+          order_type: 'cart',
+          order_ref: orderRef,
+          status: 'pending'
         };
       } else {
         // SINGLE PRODUCT ORDER
         const total = productPrice * formData.quantity;
+
+        const item = {
+          product_name: productName,
+          price: productPrice,
+          quantity: parseInt(formData.quantity),
+          subtotal: total
+        };
 
         orderData = {
           first_name: formData.firstName,
@@ -92,13 +104,10 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           quantity: parseInt(formData.quantity),
           total: total,
           notes: formData.notes || null,
-          order_items: JSON.stringify([{
-            product_name: productName,
-            price: productPrice,
-            quantity: parseInt(formData.quantity),
-            subtotal: total
-          }]),
-          order_type: 'single'
+          order_items: [item], // store as JSON array (not string)
+          order_type: 'single',
+          order_ref: orderRef,
+          status: 'pending'
         };
       }
 
@@ -121,8 +130,9 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             lastName: formData.lastName,
             phone: formData.phone,
             address: formData.address,
-            items: JSON.parse(orderData.order_items),
-            total: orderData.total
+            items: orderData.order_items,
+            total: orderData.total,
+            orderRef: orderData.order_ref
           });
         }
       } catch (emailErr) {
@@ -135,8 +145,15 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       }
 
       setIsSuccess(true);
+      setCountdown(3);
+      // trigger confetti
+      try {
+        launchConfetti(confettiRef.current);
+      } catch {}
       
+      const interval = setInterval(() => setCountdown(c => c - 1), 1000);
       setTimeout(() => {
+        clearInterval(interval);
         setIsSuccess(false);
         setFormData({
           firstName: '',
@@ -149,7 +166,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           notes: ''
         });
         onClose();
-      }, 2000);
+      }, 3000);
 
     } catch (err) {
       console.error('Erreur lors de la soumission:', err);
@@ -179,6 +196,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-ebony border border-gold/30 rounded-xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
+        <canvas ref={confettiRef} className="pointer-events-none absolute inset-0" height="400"></canvas>
         <div className="sticky top-0 bg-ebony border-b border-gold/30 px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h2 className="title-gold text-2xl">Commander</h2>
@@ -195,14 +213,15 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
 
         <div className="p-6">
           {isSuccess ? (
-            <div className="text-center py-12">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
+            <div className="text-center py-12 animate-fade-in">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center animate-pop">
                 <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-display text-gold mb-2">Commande envoyée !</h3>
-              <p className="text-white/70">Nous vous contactons très bientôt.</p>
+              <h3 className="text-2xl font-display text-gold mb-2">Commande confirmée ✅</h3>
+              <p className="text-white/70">Merci pour votre commande. Une confirmation a été envoyée par email.</p>
+              <p className="text-white/50 mt-4 text-sm">Fermeture dans {countdown}…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -396,4 +415,35 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       </div>
     </div>
   );
+}
+
+// Simple confetti launcher using canvas (no external deps)
+function launchConfetti(canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width = canvas.offsetWidth;
+  const H = canvas.height = canvas.offsetHeight;
+  const particles = Array.from({ length: 120 }).map(() => ({
+    x: Math.random() * W,
+    y: -10,
+    r: 2 + Math.random() * 3,
+    c: ['#C9A14A', '#ffffff', '#8B5E3C'][Math.floor(Math.random() * 3)],
+    v: 1 + Math.random() * 3,
+    w: Math.random() * 2
+  }));
+  let frame = 0;
+  const anim = () => {
+    frame++;
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.y += p.v;
+      p.x += Math.sin((frame / 10) + p.w);
+      ctx.fillStyle = p.c;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    if (frame < 180) requestAnimationFrame(anim);
+  };
+  anim();
 }

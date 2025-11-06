@@ -10,6 +10,8 @@ import Products from './pages/Products.jsx';
 import Product from './pages/Product.jsx';
 import Contact from './pages/Contact.jsx';
 import Cart from './pages/Cart.jsx';
+import AdminOrders from './pages/AdminOrders.jsx';
+import MyOrders from './pages/MyOrders.jsx';
 
 export default function App() {
   return (
@@ -24,6 +26,8 @@ export default function App() {
           <Route path="/product/:id" element={<Product />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Cart />} /> {/* ← This route must exist */}
+          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/my-orders" element={<MyOrders />} />
         </Routes>
       </main>
       <Footer />
