@@ -14,6 +14,8 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
   if (!isEmailEnabled()) throw new Error('Email is not configured');
   const to = (toEmail || '').trim();
   if (!to) throw new Error('Recipient email is empty');
+  const emailRe = /.+@.+\..+/;
+  if (!emailRe.test(to)) throw new Error('Recipient email is invalid');
 
   const itemRows = (items || []).map(i => `
         <tr>
@@ -73,6 +75,9 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
     user_id: PUBLIC_KEY,
     template_params: {
       to_email: to,
+      to,
+      user_email: to,
+      reply_to: to,
       html_message: html
     }
   };
