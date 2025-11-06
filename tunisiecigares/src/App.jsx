@@ -3,6 +3,7 @@ import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import MessengerButton from './components/MessengerButton.jsx';
 import Toast from './components/Toast.jsx';
+import SuccessOverlay from './components/SuccessOverlay.jsx';
 import AgeVerificationModal from './components/AgeVerificationModal.jsx';
 import CartNotification from './components/CartNotification.jsx'; // ← AJOUTE
 import Home from './pages/Home.jsx';
@@ -33,6 +34,7 @@ export default function App() {
       <Footer />
       <MessengerButton />
       <Toast />
+      <SuccessOverlay />
     </div>
   );
 }

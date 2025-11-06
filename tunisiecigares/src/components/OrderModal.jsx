@@ -1,6 +1,7 @@
 // tunisiecigares/src/components/OrderModal.jsx
 import { useEffect, useRef, useState } from 'react';
 import { showToast } from './Toast.jsx';
+import { showSuccessOverlay } from './SuccessOverlay.jsx';
 console.log('EmailJS Config:', {
   serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID ? '✓ Set' : '✗ Missing',
   templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ? '✓ Set' : '✗ Missing',
@@ -157,6 +158,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             orderRef: orderData.order_ref
           });
           showToast("✅ Votre commande a été confirmée et l'email a été envoyé !");
+          showSuccessOverlay("✅  Votre commande a été confirmée et l'email a été envoyé ! Merci pour votre confiance.");
         }
       } catch (emailErr) {
         console.warn('Email confirmation failed (non-blocking):', emailErr?.message || emailErr);
