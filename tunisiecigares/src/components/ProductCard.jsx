@@ -12,6 +12,7 @@ export default function ProductCard({ product }) {
     id,
     name,
     price_TND,
+    stock = 0,
     origin,
     format,
     short_desc,
@@ -29,18 +30,23 @@ export default function ProductCard({ product }) {
           {premium && (
             <span className="absolute top-3 left-3 rounded bg-gold/90 text-ebony text-xs font-semibold px-2 py-1 shadow">Premium</span>
           )}
+          {stock <= 0 && (
+            <span className="absolute top-3 right-3 rounded bg-red-600/90 text-white text-xs font-semibold px-2 py-1 shadow">Out of stock</span>
+          )}
         </div>
         <div className="p-4 flex-1 flex flex-col">
           <h3 className="font-display text-lg text-gold">{name}</h3>
           <p className="text-white/70 text-sm mt-1">{origin} • {format}</p>
           <p className="text-white mt-2 text-sm flex-1">{short_desc}</p>
           <div className="mt-3 font-semibold text-gold">{price_TND} TND</div>
+          <div className="mt-1 text-white/60 text-xs">Stock: {Math.max(0, stock)}</div>
           <div className="mt-4 flex items-center gap-2">
             {/* ← NOUVEAU BOUTON PANIER */}
             <button
-              onClick={() => { addToCart(product); trackEvent('add_to_cart', 'ecommerce', product.name); }}
-              className="btn-secondary flex-1 flex items-center justify-center gap-2"
+              onClick={() => { if (stock > 0) { addToCart(product); trackEvent('add_to_cart', 'ecommerce', product.name); } }}
+              className={`btn-secondary flex-1 flex items-center justify-center gap-2 ${stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               aria-label={`Ajouter ${name} au panier`}
+              disabled={stock <= 0}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

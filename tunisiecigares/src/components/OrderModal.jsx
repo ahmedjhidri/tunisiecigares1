@@ -60,6 +60,14 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       return;
     }
 
+    // Address validation: require minimal structure
+    const addr = (formData.address || '').trim();
+    if (!addr || addr.length < 10 || !/(\d|rue|avenue|av\.|street|city|ville)/i.test(addr)) {
+      setError('Adresse de livraison invalide. Veuillez indiquer numéro/rue et ville.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       if (!isSupabaseConfigured()) {
         throw new Error('Supabase n\'est pas configuré. Veuillez configurer vos variables d\'environnement.');

@@ -8,6 +8,7 @@ export default function Header() {
   const navItems = [
     { to: '/', label: 'Home' },
     { to: '/products', label: 'Our Cigars' },
+    { to: '/accessories', label: 'Accessories' },
     { to: '/contact', label: 'Contact' },
   ];
 
@@ -31,6 +32,18 @@ export default function Header() {
             </NavLink>
           ))}
           <CartIcon />
+          <a
+            href="https://facebook.com/CigarLoungeTunisia"
+            target="_blank"
+            rel="noreferrer"
+            className="text-white/80 hover:text-gold transition-base"
+            aria-label="Ouvrir la page Facebook officielle"
+            title="Facebook"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+              <path d="M22 12.06C22 6.49 17.52 2 12 2S2 6.49 2 12.06c0 5.01 3.66 9.17 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.77 8.44-4.93 8.44-9.94Z" />
+            </svg>
+          </a>
           <a
             href="https://m.me/100093202210414"
             target="_blank"
@@ -80,6 +93,15 @@ export default function Header() {
               onClick={() => setOpen(false)}
             >
               Message
+            </a>
+            <a
+              href="https://facebook.com/CigarLoungeTunisia"
+              target="_blank"
+              rel="noreferrer"
+              className="text-white/90 hover:text-gold transition-base"
+              onClick={() => setOpen(false)}
+            >
+              Facebook
             </a>
           </div>
         </div>

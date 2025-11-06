@@ -61,6 +61,13 @@ export default function ProductDetail({ product }) {
             {product.price_TND} TND
           </div>
 
+          <div className="mb-4">
+            <span className="text-white/70 text-sm">Stock: </span>
+            <span className={`text-sm font-medium ${product.stock > 0 ? 'text-green-300' : 'text-red-300'}`}>
+              {Math.max(0, product.stock || 0)} {product.stock > 0 ? 'disponible' : 'épuisé'}
+            </span>
+          </div>
+
           <div className="prose prose-invert mb-6">
             <p className="text-white/90 leading-relaxed">{product.long_desc}</p>
           </div>
@@ -83,8 +90,9 @@ export default function ProductDetail({ product }) {
           <div className="mt-6 flex gap-3">
             <button 
               onClick={() => addToCart(product)}
-              className="btn-secondary flex-1 flex items-center justify-center gap-2"
+              className={`btn-secondary flex-1 flex items-center justify-center gap-2 ${product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               aria-label={`Ajouter ${product.name} au panier`}
+              disabled={product.stock <= 0}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -92,9 +100,10 @@ export default function ProductDetail({ product }) {
               Ajouter au panier
             </button>
             <button 
-              className="btn-primary flex-1" 
+              className={`btn-primary flex-1 ${product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`} 
               onClick={() => setIsModalOpen(true)}
               aria-label={`Commander ${product.name}`}
+              disabled={product.stock <= 0}
             >
               Commander maintenant
             </button>
