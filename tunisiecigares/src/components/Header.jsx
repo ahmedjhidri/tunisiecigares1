@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import CartIcon from './CartIcon.jsx';
+import Logo from './Logo.jsx';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -15,8 +16,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-cocoa/60 bg-ebony/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2" aria-label="Go to homepage">
-          <span className="title-gold text-xl sm:text-2xl">Cigar Lounge Tunisia</span>
+        <Link to="/" aria-label="Go to homepage">
+          <Logo size="md" variant="full" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
