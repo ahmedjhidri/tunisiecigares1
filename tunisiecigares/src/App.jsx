@@ -20,6 +20,7 @@ import MyOrders from './pages/MyOrders.jsx';
 import Accessories from './pages/Accessories.jsx';
 import NotFound from './pages/NotFound.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 export default function App() {
   return (
@@ -47,6 +48,7 @@ export default function App() {
       </main>
       <Footer />
       <MessengerButton />
+      <ScrollToTop />
       <Toast />
       <SuccessOverlay />
       </div>

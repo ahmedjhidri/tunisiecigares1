@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Hero from '../components/Hero.jsx';
 import ProductGrid from '../components/ProductGrid.jsx';
 import products from '../data/products.js';
@@ -12,7 +13,7 @@ export default function Home() {
       <section className="container-page py-12">
         <div className="flex items-end justify-between">
           <h2 className="title-gold text-2xl">Our Cigars</h2>
-          <a href="/products" className="text-gold hover:brightness-110 transition-base">View all →</a>
+          <Link to="/products" className="text-gold hover:brightness-110 transition-base">View all →</Link>
         </div>
         <div className="mt-6">
           <ProductGrid products={featured} />

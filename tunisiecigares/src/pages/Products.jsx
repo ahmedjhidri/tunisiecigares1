@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import ProductGrid from '../components/ProductGrid.jsx';
+import { ProductGridSkeleton } from '../components/LoadingStates.jsx';
 import products from '../data/products.js';
 
 export default function Products() {
@@ -7,9 +8,16 @@ export default function Products() {
   const [origin, setOrigin] = useState('');
   const [format, setFormat] = useState('');
   const [premiumOnly, setPremiumOnly] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const origins = useMemo(() => Array.from(new Set(products.map(p => p.origin).filter(Boolean))), []);
   const formats = useMemo(() => Array.from(new Set(products.map(p => p.format).filter(Boolean))), []);
+
+  // Simulate initial load
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -65,9 +73,20 @@ export default function Products() {
       </div>
 
       <div className="mt-8">
-        <ProductGrid products={filtered} />
-        {filtered.length === 0 && (
-          <p className="text-white/60 mt-6">No products match your filters.</p>
+        {isLoading ? (
+          <ProductGridSkeleton count={6} />
+        ) : (
+          <>
+            <ProductGrid products={filtered} />
+            {filtered.length === 0 && (
+              <p className="text-white/60 mt-6">No products match your filters.</p>
+            )}
+            {filtered.length > 0 && (
+              <p className="text-white/60 mt-4 text-sm">
+                Showing {filtered.length} of {products.length} products
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>

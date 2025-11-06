@@ -8,6 +8,7 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [notification, setNotification] = useState(null);
+  const [lastAdded, setLastAdded] = useState(null);
 
   // Charger le panier depuis localStorage au démarrage
   useEffect(() => {
@@ -44,6 +45,9 @@ export function CartProvider({ children }) {
       }
     });
 
+    // Track last added product
+    setLastAdded(product);
+    
     // Afficher une notification
     showNotification(`${product.name} ajouté au panier !`);
   };
@@ -103,6 +107,7 @@ export function CartProvider({ children }) {
         getTotal,
         getItemCount,
         notification,
+        lastAdded,
       }}
     >
       {children}

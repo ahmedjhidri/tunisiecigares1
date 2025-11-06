@@ -30,6 +30,11 @@ export default function ProductCard({ product }) {
           {premium && (
             <span className="absolute top-3 left-3 rounded bg-gold/90 text-ebony text-xs font-semibold px-2 py-1 shadow">Premium</span>
           )}
+          {stock > 0 && stock <= 3 && (
+            <span className="absolute top-3 right-3 rounded bg-warning/90 text-ebony text-xs font-semibold px-2 py-1 shadow animate-pulse">
+              Only {stock} left!
+            </span>
+          )}
           {stock <= 0 && (
             <span className="absolute top-3 right-3 rounded bg-red-600/90 text-white text-xs font-semibold px-2 py-1 shadow">Out of stock</span>
           )}
@@ -41,7 +46,7 @@ export default function ProductCard({ product }) {
           <div className="mt-3 font-semibold text-gold">{price_TND} TND</div>
           <div className="mt-1 text-white/60 text-xs">Stock: {Math.max(0, stock)}</div>
           <div className="mt-4 flex items-center gap-2">
-            {/* ← NOUVEAU BOUTON PANIER */}
+            {/* Touch-friendly buttons with min-height for mobile */}
             <button
               onClick={() => { 
                 if (stock > 0) { 
@@ -49,7 +54,7 @@ export default function ProductCard({ product }) {
                   trackEvent('add_to_cart', 'ecommerce', product.name); 
                 } 
               }}
-              className={`btn-secondary flex-1 flex items-center justify-center gap-2 ${stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`btn-secondary flex-1 min-h-[44px] flex items-center justify-center gap-2 ${stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               aria-label={`Ajouter ${name} au panier`}
               disabled={stock <= 0}
             >
@@ -60,7 +65,7 @@ export default function ProductCard({ product }) {
             </button>
             <Link 
               to={`/product/${id}`} 
-              className="btn-primary flex-1 text-center" 
+              className="btn-primary flex-1 min-h-[44px] flex items-center justify-center" 
               aria-label={`Voir détails de ${name}`}
             >
               Détails

@@ -132,10 +132,119 @@ The app uses EmailJS for sending order confirmation emails. To set up:
 - Admin notifications are sent separately and failures don't affect order processing
 - All email errors are logged to console in development mode
 
+## GitHub Pages Deployment Setup
+
+### Required GitHub Secrets
+
+Go to your repository → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+
+Add these secrets:
+
+- `VITE_SUPABASE_URL`: Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `VITE_EMAILJS_SERVICE_ID`: Your EmailJS service ID
+- `VITE_EMAILJS_TEMPLATE_ID`: Your EmailJS template ID  
+- `VITE_EMAILJS_PUBLIC_KEY`: Your EmailJS public key
+- `VITE_ADMIN_PASSWORD`: Admin panel password
+- `VITE_ADMIN_EMAIL`: (Optional) Admin notification email
+
+### Manual Deployment
+
+```bash
+npm run build
+
+# Deploy the dist/ folder to GitHub Pages
+# Or use GitHub Actions (automated on push to main)
+```
+
+### EmailJS Template Configuration
+
+Your EmailJS template should use these variables:
+
+- `{{to_email}}` - Customer email address
+- `{{customer_name}}` - Customer full name
+- `{{order_ref}}` - Order reference number
+- `{{customer_phone}}` - Customer phone number
+- `{{customer_address}}` - Delivery address
+- `{{order_details}}` - Formatted order items (text)
+- `{{total}}` - Order total with currency
+- `{{subject}}` - Email subject line
+
+**Example EmailJS Template:**
+
+```
+Subject: {{subject}}
+
+Hello {{customer_name}},
+
+Your order {{order_ref}} has been confirmed!
+
+Order Details:
+{{order_details}}
+
+Total: {{total}}
+
+Delivery Address:
+{{customer_address}}
+
+Phone: {{customer_phone}}
+
+We will contact you via Messenger to confirm delivery details.
+
+Thank you for your order!
+Cigar Lounge Tunisia
+```
+
+## Troubleshooting
+
+### Email not sending
+
+- Verify EmailJS credentials in `.env`
+- Check EmailJS dashboard for template configuration
+- Ensure template uses correct variable names: `{{to_email}}`, `{{customer_name}}`, etc.
+- Check browser console for errors
+- Verify EmailJS service is active and has quota remaining
+- Test template in EmailJS dashboard with sample data
+
+### Orders not saving
+
+- Verify Supabase credentials in `.env`
+- Check Supabase table structure matches schema
+- Ensure RLS (Row Level Security) policies allow inserts
+- Check Supabase dashboard for error logs
+- Verify network connection
+
+### Age verification keeps appearing
+
+- Normal behavior - uses sessionStorage (expires on browser close)
+- For testing, check sessionStorage in DevTools (Application → Session Storage)
+- Close all browser tabs to reset session
+
+### Images not loading
+
+- Using Unsplash placeholder URLs - replace with real images
+- Update `src/data/products.js` images arrays
+- Ensure image URLs are accessible (CORS enabled if needed)
+- Check browser console for 404 errors
+
+### Build fails
+
+- Ensure all environment variables are set
+- Check for syntax errors in code
+- Run `npm install` to ensure dependencies are installed
+- Clear `node_modules` and reinstall if needed
+
+### Mobile menu not working
+
+- Check browser console for JavaScript errors
+- Ensure React Router is properly configured
+- Verify HashRouter is used (required for GitHub Pages)
+
 ## Notes
 
 - No online payment — orders are via Messenger only.
 - Footer disclaimer: "Sales reserved for adults — enjoy responsibly."
 - Age verification uses sessionStorage (expires when browser closes) for security
+- Cart persists in localStorage for 7 days (can be configured)
 
 

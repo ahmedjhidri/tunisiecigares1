@@ -225,7 +225,21 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
 
     } catch (err) {
       console.error('Erreur lors de la soumission:', err);
-      setError(err.message || 'Une erreur est survenue. Veuillez contacter via Messenger.');
+      
+      // Better error messages based on error type
+      let errorMessage = 'Une erreur est survenue. Veuillez contacter via Messenger.';
+      
+      if (err.message?.toLowerCase().includes('network') || err.message?.toLowerCase().includes('fetch')) {
+        errorMessage = '❌ Problème de connexion. Vérifiez votre internet et réessayez.';
+      } else if (err.message?.toLowerCase().includes('supabase') || err.message?.toLowerCase().includes('database')) {
+        errorMessage = '❌ Erreur de base de données. Contactez-nous via Messenger.';
+      } else if (err.message?.toLowerCase().includes('email')) {
+        errorMessage = '❌ Problème d\'envoi d\'email, mais votre commande a été enregistrée.';
+      } else if (err.message) {
+        errorMessage = `❌ ${err.message}`;
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

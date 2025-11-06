@@ -72,7 +72,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-cocoa/60 bg-ebony">
+        <div className="md:hidden border-t border-cocoa/60 bg-ebony animate-slide-in-left">
           <div className="container-page py-3 flex flex-col gap-3">
             {navItems.map((n) => (
               <NavLink
