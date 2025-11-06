@@ -19,10 +19,12 @@ import AdminOrders from './pages/AdminOrders.jsx';
 import MyOrders from './pages/MyOrders.jsx';
 import Accessories from './pages/Accessories.jsx';
 import NotFound from './pages/NotFound.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-ebony text-white">
+    <ErrorBoundary>
+      <div className="min-h-screen flex flex-col bg-ebony text-white">
       <SEO />
       <AgeVerificationModal />
       <CartNotification />
@@ -47,6 +49,7 @@ export default function App() {
       <MessengerButton />
       <Toast />
       <SuccessOverlay />
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }

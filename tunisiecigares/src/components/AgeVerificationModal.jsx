@@ -5,8 +5,9 @@ export default function AgeVerificationModal() {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   useEffect(() => {
-    // Vérifie si l'utilisateur a déjà confirmé son âge
-    const ageConfirmed = localStorage.getItem('ageConfirmed');
+    // Session-based age verification (expires when browser closes)
+    // Use sessionStorage instead of localStorage for security
+    const ageConfirmed = sessionStorage.getItem('ageConfirmed');
     if (!ageConfirmed) {
       setIsVisible(true);
     } else {
@@ -15,7 +16,8 @@ export default function AgeVerificationModal() {
   }, []);
 
   const handleConfirm = () => {
-    localStorage.setItem('ageConfirmed', 'true');
+    // Store in sessionStorage (not localStorage) - expires on browser close
+    sessionStorage.setItem('ageConfirmed', 'true');
     setIsConfirmed(true);
     setIsVisible(false);
   };

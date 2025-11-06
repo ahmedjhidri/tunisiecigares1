@@ -6,7 +6,7 @@ console.log('EmailJS Config:', {
   templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ? '✓ Set' : '✗ Missing',
   publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY ? '✓ Set' : '✗ Missing'
 });
-import { sendOrderEmail, isEmailEnabled } from '../lib/email';
+import { sendOrderEmail, sendAdminNotification, isEmailEnabled, EmailError } from '../lib/email';
 import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
@@ -149,11 +149,9 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
 
       console.log('Commande créée:', data);
 
-      // Fire and forget: send confirmation email if configured
+      // Send confirmation email to customer
       try {
         if (isEmailEnabled()) {
-          // Log minimal payload for debug
-          console.log('Preparing email payload', { to: email, orderRef: orderData.order_ref, items: orderData.order_items?.length || 0 });
           await sendOrderEmail({
             toEmail: email,
             firstName: formData.firstName,
@@ -165,9 +163,35 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             orderRef: orderData.order_ref
           });
           showSuccessOverlay("✅  Votre commande a été confirmée et l'email a été envoyé ! Merci pour votre confiance.");
+        } else {
+          showSuccessOverlay("✅  Votre commande a été confirmée ! Merci pour votre confiance.");
         }
       } catch (emailErr) {
-        console.warn('Email confirmation failed (non-blocking):', emailErr?.message || emailErr);
+        // Handle email errors gracefully - don't block order success
+        const errorMessage = emailErr instanceof EmailError 
+          ? emailErr.message 
+          : 'Email sending failed, but your order was saved successfully.';
+        
+        console.warn('[OrderModal] Email confirmation failed (non-blocking):', emailErr);
+        
+        // Still show success, but mention email issue
+        showSuccessOverlay("✅  Votre commande a été confirmée ! (Note: Email de confirmation non envoyé)");
+      }
+
+      // Send admin notification (fire and forget - don't block on failure)
+      try {
+        await sendAdminNotification({
+          orderRef: orderData.order_ref,
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          customerEmail: email,
+          customerPhone: formData.phone,
+          address: formData.address,
+          items: orderData.order_items,
+          total: orderData.total
+        });
+      } catch (adminErr) {
+        // Silently fail - admin notification is not critical
+        console.warn('[OrderModal] Admin notification failed (non-blocking):', adminErr);
       }
       
       // Clear cart if it was a cart order
