@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import ProductGrid from '../components/ProductGrid.jsx';
 import { ProductGridSkeleton } from '../components/LoadingStates.jsx';
+import FilterChips from '../components/FilterChips.jsx';
 import products from '../data/products.js';
 
 export default function Products() {
@@ -12,6 +13,40 @@ export default function Products() {
 
   const origins = useMemo(() => Array.from(new Set(products.map(p => p.origin).filter(Boolean))), []);
   const formats = useMemo(() => Array.from(new Set(products.map(p => p.format).filter(Boolean))), []);
+
+  // Filter object for FilterChips component
+  const filters = useMemo(() => {
+    const result = {};
+    if (query.trim()) result.query = query.trim();
+    if (origin) result.origin = origin;
+    if (format) result.format = format;
+    if (premiumOnly) result.premiumOnly = true;
+    return result;
+  }, [query, origin, format, premiumOnly]);
+
+  const handleRemoveFilter = (filterKey) => {
+    switch (filterKey) {
+      case 'query':
+        setQuery('');
+        break;
+      case 'origin':
+        setOrigin('');
+        break;
+      case 'format':
+        setFormat('');
+        break;
+      case 'premiumOnly':
+        setPremiumOnly(false);
+        break;
+    }
+  };
+
+  const handleClearAll = () => {
+    setQuery('');
+    setOrigin('');
+    setFormat('');
+    setPremiumOnly(false);
+  };
 
   // Simulate initial load
   useEffect(() => {
@@ -43,13 +78,13 @@ export default function Products() {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Search by name, origin, format, tags..."
-          className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white md:col-span-2"
+          className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white md:col-span-2 focus:outline-none focus:border-gold transition-base"
           aria-label="Search products"
         />
         <select
           value={origin}
           onChange={e => setOrigin(e.target.value)}
-          className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white"
+          className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
           aria-label="Filter by origin"
         >
           <option value="">All origins</option>
@@ -59,18 +94,25 @@ export default function Products() {
           <select
             value={format}
             onChange={e => setFormat(e.target.value)}
-            className="flex-1 px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white"
+            className="flex-1 px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
             aria-label="Filter by format"
           >
             <option value="">All formats</option>
             {formats.map(f => (<option key={f} value={f}>{f}</option>))}
           </select>
-          <label className="flex items-center gap-2 text-white/80 text-sm">
+          <label className="flex items-center gap-2 text-white/80 text-sm cursor-pointer">
             <input type="checkbox" checked={premiumOnly} onChange={e => setPremiumOnly(e.target.checked)} />
             Premium
           </label>
         </div>
       </div>
+
+      {/* Filter Chips */}
+      <FilterChips
+        filters={filters}
+        onRemoveFilter={handleRemoveFilter}
+        onClearAll={handleClearAll}
+      />
 
       <div className="mt-8">
         {isLoading ? (

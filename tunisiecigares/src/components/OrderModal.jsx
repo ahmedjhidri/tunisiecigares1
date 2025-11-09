@@ -9,6 +9,8 @@ console.log('EmailJS Config:', {
 import { sendOrderEmail, sendAdminNotification, isEmailEnabled, EmailError } from '../lib/email';
 import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { formatPhoneNumber, validatePhoneNumber } from '../utils/phoneMask.js';
+import LoadingSpinner from './LoadingSpinner.jsx';
 
 export default function OrderModal({ isOpen, onClose, productName, productPrice, isCartOrder = false }) {
   const { cart, clearCart } = useCart();
@@ -27,11 +29,99 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
   const [countdown, setCountdown] = useState(3);
   const confettiRef = useRef(null);
   const [error, setError] = useState('');
+  // Real-time validation states
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
+
+  // Real-time validation
+  const validateField = (name, value) => {
+    const errors = { ...fieldErrors };
+    
+    switch (name) {
+      case 'firstName':
+      case 'lastName':
+        if (!value.trim()) {
+          errors[name] = 'Ce champ est requis';
+        } else if (value.trim().length < 2) {
+          errors[name] = 'Minimum 2 caractères';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'email':
+        if (!value.trim()) {
+          errors[name] = 'Email requis';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          errors[name] = 'Format email invalide';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'phone':
+        if (!value.trim()) {
+          errors[name] = 'Téléphone requis';
+        } else if (!validatePhoneNumber(value)) {
+          errors[name] = 'Format: +216 XX XXX XXX';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'address':
+        if (!value.trim()) {
+          errors[name] = 'Adresse requise';
+        } else if (value.trim().length < 10) {
+          errors[name] = 'Adresse trop courte';
+        } else if (!/(\d|rue|avenue|av\.|street|city|ville)/i.test(value)) {
+          errors[name] = 'Inclure numéro/rue et ville';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'age':
+        const ageNum = parseInt(value);
+        if (!value) {
+          errors[name] = 'Âge requis';
+        } else if (isNaN(ageNum) || ageNum < 18) {
+          errors[name] = 'Vous devez avoir 18 ans ou plus';
+        } else {
+          delete errors[name];
+        }
+        break;
+      case 'quantity':
+        const qtyNum = parseInt(value);
+        if (!value || isNaN(qtyNum) || qtyNum < 1) {
+          errors[name] = 'Quantité minimale: 1';
+        } else {
+          delete errors[name];
+        }
+        break;
+    }
+    
+    setFieldErrors(errors);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    let processedValue = value;
+    
+    // Apply phone mask
+    if (name === 'phone') {
+      processedValue = formatPhoneNumber(value);
+    }
+    
+    setFormData(prev => ({ ...prev, [name]: processedValue }));
     setError('');
+    
+    // Real-time validation for touched fields
+    if (touchedFields[name]) {
+      validateField(name, processedValue);
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouchedFields(prev => ({ ...prev, [name]: true }));
+    validateField(name, value);
   };
 
   const handleSubmit = async (e) => {
@@ -39,31 +129,75 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
     setIsSubmitting(true);
     setError('');
 
-    // Vérification de l'âge
-    if (parseInt(formData.age) < 18) {
-      setError('❌ Vous devez avoir au moins 18 ans pour commander.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Email presence/format validation
-    const email = (formData.email || '').trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setError('Veuillez renseigner une adresse email.');
-      setIsSubmitting(false);
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      setError('Adresse email invalide.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Address validation: require minimal structure
-    const addr = (formData.address || '').trim();
-    if (!addr || addr.length < 10 || !/(\d|rue|avenue|av\.|street|city|ville)/i.test(addr)) {
-      setError('Adresse de livraison invalide. Veuillez indiquer numéro/rue et ville.');
+    // Mark all fields as touched and validate synchronously
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'age'];
+    if (!isCartOrder) requiredFields.push('quantity');
+    
+    const newTouchedFields = { ...touchedFields };
+    const newFieldErrors = {};
+    
+    // Validate all required fields
+    requiredFields.forEach(field => {
+      newTouchedFields[field] = true;
+      const value = formData[field];
+      
+      // Run validation logic
+      switch (field) {
+        case 'firstName':
+        case 'lastName':
+          if (!value || !value.trim()) {
+            newFieldErrors[field] = 'Ce champ est requis';
+          } else if (value.trim().length < 2) {
+            newFieldErrors[field] = 'Minimum 2 caractères';
+          }
+          break;
+        case 'email':
+          if (!value || !value.trim()) {
+            newFieldErrors[field] = 'Email requis';
+          } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+            newFieldErrors[field] = 'Format email invalide';
+          }
+          break;
+        case 'phone':
+          if (!value || !value.trim()) {
+            newFieldErrors[field] = 'Téléphone requis';
+          } else if (!validatePhoneNumber(value)) {
+            newFieldErrors[field] = 'Format: +216 XX XXX XXX';
+          }
+          break;
+        case 'address':
+          if (!value || !value.trim()) {
+            newFieldErrors[field] = 'Adresse requise';
+          } else if (value.trim().length < 10) {
+            newFieldErrors[field] = 'Adresse trop courte';
+          } else if (!/(\d|rue|avenue|av\.|street|city|ville)/i.test(value)) {
+            newFieldErrors[field] = 'Inclure numéro/rue et ville';
+          }
+          break;
+        case 'age':
+          const ageNum = parseInt(value);
+          if (!value) {
+            newFieldErrors[field] = 'Âge requis';
+          } else if (isNaN(ageNum) || ageNum < 18) {
+            newFieldErrors[field] = 'Vous devez avoir 18 ans ou plus';
+          }
+          break;
+        case 'quantity':
+          const qtyNum = parseInt(value);
+          if (!value || isNaN(qtyNum) || qtyNum < 1) {
+            newFieldErrors[field] = 'Quantité minimale: 1';
+          }
+          break;
+      }
+    });
+    
+    // Update state with validation results
+    setTouchedFields(newTouchedFields);
+    setFieldErrors(newFieldErrors);
+    
+    // If there are validation errors, stop submission
+    if (Object.keys(newFieldErrors).length > 0) {
+      setError('Veuillez corriger les erreurs dans le formulaire.');
       setIsSubmitting(false);
       return;
     }
@@ -228,21 +362,36 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       
       // Better error messages based on error type
       let errorMessage = 'Une erreur est survenue. Veuillez contacter via Messenger.';
+      let canRetry = false;
       
       if (err.message?.toLowerCase().includes('network') || err.message?.toLowerCase().includes('fetch')) {
         errorMessage = '❌ Problème de connexion. Vérifiez votre internet et réessayez.';
+        canRetry = true;
       } else if (err.message?.toLowerCase().includes('supabase') || err.message?.toLowerCase().includes('database')) {
-        errorMessage = '❌ Erreur de base de données. Contactez-nous via Messenger.';
+        errorMessage = '❌ Erreur de base de données. Contactez-nous via Messenger ou réessayez.';
+        canRetry = true;
       } else if (err.message?.toLowerCase().includes('email')) {
         errorMessage = '❌ Problème d\'envoi d\'email, mais votre commande a été enregistrée.';
+        canRetry = false;
       } else if (err.message) {
         errorMessage = `❌ ${err.message}`;
+        canRetry = true;
       }
       
       setError(errorMessage);
+      
+      // Store error state for retry button
+      if (canRetry) {
+        // Error will be shown with retry option in UI
+      }
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleRetry = () => {
+    setError('');
+    handleSubmit({ preventDefault: () => {} }); // Retry submission
   };
 
   if (!isOpen) return null;
@@ -296,7 +445,16 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
                 <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                  <p className="text-red-400 text-sm">{error}</p>
+                  <p className="text-red-400 text-sm mb-2">{error}</p>
+                  {error.includes('connexion') || error.includes('base de données') || error.includes('réessayez') ? (
+                    <button
+                      type="button"
+                      onClick={handleRetry}
+                      className="btn-secondary text-sm mt-2"
+                    >
+                      🔄 Réessayer
+                    </button>
+                  ) : null}
                 </div>
               )}
 
@@ -337,10 +495,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     required
-                    className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                    className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base ${
+                      fieldErrors.firstName && touchedFields.firstName
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-cocoa/60 focus:border-gold'
+                    }`}
                     placeholder="Jean"
+                    aria-invalid={fieldErrors.firstName && touchedFields.firstName}
+                    aria-describedby={fieldErrors.firstName && touchedFields.firstName ? 'firstName-error' : undefined}
                   />
+                  {fieldErrors.firstName && touchedFields.firstName && (
+                    <p id="firstName-error" className="text-red-400 text-xs mt-1">{fieldErrors.firstName}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-white/90 mb-2">
@@ -351,10 +519,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     required
-                    className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                    className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base ${
+                      fieldErrors.lastName && touchedFields.lastName
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-cocoa/60 focus:border-gold'
+                    }`}
                     placeholder="Dupont"
+                    aria-invalid={fieldErrors.lastName && touchedFields.lastName}
+                    aria-describedby={fieldErrors.lastName && touchedFields.lastName ? 'lastName-error' : undefined}
                   />
+                  {fieldErrors.lastName && touchedFields.lastName && (
+                    <p id="lastName-error" className="text-red-400 text-xs mt-1">{fieldErrors.lastName}</p>
+                  )}
                 </div>
               </div>
 
@@ -367,10 +545,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
-                  className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                  className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base ${
+                    fieldErrors.email && touchedFields.email
+                      ? 'border-red-500 focus:border-red-500'
+                      : 'border-cocoa/60 focus:border-gold'
+                  }`}
                   placeholder="jean.dupont@example.com"
+                  aria-invalid={fieldErrors.email && touchedFields.email}
+                  aria-describedby={fieldErrors.email && touchedFields.email ? 'email-error' : undefined}
                 />
+                {fieldErrors.email && touchedFields.email && (
+                  <p id="email-error" className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
+                )}
               </div>
 
               <div>
@@ -382,10 +570,21 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
-                  className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                  className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base ${
+                    fieldErrors.phone && touchedFields.phone
+                      ? 'border-red-500 focus:border-red-500'
+                      : 'border-cocoa/60 focus:border-gold'
+                  }`}
                   placeholder="+216 XX XXX XXX"
+                  aria-invalid={fieldErrors.phone && touchedFields.phone}
+                  aria-describedby={fieldErrors.phone && touchedFields.phone ? 'phone-error' : undefined}
                 />
+                {fieldErrors.phone && touchedFields.phone && (
+                  <p id="phone-error" className="text-red-400 text-xs mt-1">{fieldErrors.phone}</p>
+                )}
+                <p className="text-xs text-white/50 mt-1">Format: +216 XX XXX XXX</p>
               </div>
 
               <div>
@@ -396,11 +595,21 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
                   rows="3"
-                  className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base resize-none"
+                  className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base resize-none ${
+                    fieldErrors.address && touchedFields.address
+                      ? 'border-red-500 focus:border-red-500'
+                      : 'border-cocoa/60 focus:border-gold'
+                  }`}
                   placeholder="Rue, Ville, Code postal"
+                  aria-invalid={fieldErrors.address && touchedFields.address}
+                  aria-describedby={fieldErrors.address && touchedFields.address ? 'address-error' : undefined}
                 />
+                {fieldErrors.address && touchedFields.address && (
+                  <p id="address-error" className="text-red-400 text-xs mt-1">{fieldErrors.address}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -413,11 +622,21 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                     name="age"
                     value={formData.age}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     required
                     min="18"
-                    className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                    className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base ${
+                      fieldErrors.age && touchedFields.age
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-cocoa/60 focus:border-gold'
+                    }`}
                     placeholder="18+"
+                    aria-invalid={fieldErrors.age && touchedFields.age}
+                    aria-describedby={fieldErrors.age && touchedFields.age ? 'age-error' : undefined}
                   />
+                  {fieldErrors.age && touchedFields.age && (
+                    <p id="age-error" className="text-red-400 text-xs mt-1">{fieldErrors.age}</p>
+                  )}
                   <p className="text-xs text-white/50 mt-1">Vous devez avoir 18 ans ou plus</p>
                 </div>
                 {!isCartOrder && (
@@ -430,10 +649,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                       name="quantity"
                       value={formData.quantity}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       required
                       min="1"
-                      className="w-full px-4 py-3 bg-cocoa/30 border border-cocoa/60 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base"
+                      className={`w-full px-4 py-3 bg-cocoa/30 border rounded-lg text-white placeholder-white/40 focus:outline-none transition-base ${
+                        fieldErrors.quantity && touchedFields.quantity
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-cocoa/60 focus:border-gold'
+                      }`}
+                      aria-invalid={fieldErrors.quantity && touchedFields.quantity}
+                      aria-describedby={fieldErrors.quantity && touchedFields.quantity ? 'quantity-error' : undefined}
                     />
+                    {fieldErrors.quantity && touchedFields.quantity && (
+                      <p id="quantity-error" className="text-red-400 text-xs mt-1">{fieldErrors.quantity}</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -472,10 +701,17 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting || !isSupabaseConfigured()}
-                  className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || !isSupabaseConfigured() || Object.keys(fieldErrors).length > 0}
+                  className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Envoi en cours...' : 'Confirmer la commande'}
+                  {isSubmitting ? (
+                    <>
+                      <LoadingSpinner size="sm" />
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    'Confirmer la commande'
+                  )}
                 </button>
               </div>
             </form>

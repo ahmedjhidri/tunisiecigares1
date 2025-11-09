@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext.jsx'; // ← AJOUTE
+import { useCart } from '../context/CartContext.jsx';
 import OrderModal from './OrderModal.jsx';
+import ProductQuickView from './ProductQuickView.jsx';
+import ImageZoom from './ImageZoom.jsx';
 import { trackEvent } from '../lib/analytics';
 
 export default function ProductCard({ product }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { addToCart } = useCart(); // ← AJOUTE
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const { addToCart } = useCart();
 
   const {
     id,
@@ -25,19 +28,30 @@ export default function ProductCard({ product }) {
   return (
     <>
       <div className="card group h-full flex flex-col">
-        <div className="relative overflow-hidden">
-          <img src={img} alt={`${name} product image`} loading="lazy" decoding="async" className="h-52 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+        <div className="relative overflow-hidden h-52">
+          <ImageZoom src={img} alt={`${name} product image`} className="h-full w-full" />
           {premium && (
-            <span className="absolute top-3 left-3 rounded bg-gold/90 text-ebony text-xs font-semibold px-2 py-1 shadow">Premium</span>
+            <span className="absolute top-3 left-3 z-10 rounded bg-gold/90 text-ebony text-xs font-semibold px-2 py-1 shadow">Premium</span>
           )}
           {stock > 0 && stock <= 3 && (
-            <span className="absolute top-3 right-3 rounded bg-warning/90 text-ebony text-xs font-semibold px-2 py-1 shadow animate-pulse">
-              Only {stock} left!
+            <span className="absolute top-3 right-3 z-10 rounded bg-orange-500/90 text-white text-xs font-semibold px-2 py-1 shadow animate-pulse">
+              ⚠️ Only {stock} left!
             </span>
           )}
           {stock <= 0 && (
-            <span className="absolute top-3 right-3 rounded bg-red-600/90 text-white text-xs font-semibold px-2 py-1 shadow">Out of stock</span>
+            <span className="absolute top-3 right-3 z-10 rounded bg-red-600/90 text-white text-xs font-semibold px-2 py-1 shadow">Out of stock</span>
           )}
+          {/* Quick View Button - Appears on Hover */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setIsQuickViewOpen(true);
+            }}
+            className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20"
+            aria-label={`Quick view ${name}`}
+          >
+            <span className="bg-gold text-ebony px-4 py-2 rounded font-semibold text-sm">Quick View</span>
+          </button>
         </div>
         <div className="p-4 flex-1 flex flex-col">
           <h3 className="font-display text-lg text-gold">{name}</h3>
@@ -79,6 +93,11 @@ export default function ProductCard({ product }) {
         onClose={() => setIsModalOpen(false)}
         productName={name}
         productPrice={price_TND}
+      />
+      <ProductQuickView
+        product={product}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
       />
     </>
   );

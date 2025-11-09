@@ -2,6 +2,8 @@
 import { useMemo, useState } from 'react';
 import { useCart } from '../context/CartContext.jsx';
 import OrderModal from './OrderModal.jsx';
+import ImageZoom from './ImageZoom.jsx';
+import FloatingAddToCart from './FloatingAddToCart.jsx';
 
 export default function ProductDetail({ product }) {
   const [active, setActive] = useState(0);
@@ -17,13 +19,11 @@ export default function ProductDetail({ product }) {
       <div className="grid gap-8 md:grid-cols-2">
         {/* Image Gallery */}
         <div>
-          <div className="overflow-hidden rounded-lg border border-cocoa/60 mb-4">
-            <img 
-              src={images[active]} 
+          <div className="overflow-hidden rounded-lg border border-cocoa/60 mb-4 h-96">
+            <ImageZoom
+              src={images[active]}
               alt={`${product.name} - view ${active + 1}`}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-96 object-cover"
+              className="w-full h-full"
             />
           </div>
           {images.length > 1 && (
@@ -145,6 +145,7 @@ export default function ProductDetail({ product }) {
         productName={product.name}
         productPrice={product.price_TND}
       />
+      <FloatingAddToCart product={product} />
     </>
   );
 }
