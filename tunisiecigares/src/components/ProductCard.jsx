@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
     <>
       <div className="card group h-full flex flex-col">
         <div className="relative overflow-hidden h-52">
-          <ImageZoom src={img} alt={`${name} product image`} className="h-full w-full" />
+          <ImageZoom src={img} alt={`${name} product image`} className="h-full w-full" lazy={true} />
           {premium && (
             <span className="absolute top-3 left-3 z-10 rounded bg-gold/90 text-ebony text-xs font-semibold px-2 py-1 shadow">Premium</span>
           )}

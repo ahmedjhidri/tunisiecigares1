@@ -2,16 +2,21 @@ import { useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import products from '../data/products.js';
 import ProductDetail from '../components/ProductDetail.jsx';
-import ProductGrid from '../components/ProductGrid.jsx';
+import ProductRecommendations from '../components/ProductRecommendations.jsx';
+import RecentlyViewed from '../components/RecentlyViewed.jsx';
+import { useRecentlyViewed } from '../context/RecentlyViewedContext.jsx';
 
 export default function Product() {
   const { id } = useParams();
+  const { addProduct } = useRecentlyViewed();
   const product = useMemo(() => products.find((p) => p.id === id), [id]);
 
-  const related = useMemo(() => {
-    if (!product) return [];
-    return products.filter((p) => p.id !== product.id).slice(0, 3);
-  }, [product]);
+  // Track recently viewed when product changes
+  useEffect(() => {
+    if (product) {
+      addProduct(product);
+    }
+  }, [product, addProduct]);
 
   if (!product) {
     return (
@@ -44,14 +49,11 @@ export default function Product() {
       </script>
       <ProductDetail product={product} />
 
-      {related.length > 0 && (
-        <section className="mt-12">
-          <h3 className="title-gold text-2xl">Related products</h3>
-          <div className="mt-6">
-            <ProductGrid products={related} />
-          </div>
-        </section>
-      )}
+      {/* Product Recommendations */}
+      <ProductRecommendations currentProduct={product} maxItems={4} />
+
+      {/* Recently Viewed (excluding current product) */}
+      <RecentlyViewed excludeProductId={product.id} maxItems={4} />
     </div>
   );
 }

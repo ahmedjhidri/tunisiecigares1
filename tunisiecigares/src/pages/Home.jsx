@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero.jsx';
 import ProductGrid from '../components/ProductGrid.jsx';
+import RecentlyViewed from '../components/RecentlyViewed.jsx';
 import products from '../data/products.js';
 
 export default function Home() {
@@ -19,6 +20,9 @@ export default function Home() {
           <ProductGrid products={featured} />
         </div>
       </section>
+
+      {/* Recently Viewed Section */}
+      <RecentlyViewed maxItems={4} />
 
       <section className="container-page py-12">
         <div className="grid gap-6 md:grid-cols-2 items-center">
