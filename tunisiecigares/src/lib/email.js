@@ -3,10 +3,23 @@
 //  VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY
 //  VITE_ADMIN_EMAIL (optional, for admin notifications)
 
+// Load EmailJS configuration from environment variables
+// Note: Vite requires VITE_ prefix and variables must be available at build time
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
+
+// Debug: Log configuration on module load (only in dev mode)
+if (import.meta.env.DEV) {
+  console.log('[Email] Module loaded - Environment variables:', {
+    SERVICE_ID: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
+    TEMPLATE_ID: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
+    PUBLIC_KEY: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
+    ADMIN_EMAIL: ADMIN_EMAIL ? `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}` : 'MISSING',
+    allEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_EMAILJS') || key.startsWith('VITE_ADMIN')),
+  });
+}
 
 export function isEmailEnabled() {
   const enabled = Boolean(SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY);
