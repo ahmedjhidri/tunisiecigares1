@@ -7,6 +7,7 @@
 // Note: Vite requires VITE_ prefix and variables must be available at build time
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
+const ADMIN_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_ADMIN_TEMPLATE_ID || TEMPLATE_ID; // Fallback to same template if not set
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
 
@@ -15,27 +16,32 @@ if (import.meta.env.DEV) {
   console.log('[Email] Module loaded - Environment variables:', {
     SERVICE_ID: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
     TEMPLATE_ID: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
+    ADMIN_TEMPLATE_ID: ADMIN_TEMPLATE_ID ? `${ADMIN_TEMPLATE_ID.substring(0, 8)}...` : 'MISSING (using customer template)',
     PUBLIC_KEY: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
     ADMIN_EMAIL: ADMIN_EMAIL ? `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}` : 'MISSING',
     allEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_EMAILJS') || key.startsWith('VITE_ADMIN')),
+    note: ADMIN_TEMPLATE_ID === TEMPLATE_ID ? '⚠️ Using same template for customer and admin - consider using separate templates' : '✅ Using separate templates',
   });
 }
 
 export function isEmailEnabled() {
   const enabled = Boolean(SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY);
   
-  if (import.meta.env.DEV) {
-    console.log('[Email] Configuration check:', {
-      enabled,
-      hasServiceId: Boolean(SERVICE_ID),
-      hasTemplateId: Boolean(TEMPLATE_ID),
-      hasPublicKey: Boolean(PUBLIC_KEY),
-      hasAdminEmail: Boolean(ADMIN_EMAIL),
-      serviceId: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
-      templateId: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
-      publicKey: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
-    });
-  }
+  // Log in both dev and production to help diagnose issues
+  console.log('[Email] Configuration check:', {
+    enabled,
+    hasServiceId: Boolean(SERVICE_ID),
+    hasTemplateId: Boolean(TEMPLATE_ID),
+    hasPublicKey: Boolean(PUBLIC_KEY),
+    hasAdminEmail: Boolean(ADMIN_EMAIL),
+    hasAdminTemplate: Boolean(ADMIN_TEMPLATE_ID && ADMIN_TEMPLATE_ID !== TEMPLATE_ID),
+    serviceId: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
+    templateId: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
+    adminTemplateId: ADMIN_TEMPLATE_ID ? `${ADMIN_TEMPLATE_ID.substring(0, 8)}...` : 'MISSING (using customer template)',
+    publicKey: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
+    environment: import.meta.env.MODE || 'unknown',
+    warning: !enabled ? '❌ Email is NOT enabled - check GitHub Secrets or .env file' : '✅ Email is enabled',
+  });
   
   return enabled;
 }
@@ -223,37 +229,97 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
 
   console.log('[Email] ✅ Email validation passed:', { to: `${to.substring(0, 3)}***@${to.split('@')[1]}` });
 
-  // Format order details as text for EmailJS template
-  const orderDetails = (items || []).map(i => 
-    `${i.quantity}x ${escapeHtml(i.product_name || i.name || 'Unknown')} - ${i.subtotal || (i.price || i.price_TND || 0) * (i.quantity || 1)} TND`
-  ).join('\n');
-
   const customerName = `${escapeHtml(firstName)} ${escapeHtml(lastName)}`;
-  const subject = `Order ${orderRef || ''} confirmed`;
+  const subject = `✅ Commande ${orderRef || ''} confirmée - Tunisie Cigares`;
 
-  // EmailJS template variables - configure your EmailJS template to use these
-  // Template should use: {{to_email}}, {{customer_name}}, {{order_ref}}, {{customer_phone}}, 
-  // {{customer_address}}, {{order_details}}, {{total}}, {{subject}}
+  // Generate HTML email content (same format as admin email)
+  const itemRows = (items || []).map(i => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;">${escapeHtml(i.product_name || i.name || 'Unknown')}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:center;">${i.quantity || 1}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:right;">${i.price || i.price_TND || 0} TND</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:right;">${(i.subtotal || (i.price || i.price_TND || 0) * (i.quantity || 1))} TND</td>
+    </tr>`).join('');
+
+  const html = `
+    <div style="background:#0B0B0B;color:#fff;font-family:Inter,Arial,sans-serif;padding:24px;">
+      <div style="max-width:640px;margin:0 auto;background:#111111;border:1px solid #3a2f1b;border-radius:12px;overflow:hidden;">
+        <div style="padding:20px 24px;border-bottom:1px solid #3a2f1b;background:#141414;display:flex;align-items:center;gap:12px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#C9A14A;"></div>
+          <h1 style="margin:0;font-size:18px;color:#C9A14A;">Commande Confirmée</h1>
+        </div>
+        <div style="padding:24px;">
+          <h2 style="margin:0 0 8px;font-size:20px;color:#C9A14A;">Bonjour ${customerName},</h2>
+          <p style="margin:0 0 16px;color:#ddd;">Votre commande <strong>${orderRef || 'N/A'}</strong> a été confirmée avec succès !</p>
+          
+          <h3 style="margin:24px 0 8px;color:#eee;font-size:16px;">Vos Informations</h3>
+          <p style="margin:0 0 16px;color:#ccc;">
+            <strong>Nom:</strong> ${customerName}<br/>
+            <strong>Email:</strong> ${escapeHtml(to)}<br/>
+            <strong>Téléphone:</strong> ${escapeHtml(phone || 'N/A')}<br/>
+            <strong>Adresse:</strong> ${escapeHtml(address || 'N/A')}
+          </p>
+
+          <h3 style="margin:24px 0 8px;color:#eee;font-size:16px;">Détails de la Commande</h3>
+          <table style="width:100%;border-collapse:collapse;background:#121212;border:1px solid #2a2a2a;">
+            <thead>
+              <tr>
+                <th style="padding:10px 12px;text-align:left;color:#aaa;border-bottom:1px solid #2a2a2a;">Produit</th>
+                <th style="padding:10px 12px;text-align:center;color:#aaa;border-bottom:1px solid #2a2a2a;">Qté</th>
+                <th style="padding:10px 12px;text-align:right;color:#aaa;border-bottom:1px solid #2a2a2a;">Prix Unitaire</th>
+                <th style="padding:10px 12px;text-align:right;color:#aaa;border-bottom:1px solid #2a2a2a;">Sous-total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemRows}
+            </tbody>
+          </table>
+
+          <div style="margin-top:16px;text-align:right;color:#eee;">
+            <div style="margin:8px 0;color:#C9A14A;font-size:18px;">Total: <strong>${total} TND</strong></div>
+          </div>
+
+          <div style="margin-top:20px;padding:12px;background:#1a1a1a;border-left:3px solid #C9A14A;">
+            <p style="margin:0;color:#ddd;font-size:14px;">
+              <strong>Prochaines Étapes:</strong> Nous vous contacterons prochainement via Messenger pour confirmer les détails de livraison.
+            </p>
+          </div>
+        </div>
+        <div style="padding:16px 24px;border-top:1px solid #3a2f1b;background:#141414;color:#aaa;font-size:12px;">
+          <p style="margin:0;">Merci pour votre confiance ! • Tunisie Cigares</p>
+        </div>
+      </div>
+    </div>`;
+
+  // EmailJS template variables - use html_message for both customer and admin
+  // Template should use: {{to_email}} and {{{html_message}}}
   const payload = {
     service_id: SERVICE_ID,
     template_id: TEMPLATE_ID,
     user_id: PUBLIC_KEY,
     template_params: {
-      to_email: to,
+      to_email: to, // CRITICAL: Template "To Email" field MUST use {{to_email}}
       to,
       user_email: to,
       reply_to: to,
       subject,
+      html_message: html, // Customer email now uses HTML (same as admin)
+      // Also include text variables for compatibility
       customer_name: customerName,
       order_ref: orderRef || 'N/A',
       customer_phone: escapeHtml(phone || 'N/A'),
       customer_address: escapeHtml(address || 'N/A'),
-      order_details: orderDetails,
       total: `${total} TND`,
-      // Alternative: If your template uses {{{html_message}}}, uncomment below
-      // html_message: generateHtmlEmail({ customerName, orderRef, phone, address, items, total })
     }
   };
+  
+  console.log('[Email] Customer email payload (HTML):', {
+    templateId: TEMPLATE_ID.substring(0, 8) + '...',
+    recipient: `${to.substring(0, 3)}***@${to.split('@')[1]}`,
+    hasHtmlMessage: true, // Customer email now uses HTML
+    htmlLength: html.length,
+    note: '⚠️ Make sure customer template uses {{to_email}} and {{{html_message}}} (triple braces)',
+  });
 
   console.log('[Email] 📤 Sending email via EmailJS API...', {
     serviceId: SERVICE_ID.substring(0, 8) + '...',
@@ -462,9 +528,13 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
       </div>
     </div>`;
 
+  // Use the same template as customer (both use html_message now)
+  // IMPORTANT: Template should use {{{html_message}}} (triple braces) to render HTML
+  const adminTemplateId = ADMIN_TEMPLATE_ID !== TEMPLATE_ID ? ADMIN_TEMPLATE_ID : TEMPLATE_ID;
+  
   const payload = {
     service_id: SERVICE_ID,
-    template_id: TEMPLATE_ID,
+    template_id: adminTemplateId,
     user_id: PUBLIC_KEY,
     template_params: {
       to_email: ADMIN_EMAIL,
@@ -472,17 +542,31 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
       user_email: ADMIN_EMAIL,
       reply_to: customerEmail || ADMIN_EMAIL,
       subject,
-      html_message: html
+      html_message: html, // Admin email uses same HTML format as customer
+      // Also include text variables for compatibility
+      customer_name: customerName || 'N/A',
+      customer_email: customerEmail || 'N/A',
+      customer_phone: customerPhone || 'N/A',
+      order_ref: orderRef || 'N/A',
+      total: `${total} TND`,
     }
   };
+  
+  console.log('[Email] Using admin template (same HTML format as customer):', {
+    templateId: adminTemplateId.substring(0, 8) + '...',
+    isSameAsCustomer: adminTemplateId === TEMPLATE_ID,
+    hasHtmlMessage: true,
+    note: adminTemplateId === TEMPLATE_ID ? '✅ Using same template as customer (both use html_message)' : '✅ Using separate admin template',
+  });
 
   console.log('[Email] 📤 Sending admin notification via EmailJS API...', {
     serviceId: SERVICE_ID.substring(0, 8) + '...',
-    templateId: TEMPLATE_ID.substring(0, 8) + '...',
+    templateId: adminTemplateId.substring(0, 8) + '...',
     toEmail: `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}`,
     replyTo: customerEmail ? `${customerEmail.substring(0, 3)}***@${customerEmail.split('@')[1]}` : ADMIN_EMAIL,
     subject,
     htmlLength: html.length,
+    hasHtmlMessage: true, // Admin email uses HTML
   });
 
   try {
