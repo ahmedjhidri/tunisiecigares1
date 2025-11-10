@@ -131,7 +131,7 @@ Conservez dans un humidor à 65-70% d'humidité relative à une température de 
     stock: 8,
     in_stock: true,
     stock_quantity: 8,
-    box_size: 'Unité',
+    box_size: 'Boîte de 10',
     unit_info: 'À l\'unité',
     origin: 'Cuba',
     format: 'Piramide',
