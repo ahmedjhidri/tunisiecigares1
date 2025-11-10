@@ -53,11 +53,13 @@ export default function Cart() {
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => (
               <div key={item.id} className="card p-4 flex gap-4">
-                <img
-                  src={item.images?.[0] || 'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=400&auto=format&fit=crop'}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded"
-                />
+                <div className="w-24 h-24 flex items-center justify-center bg-transparent rounded overflow-hidden border border-cocoa/30 flex-shrink-0">
+                  <img
+                    src={item.images?.[0] || 'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=400&auto=format&fit=crop'}
+                    alt={item.name}
+                    className="w-full h-full object-contain p-2"
+                  />
+                </div>
                 <div className="flex-1">
                   <Link 
                     to={`/product/${item.id}`}

@@ -19,7 +19,7 @@ export default function ProductDetail({ product }) {
       <div className="grid gap-8 md:grid-cols-2">
         {/* Image Gallery */}
         <div>
-          <div className="overflow-hidden rounded-lg border border-cocoa/60 mb-4 h-96">
+          <div className="overflow-hidden rounded-lg border border-cocoa/60 mb-4 h-96 bg-transparent flex items-center justify-center">
             <ImageZoom
               src={images[active]}
               alt={`${product.name} - view ${active + 1}`}
@@ -32,11 +32,17 @@ export default function ProductDetail({ product }) {
                 <button
                   key={idx}
                   onClick={() => setActive(idx)}
-                  className={`overflow-hidden rounded border-2 transition-base ${
+                  className={`overflow-hidden rounded border-2 transition-base bg-transparent ${
                     active === idx ? 'border-gold' : 'border-cocoa/60 hover:border-gold/50'
                   }`}
                 >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} loading="lazy" decoding="async" className="w-full h-20 object-cover" />
+                  <img 
+                    src={img} 
+                    alt={`Thumbnail ${idx + 1}`} 
+                    loading="lazy" 
+                    decoding="async" 
+                    className="w-full h-20 object-contain bg-transparent p-1" 
+                  />
                 </button>
               ))}
             </div>

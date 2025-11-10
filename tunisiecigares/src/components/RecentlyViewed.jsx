@@ -1,6 +1,6 @@
-// Recently Viewed Products Component
+// Recently Viewed Products Component - Compact thumbnails
 import { useRecentlyViewed } from '../context/RecentlyViewedContext.jsx';
-import ProductGrid from './ProductGrid.jsx';
+import RecentlyViewedCard from './RecentlyViewedCard.jsx';
 
 export default function RecentlyViewed({ excludeProductId = null, maxItems = 4 }) {
   const { recentlyViewed } = useRecentlyViewed();
@@ -15,12 +15,17 @@ export default function RecentlyViewed({ excludeProductId = null, maxItems = 4 }
   if (products.length === 0) return null;
 
   return (
-    <section className="mt-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="title-gold text-2xl">Recently Viewed</h2>
-        <span className="text-white/60 text-sm">{products.length} items</span>
+    <section className="container-page mt-12">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="title-gold text-xl md:text-2xl">Récemment consultés</h2>
+        <span className="text-white/60 text-xs md:text-sm">{products.length} article{products.length > 1 ? 's' : ''}</span>
       </div>
-      <ProductGrid products={products} />
+      {/* Compact grid: 4 columns on desktop, 2 on tablet, 2 on mobile */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-4">
+        {products.map((product) => (
+          <RecentlyViewedCard key={product.id} product={product} />
+        ))}
+      </div>
     </section>
   );
 }

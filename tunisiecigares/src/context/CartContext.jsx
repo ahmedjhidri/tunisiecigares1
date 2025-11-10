@@ -9,6 +9,7 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [notification, setNotification] = useState(null);
   const [lastAdded, setLastAdded] = useState(null);
+  const [showCartModal, setShowCartModal] = useState(false);
 
   // Charger le panier depuis localStorage au démarrage
   useEffect(() => {
@@ -48,8 +49,12 @@ export function CartProvider({ children }) {
     // Track last added product
     setLastAdded(product);
     
-    // Afficher une notification
-    showNotification(`${product.name} ajouté au panier !`);
+    // Show cart confirmation modal
+    setShowCartModal(true);
+    
+    // Afficher une notification (use French name if available)
+    const displayName = product.name_fr || product.name;
+    showNotification(`${displayName} ajouté au panier !`);
   };
 
   // Retirer un produit du panier
@@ -108,6 +113,8 @@ export function CartProvider({ children }) {
         getItemCount,
         notification,
         lastAdded,
+        showCartModal,
+        setShowCartModal,
       }}
     >
       {children}

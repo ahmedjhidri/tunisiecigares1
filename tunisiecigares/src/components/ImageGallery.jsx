@@ -18,11 +18,11 @@ export default function ImageGallery({ images, productName }) {
     <>
       <div className="space-y-4">
         {/* Main Image */}
-        <div className="relative aspect-square overflow-hidden rounded-xl border border-cocoa/60 group">
+        <div className="relative aspect-square overflow-hidden rounded-xl border border-cocoa/60 group bg-transparent flex items-center justify-center">
           <img
             src={images[activeIndex]}
             alt={`${productName} view ${activeIndex + 1}`}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-contain bg-transparent transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
           <button
@@ -51,7 +51,7 @@ export default function ImageGallery({ images, productName }) {
                 <img
                   src={img}
                   alt={`Thumbnail ${idx + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain bg-transparent p-1"
                   loading="lazy"
                 />
               </button>

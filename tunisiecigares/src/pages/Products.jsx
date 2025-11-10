@@ -1,20 +1,26 @@
+// Redesigned Products Page - Clean layout matching reference
 import { useMemo, useState, useEffect, useRef } from 'react';
 import ProductGrid from '../components/ProductGrid.jsx';
 import { ProductGridSkeleton } from '../components/LoadingStates.jsx';
 import FilterChips from '../components/FilterChips.jsx';
 import SearchAutocomplete from '../components/SearchAutocomplete.jsx';
 import CollapsibleFilters from '../components/CollapsibleFilters.jsx';
+import ProductSort from '../components/ProductSort.jsx';
 import products from '../data/products.js';
 
 export default function Products() {
   const [query, setQuery] = useState('');
   const [origin, setOrigin] = useState('');
   const [format, setFormat] = useState('');
+  const [brand, setBrand] = useState('');
   const [premiumOnly, setPremiumOnly] = useState(false);
+  const [priceRange, setPriceRange] = useState('');
+  const [sortBy, setSortBy] = useState('default');
   const [isLoading, setIsLoading] = useState(true);
 
   const origins = useMemo(() => Array.from(new Set(products.map(p => p.origin).filter(Boolean))), []);
   const formats = useMemo(() => Array.from(new Set(products.map(p => p.format).filter(Boolean))), []);
+  const brands = useMemo(() => Array.from(new Set(products.map(p => p.brand).filter(Boolean))), []);
 
   // Filter object for FilterChips component
   const filters = useMemo(() => {
@@ -22,9 +28,11 @@ export default function Products() {
     if (query.trim()) result.query = query.trim();
     if (origin) result.origin = origin;
     if (format) result.format = format;
+    if (brand) result.brand = brand;
     if (premiumOnly) result.premiumOnly = true;
+    if (priceRange) result.priceRange = priceRange;
     return result;
-  }, [query, origin, format, premiumOnly]);
+  }, [query, origin, format, brand, premiumOnly, priceRange]);
 
   const handleRemoveFilter = (filterKey) => {
     switch (filterKey) {
@@ -37,8 +45,14 @@ export default function Products() {
       case 'format':
         setFormat('');
         break;
+      case 'brand':
+        setBrand('');
+        break;
       case 'premiumOnly':
         setPremiumOnly(false);
+        break;
+      case 'priceRange':
+        setPriceRange('');
         break;
     }
   };
@@ -47,8 +61,73 @@ export default function Products() {
     setQuery('');
     setOrigin('');
     setFormat('');
+    setBrand('');
     setPremiumOnly(false);
+    setPriceRange('');
   };
+
+  // Filter products
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return products.filter(p => {
+      const matchesQuery = !q || [p.name, p.name_fr, p.brand, p.origin, p.format, ...(p.tags || [])]
+        .filter(Boolean)
+        .some(v => String(v).toLowerCase().includes(q));
+      const matchesOrigin = !origin || p.origin === origin;
+      const matchesFormat = !format || p.format === format;
+      const matchesBrand = !brand || p.brand === brand;
+      const matchesPremium = !premiumOnly || Boolean(p.premium);
+      
+      // Price range filter
+      let matchesPrice = true;
+      if (priceRange) {
+        if (priceRange === 'under-30') matchesPrice = p.price_TND < 30;
+        else if (priceRange === '30-50') matchesPrice = p.price_TND >= 30 && p.price_TND <= 50;
+        else if (priceRange === '50-70') matchesPrice = p.price_TND >= 50 && p.price_TND <= 70;
+        else if (priceRange === 'over-70') matchesPrice = p.price_TND > 70;
+      }
+      
+      return matchesQuery && matchesOrigin && matchesFormat && matchesBrand && matchesPremium && matchesPrice;
+    });
+  }, [query, origin, format, brand, premiumOnly, priceRange]);
+
+  // Sort products
+  const sorted = useMemo(() => {
+    const sortedProducts = [...filtered];
+    
+    switch (sortBy) {
+      case 'price-asc':
+        return sortedProducts.sort((a, b) => a.price_TND - b.price_TND);
+      case 'price-desc':
+        return sortedProducts.sort((a, b) => b.price_TND - a.price_TND);
+      case 'name-asc':
+        return sortedProducts.sort((a, b) => {
+          const nameA = (a.name_fr || a.name).toLowerCase();
+          const nameB = (b.name_fr || b.name).toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+      case 'name-desc':
+        return sortedProducts.sort((a, b) => {
+          const nameA = (a.name_fr || a.name).toLowerCase();
+          const nameB = (b.name_fr || b.name).toLowerCase();
+          return nameB.localeCompare(nameA);
+        });
+      case 'brand-asc':
+        return sortedProducts.sort((a, b) => {
+          const brandA = (a.brand || '').toLowerCase();
+          const brandB = (b.brand || '').toLowerCase();
+          return brandA.localeCompare(brandB);
+        });
+      case 'brand-desc':
+        return sortedProducts.sort((a, b) => {
+          const brandA = (a.brand || '').toLowerCase();
+          const brandB = (b.brand || '').toLowerCase();
+          return brandB.localeCompare(brandA);
+        });
+      default:
+        return sortedProducts;
+    }
+  }, [filtered, sortBy]);
 
   // Simulate initial load
   useEffect(() => {
@@ -56,35 +135,26 @@ export default function Products() {
     return () => clearTimeout(timer);
   }, []);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return products.filter(p => {
-      const matchesQuery = !q || [p.name, p.origin, p.format, ...(p.tags || [])]
-        .filter(Boolean)
-        .some(v => String(v).toLowerCase().includes(q));
-      const matchesOrigin = !origin || p.origin === origin;
-      const matchesFormat = !format || p.format === format;
-      const matchesPremium = !premiumOnly || Boolean(p.premium);
-      return matchesQuery && matchesOrigin && matchesFormat && matchesPremium;
-    });
-  }, [query, origin, format, premiumOnly]);
-
   const searchInputRef = useRef(null);
   const [showAutocomplete, setShowAutocomplete] = useState(true);
 
   const handleSearchSelect = (product) => {
     setQuery(product.name);
     setShowAutocomplete(false);
-    // Navigate to product page would be handled by the Link in SearchAutocomplete
   };
 
   return (
-    <div className="container-page py-12">
-      <h1 className="title-gold text-3xl">Catalog</h1>
-      <p className="text-white/80 mt-2">Explore our selection of premium cigars.</p>
+    <div className="container-page py-8 md:py-12">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="title-gold text-3xl md:text-4xl mb-2">Nos Cigares</h1>
+        <p className="text-white/70 text-sm md:text-base">
+          Découvrez notre sélection de cigares premium
+        </p>
+      </div>
 
-      {/* Search with Autocomplete */}
-      <div className="mt-6 relative">
+      {/* Search Bar */}
+      <div className="mb-6 relative">
         <div className="relative">
           <input
             ref={searchInputRef}
@@ -95,9 +165,9 @@ export default function Products() {
               setShowAutocomplete(true);
             }}
             onFocus={() => setShowAutocomplete(true)}
-            placeholder="Search by name, origin, format, tags..."
-            className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
-            aria-label="Search products"
+            placeholder="Rechercher par nom, marque, origine..."
+            className="w-full px-4 py-3 rounded-lg bg-cocoa/30 border border-cocoa/60 text-white placeholder-white/40 focus:outline-none focus:border-gold transition-base text-sm md:text-base"
+            aria-label="Rechercher des produits"
             aria-autocomplete="list"
             aria-expanded={showAutocomplete && query.length >= 2}
           />
@@ -105,51 +175,101 @@ export default function Products() {
             <SearchAutocomplete
               query={query}
               onSelect={handleSearchSelect}
-              className="absolute top-full left-0 right-0 z-50"
+              className="absolute top-full left-0 right-0 z-50 mt-1"
             />
           )}
         </div>
       </div>
 
-      {/* Desktop Filters */}
-      <div className="mt-6 hidden md:grid md:grid-cols-3 gap-3">
-        <select
-          value={origin}
-          onChange={e => setOrigin(e.target.value)}
-          className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
-          aria-label="Filter by origin"
-        >
-          <option value="">All origins</option>
-          {origins.map(o => (<option key={o} value={o}>{o}</option>))}
-        </select>
-        <select
-          value={format}
-          onChange={e => setFormat(e.target.value)}
-          className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
-          aria-label="Filter by format"
-        >
-          <option value="">All formats</option>
-          {formats.map(f => (<option key={f} value={f}>{f}</option>))}
-        </select>
-        <label className="flex items-center gap-2 text-white/80 text-sm cursor-pointer px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60">
-          <input type="checkbox" checked={premiumOnly} onChange={e => setPremiumOnly(e.target.checked)} />
-          Premium Only
-        </label>
+      {/* Filters and Sort - Desktop */}
+      <div className="hidden lg:flex items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3 flex-1">
+          {/* Brand Filter */}
+          <select
+            value={brand}
+            onChange={e => setBrand(e.target.value)}
+            className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
+            aria-label="Filtrer par marque"
+          >
+            <option value="">Toutes les marques</option>
+            {brands.map(b => (<option key={b} value={b}>{b}</option>))}
+          </select>
+
+          {/* Origin Filter */}
+          <select
+            value={origin}
+            onChange={e => setOrigin(e.target.value)}
+            className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
+            aria-label="Filtrer par origine"
+          >
+            <option value="">Toutes les origines</option>
+            {origins.map(o => (<option key={o} value={o}>{o}</option>))}
+          </select>
+
+          {/* Format Filter */}
+          <select
+            value={format}
+            onChange={e => setFormat(e.target.value)}
+            className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
+            aria-label="Filtrer par format"
+          >
+            <option value="">Tous les formats</option>
+            {formats.map(f => (<option key={f} value={f}>{f}</option>))}
+          </select>
+
+          {/* Price Range Filter */}
+          <select
+            value={priceRange}
+            onChange={e => setPriceRange(e.target.value)}
+            className="px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
+            aria-label="Filtrer par prix"
+          >
+            <option value="">Tous les prix</option>
+            <option value="under-30">Moins de 30 TND</option>
+            <option value="30-50">30 - 50 TND</option>
+            <option value="50-70">50 - 70 TND</option>
+            <option value="over-70">Plus de 70 TND</option>
+          </select>
+
+          {/* Premium Filter */}
+          <label className="flex items-center gap-2 text-white/80 text-sm cursor-pointer px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 hover:border-gold/50 transition-base">
+            <input 
+              type="checkbox" 
+              checked={premiumOnly} 
+              onChange={e => setPremiumOnly(e.target.checked)}
+              className="w-4 h-4"
+            />
+            Premium
+          </label>
+        </div>
+
+        {/* Sort */}
+        <ProductSort sortBy={sortBy} onSortChange={setSortBy} />
       </div>
 
       {/* Mobile Collapsible Filters */}
-      <div className="mt-4 md:hidden">
-        <CollapsibleFilters title="Filters" defaultOpen={false}>
+      <div className="lg:hidden mb-4 space-y-3">
+        <CollapsibleFilters title="Filtres" defaultOpen={false}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-white/90 mb-2">Origin</label>
+              <label className="block text-sm font-medium text-white/90 mb-2">Marque</label>
+              <select
+                value={brand}
+                onChange={e => setBrand(e.target.value)}
+                className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
+              >
+                <option value="">Toutes les marques</option>
+                {brands.map(b => (<option key={b} value={b}>{b}</option>))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-white/90 mb-2">Origine</label>
               <select
                 value={origin}
                 onChange={e => setOrigin(e.target.value)}
-                className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
-                aria-label="Filter by origin"
+                className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
               >
-                <option value="">All origins</option>
+                <option value="">Toutes les origines</option>
                 {origins.map(o => (<option key={o} value={o}>{o}</option>))}
               </select>
             </div>
@@ -158,19 +278,40 @@ export default function Products() {
               <select
                 value={format}
                 onChange={e => setFormat(e.target.value)}
-                className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base"
-                aria-label="Filter by format"
+                className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
               >
-                <option value="">All formats</option>
+                <option value="">Tous les formats</option>
                 {formats.map(f => (<option key={f} value={f}>{f}</option>))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-white/90 mb-2">Prix</label>
+              <select
+                value={priceRange}
+                onChange={e => setPriceRange(e.target.value)}
+                className="w-full px-3 py-2 rounded bg-cocoa/30 border border-cocoa/60 text-white focus:outline-none focus:border-gold transition-base text-sm"
+              >
+                <option value="">Tous les prix</option>
+                <option value="under-30">Moins de 30 TND</option>
+                <option value="30-50">30 - 50 TND</option>
+                <option value="50-70">50 - 70 TND</option>
+                <option value="over-70">Plus de 70 TND</option>
               </select>
             </div>
             <label className="flex items-center gap-2 text-white/80 text-sm cursor-pointer">
               <input type="checkbox" checked={premiumOnly} onChange={e => setPremiumOnly(e.target.checked)} />
-              Premium Only
+              Premium uniquement
             </label>
           </div>
         </CollapsibleFilters>
+
+        {/* Mobile Sort */}
+        <div className="flex items-center justify-between">
+          <span className="text-white/60 text-sm">
+            {sorted.length} produit{sorted.length > 1 ? 's' : ''}
+          </span>
+          <ProductSort sortBy={sortBy} onSortChange={setSortBy} />
+        </div>
       </div>
 
       {/* Filter Chips */}
@@ -180,19 +321,25 @@ export default function Products() {
         onClearAll={handleClearAll}
       />
 
-      <div className="mt-8">
+      {/* Products Grid */}
+      <div className="mt-6">
         {isLoading ? (
-          <ProductGridSkeleton count={6} />
+          <ProductGridSkeleton count={8} />
         ) : (
           <>
-            <ProductGrid products={filtered} />
-            {filtered.length === 0 && (
-              <p className="text-white/60 mt-6">No products match your filters.</p>
+            <ProductGrid products={sorted} />
+            {sorted.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-white/60 text-lg mb-2">Aucun produit trouvé</p>
+                <p className="text-white/40 text-sm">Essayez de modifier vos filtres</p>
+              </div>
             )}
-            {filtered.length > 0 && (
-              <p className="text-white/60 mt-4 text-sm">
-                Showing {filtered.length} of {products.length} products
-              </p>
+            {sorted.length > 0 && (
+              <div className="mt-6 text-center">
+                <p className="text-white/60 text-sm">
+                  Affichage de {sorted.length} produit{sorted.length > 1 ? 's' : ''} sur {products.length}
+                </p>
+              </div>
             )}
           </>
         )}
@@ -200,5 +347,3 @@ export default function Products() {
     </div>
   );
 }
-
-

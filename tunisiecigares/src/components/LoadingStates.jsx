@@ -76,7 +76,7 @@ export function LazyImage({ src, alt, className, placeholder, ...props }) {
   const defaultPlaceholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%232a1f1f" width="400" height="300"/%3E%3C/svg%3E';
 
   return (
-    <div ref={imgRef} className={`relative ${className}`} style={{ minHeight: '200px' }}>
+    <div ref={imgRef} className={`relative bg-transparent ${className}`} style={{ minHeight: '200px' }}>
       {!isLoaded && !hasError && (
         <div className="absolute inset-0 skeleton animate-pulse bg-cocoa/30 z-0" />
       )}
@@ -96,7 +96,7 @@ export function LazyImage({ src, alt, className, placeholder, ...props }) {
               onError={() => setHasError(true)}
               loading="lazy"
               decoding="async"
-              className={`w-full h-full object-cover transition-opacity duration-300 relative z-10 ${
+              className={`w-full h-full object-contain transition-opacity duration-300 relative z-10 bg-transparent ${
                 isLoaded ? 'opacity-100' : 'opacity-0'
               }`}
               {...props}

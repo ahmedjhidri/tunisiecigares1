@@ -41,11 +41,11 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
         <div className="grid md:grid-cols-2 gap-6 p-6">
           {/* Image */}
           <div>
-            <div className="overflow-hidden rounded-lg border border-cocoa/60 mb-4">
+            <div className="overflow-hidden rounded-lg border border-cocoa/60 mb-4 bg-transparent flex items-center justify-center">
               <img 
                 src={images[activeImage]} 
                 alt={product.name}
-                className="w-full h-64 md:h-80 object-cover"
+                className="w-full h-64 md:h-80 object-contain bg-transparent"
                 loading="lazy"
               />
             </div>
@@ -55,11 +55,11 @@ export default function ProductQuickView({ product, isOpen, onClose }) {
                   <button
                     key={idx}
                     onClick={() => setActiveImage(idx)}
-                    className={`overflow-hidden rounded border-2 transition-base ${
+                    className={`overflow-hidden rounded border-2 transition-base bg-transparent ${
                       activeImage === idx ? 'border-gold' : 'border-cocoa/60 hover:border-gold/50'
                     }`}
                   >
-                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-16 object-cover" loading="lazy" />
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-16 object-contain bg-transparent p-1" loading="lazy" />
                   </button>
                 ))}
               </div>

@@ -42,7 +42,7 @@ export default function ImageZoom({ src, alt, className = '', lazy = false }) {
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden bg-transparent ${className}`}
       onMouseEnter={() => setIsZoomed(true)}
       onMouseLeave={() => setIsZoomed(false)}
       onMouseMove={handleMouseMove}
@@ -56,7 +56,7 @@ export default function ImageZoom({ src, alt, className = '', lazy = false }) {
           src={src}
           alt={alt}
           onLoad={() => setIsLoaded(true)}
-          className={`w-full h-full object-cover transition-transform duration-300 relative z-10 ${
+          className={`w-full h-full object-contain transition-transform duration-300 relative z-10 bg-transparent ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } ${
             isZoomed ? 'scale-150 cursor-zoom-out' : 'scale-100 cursor-zoom-in'

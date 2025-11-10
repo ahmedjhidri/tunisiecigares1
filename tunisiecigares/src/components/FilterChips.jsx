@@ -7,7 +7,7 @@ export default function FilterChips({ filters, onRemoveFilter, onClearAll }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4">
-      <span className="text-white/60 text-sm">Active filters:</span>
+      <span className="text-white/60 text-sm">Filtres actifs:</span>
       {activeFilters.map(([key, value]) => (
         <button
           key={key}
@@ -16,10 +16,18 @@ export default function FilterChips({ filters, onRemoveFilter, onClearAll }) {
           aria-label={`Remove ${key} filter`}
         >
           <span>
-            {key === 'query' && `Search: "${value}"`}
-            {key === 'origin' && `Origin: ${value}`}
+            {key === 'query' && `Recherche: "${value}"`}
+            {key === 'origin' && `Origine: ${value}`}
             {key === 'format' && `Format: ${value}`}
-            {key === 'premiumOnly' && value && 'Premium Only'}
+            {key === 'brand' && `Marque: ${value}`}
+            {key === 'premiumOnly' && value && 'Premium uniquement'}
+            {key === 'priceRange' && (
+              value === 'under-30' ? 'Prix: < 30 TND' :
+              value === '30-50' ? 'Prix: 30-50 TND' :
+              value === '50-70' ? 'Prix: 50-70 TND' :
+              value === 'over-70' ? 'Prix: > 70 TND' :
+              `Prix: ${value}`
+            )}
           </span>
           <span className="text-gold/60 group-hover:text-gold">×</span>
         </button>
@@ -29,7 +37,7 @@ export default function FilterChips({ filters, onRemoveFilter, onClearAll }) {
           onClick={onClearAll}
           className="text-white/60 text-sm hover:text-gold underline transition-base"
         >
-          Clear all
+          Tout effacer
         </button>
       )}
     </div>

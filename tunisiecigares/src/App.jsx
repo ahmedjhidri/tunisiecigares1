@@ -6,9 +6,11 @@ import Toast from './components/Toast.jsx';
 import SuccessOverlay from './components/SuccessOverlay.jsx';
 import AgeVerificationModal from './components/AgeVerificationModal.jsx';
 import CartNotification from './components/CartNotification.jsx';
+import CartConfirmationModal from './components/CartConfirmationModal.jsx';
 import CookieConsent from './components/CookieConsent.jsx';
 import PromoBanner from './components/PromoBanner.jsx';
 import SEO from './components/SEO.jsx';
+import { useCart } from './context/CartContext.jsx';
 import Home from './pages/Home.jsx';
 import Privacy from './pages/Privacy.jsx';
 import Products from './pages/Products.jsx';
@@ -22,13 +24,19 @@ import NotFound from './pages/NotFound.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 
-export default function App() {
+function AppContent() {
+  const { showCartModal, setShowCartModal, lastAdded } = useCart();
+
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen flex flex-col bg-ebony text-white">
+    <div className="min-h-screen flex flex-col bg-ebony text-white">
       <SEO />
       <AgeVerificationModal />
       <CartNotification />
+      <CartConfirmationModal
+        isOpen={showCartModal}
+        onClose={() => setShowCartModal(false)}
+        product={lastAdded}
+      />
       <CookieConsent />
       <PromoBanner />
       <Header />
@@ -51,7 +59,14 @@ export default function App() {
       <ScrollToTop />
       <Toast />
       <SuccessOverlay />
-      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
     </ErrorBoundary>
   );
 }
