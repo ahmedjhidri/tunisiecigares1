@@ -287,7 +287,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       try {
         if (isEmailEnabled()) {
           await sendOrderEmail({
-            toEmail: email,
+            toEmail: formData.email,
             firstName: formData.firstName,
             lastName: formData.lastName,
             phone: formData.phone,
@@ -317,7 +317,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
         await sendAdminNotification({
           orderRef: orderData.order_ref,
           customerName: `${formData.firstName} ${formData.lastName}`,
-          customerEmail: email,
+          customerEmail: formData.email,
           customerPhone: formData.phone,
           address: formData.address,
           items: orderData.order_items,

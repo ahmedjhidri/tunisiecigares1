@@ -1,18 +1,26 @@
 // tunisiecigares/src/components/ProductDetail.jsx
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext.jsx';
 import OrderModal from './OrderModal.jsx';
 import ImageZoom from './ImageZoom.jsx';
 import FloatingAddToCart from './FloatingAddToCart.jsx';
+import { Plus, Minus } from 'lucide-react';
 
 export default function ProductDetail({ product }) {
   const [active, setActive] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   
   const images = useMemo(() => product.images?.length ? product.images : [
     'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1600&auto=format&fit=crop',
   ], [product]);
+
+  // Réinitialiser la quantité à 1 quand le produit change
+  useEffect(() => {
+    setQuantity(1);
+    setActive(0);
+  }, [product.id]);
 
   return (
     <>
@@ -74,6 +82,48 @@ export default function ProductDetail({ product }) {
             </span>
           </div>
 
+          {/* Quantity Selector */}
+          {product.stock > 0 && (
+            <div className="mb-6">
+              <label className="block text-white/80 text-sm font-medium mb-3">Quantité:</label>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                    disabled={quantity <= 1}
+                    className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-cocoa/60 bg-cocoa/20 text-white/80 hover:border-gold hover:bg-gold/10 hover:text-gold transition-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-cocoa/60 disabled:hover:bg-cocoa/20 disabled:hover:text-white/80"
+                    aria-label="Réduire la quantité"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max={product.stock}
+                    value={quantity}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 1;
+                      const clampedValue = Math.max(1, Math.min(value, product.stock));
+                      setQuantity(clampedValue);
+                    }}
+                    className="w-20 text-center text-white font-bold text-xl bg-cocoa/30 border border-cocoa/60 rounded-lg py-2 focus:outline-none focus:border-gold"
+                  />
+                  <button
+                    onClick={() => setQuantity(prev => Math.min(product.stock, prev + 1))}
+                    disabled={quantity >= product.stock}
+                    className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-cocoa/60 bg-cocoa/20 text-white/80 hover:border-gold hover:bg-gold/10 hover:text-gold transition-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-cocoa/60 disabled:hover:bg-cocoa/20 disabled:hover:text-white/80"
+                    aria-label="Augmenter la quantité"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+                <span className="text-white/60 text-sm">
+                  Max: {product.stock}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="prose prose-invert mb-6">
             <p className="text-white/90 leading-relaxed">{product.long_desc}</p>
           </div>
@@ -95,15 +145,15 @@ export default function ProductDetail({ product }) {
           {/* Action Buttons */}
           <div className="mt-6 flex gap-3">
             <button 
-              onClick={() => addToCart(product)}
+              onClick={() => addToCart(product, quantity)}
               className={`btn-secondary flex-1 flex items-center justify-center gap-2 ${product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-              aria-label={`Ajouter ${product.name} au panier`}
+              aria-label={`Ajouter ${quantity} ${product.name} au panier`}
               disabled={product.stock <= 0}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              Ajouter au panier
+              Ajouter au panier {quantity > 1 ? `(${quantity})` : ''}
             </button>
             <button 
               className={`btn-primary flex-1 ${product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`} 

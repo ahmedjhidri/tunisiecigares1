@@ -28,21 +28,33 @@ export function CartProvider({ children }) {
     localStorage.setItem('tunisie_cigares_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Ajouter un produit au panier
-  const addToCart = (product) => {
+  // Ajouter un produit au panier avec quantité optionnelle (par défaut 1)
+  const addToCart = (product, quantity = 1) => {
+    // Ne pas ajouter si le produit n'est pas en stock
+    if (product.stock <= 0) {
+      showNotification('Ce produit n\'est pas disponible');
+      return;
+    }
+    
+    // S'assurer que la quantité est valide (min 1, max stock disponible)
+    const validQuantity = Math.max(1, Math.min(quantity, product.stock));
+    
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
       
       if (existingItem) {
-        // Si le produit existe déjà, augmenter la quantité
+        // Si le produit existe déjà, augmenter la quantité (mais ne pas dépasser le stock)
+        const newQuantity = existingItem.quantity + validQuantity;
+        const finalQuantity = Math.min(newQuantity, product.stock);
+        
         return prevCart.map(item =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: finalQuantity }
             : item
         );
       } else {
-        // Sinon, ajouter le nouveau produit
-        return [...prevCart, { ...product, quantity: 1 }];
+        // Sinon, ajouter le nouveau produit avec la quantité spécifiée
+        return [...prevCart, { ...product, quantity: validQuantity }];
       }
     });
 
