@@ -339,25 +339,61 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
 
   try {
     const startTime = Date.now();
+    const requestUrl = 'https://api.emailjs.com/api/v1.0/email/send';
+    const requestBody = JSON.stringify(payload);
     
-    console.log('[Email] 🔄 Making EmailJS API request...', {
-      url: 'https://api.emailjs.com/api/v1.0/email/send',
+    console.log('[Email] 🔄 STEP 1: Preparing EmailJS API request...', {
+      url: requestUrl,
       method: 'POST',
-      payloadSize: JSON.stringify(payload).length,
+      payloadSize: requestBody.length,
       hasHtmlMessage: Boolean(payload.template_params.html_message),
       htmlMessageLength: payload.template_params.html_message?.length || 0,
+      toEmail: payload.template_params.to_email,
+      templateId: payload.template_id,
+      serviceId: payload.service_id,
     });
     
-    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    console.log('[Email] 🔄 STEP 2: Making fetch() call to EmailJS...');
+    
+    let res;
+    try {
+      res = await fetch(requestUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      // Add timeout
+        body: requestBody,
       signal: AbortSignal.timeout(30000) // 30 second timeout
-    });
+      });
+      console.log('[Email] 🔄 STEP 3: Fetch completed, response received:', {
+        status: res.status,
+        statusText: res.statusText,
+        ok: res.ok,
+        headersReceived: true,
+      });
+    } catch (fetchError) {
+      console.error('[Email] ❌ STEP 3 FAILED: Fetch error occurred:', {
+        errorName: fetchError.name,
+        errorMessage: fetchError.message,
+        errorStack: fetchError.stack,
+        isNetworkError: fetchError.name === 'TypeError' || fetchError.name === 'NetworkError',
+        isTimeout: fetchError.name === 'AbortError' || fetchError.name === 'TimeoutError',
+      });
+      throw new EmailError(`Network error: ${fetchError.message}`, 'NETWORK_ERROR', fetchError);
+    }
 
     const duration = Date.now() - startTime;
-    const responseText = await res.text();
+    console.log('[Email] 🔄 STEP 4: Reading response text...');
+    
+    let responseText;
+    try {
+      responseText = await res.text();
+      console.log('[Email] 🔄 STEP 5: Response text read:', {
+        length: responseText.length,
+        preview: responseText.substring(0, 200),
+      });
+    } catch (textError) {
+      console.error('[Email] ❌ STEP 5 FAILED: Error reading response text:', textError);
+      throw new EmailError(`Failed to read response: ${textError.message}`, 'RESPONSE_ERROR', textError);
+    }
     
     console.log('[Email] 📥 EmailJS API response received:', {
       status: res.status,
@@ -366,7 +402,6 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       responseLength: responseText.length,
       responsePreview: responseText.substring(0, 200),
       ok: res.ok,
-      headers: Object.fromEntries(res.headers.entries()),
     });
 
     if (!res.ok) {
@@ -427,6 +462,8 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       duration: `${duration}ms`,
     });
     
+    console.log('✅ Email client sent successfully');
+    
     return { success: true, orderRef, to };
   } catch (error) {
     console.error('[Email] ❌ Email sending error:', {
@@ -436,6 +473,8 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       originalError: error.originalError,
       stack: error.stack,
     });
+    
+    console.error(`❌ Email failed: ${error.message}`);
     
     // Handle network errors, timeouts, etc.
     if (error.name === 'AbortError' || error.name === 'TimeoutError') {
@@ -545,7 +584,7 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
   // Use the same template as customer (both use html_message now)
   // IMPORTANT: Template should use {{{html_message}}} (triple braces) to render HTML
   const adminTemplateId = ADMIN_TEMPLATE_ID !== TEMPLATE_ID ? ADMIN_TEMPLATE_ID : TEMPLATE_ID;
-  
+
   const payload = {
     service_id: SERVICE_ID,
     template_id: adminTemplateId,
@@ -626,6 +665,8 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
       to: `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}`,
     });
     
+    console.log('✅ Email admin sent successfully');
+    
     return { success: true, orderRef, to: ADMIN_EMAIL };
   } catch (error) {
     console.error('[Email] ❌ Admin notification error:', {
@@ -633,6 +674,9 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
       errorMessage: error.message,
       stack: error.stack,
     });
+    
+    console.error(`❌ Email admin failed: ${error.message}`);
+    
     // Don't throw - admin notification failure shouldn't block order processing
     return { success: false, error: error.message };
   }

@@ -294,19 +294,26 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
         
         if (isEmailEnabled()) {
           console.log('[OrderModal] ✅ Email is enabled, sending confirmation...');
-          const emailResult = await sendOrderEmail({
-            toEmail: formData.email,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone,
-            address: formData.address,
-            items: orderData.order_items,
-            total: orderData.total,
-            orderRef: orderData.order_ref
-          });
+          console.log('[OrderModal] 📧 Calling sendOrderEmail() function...');
           
-          console.log('[OrderModal] ✅ Customer confirmation email sent successfully:', emailResult);
-          showSuccessOverlay("✅  Votre commande a été confirmée et l'email a été envoyé ! Merci pour votre confiance.");
+          try {
+            const emailResult = await sendOrderEmail({
+              toEmail: formData.email,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              phone: formData.phone,
+              address: formData.address,
+              items: orderData.order_items,
+              total: orderData.total,
+              orderRef: orderData.order_ref
+            });
+            
+            console.log('[OrderModal] ✅ Customer confirmation email sent successfully:', emailResult);
+            showSuccessOverlay("✅  Votre commande a été confirmée et l'email a été envoyé ! Merci pour votre confiance.");
+          } catch (emailSendError) {
+            console.error('[OrderModal] ❌ sendOrderEmail() threw an error:', emailSendError);
+            throw emailSendError; // Re-throw to be caught by outer catch
+          }
         } else {
           console.warn('[OrderModal] ⚠️ Email is not enabled - skipping email send');
           showSuccessOverlay("✅  Votre commande a été confirmée ! Merci pour votre confiance.");
