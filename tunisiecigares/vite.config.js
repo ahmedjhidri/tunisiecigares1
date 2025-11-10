@@ -10,7 +10,10 @@ export default defineConfig(({ mode }) => {
   // For local development: use '/' (no base path)
   // For production (GitHub Pages): use '/tunisiecigares1/'
   // GitHub Actions sets VITE_BASE_PATH env variable
-  const base = import.meta.env.VITE_BASE_PATH || (mode === 'production' ? '/tunisiecigares1/' : '/');
+  // Use process.env for build-time, import.meta.env for runtime
+  // Default to '/' if VITE_BASE_PATH is not set to prevent build failures
+  const envBasePath = process.env.VITE_BASE_PATH || import.meta.env?.VITE_BASE_PATH;
+  const base = envBasePath || (mode === 'production' ? '/tunisiecigares1/' : '/');
   
   return {
     plugins: [react()],
