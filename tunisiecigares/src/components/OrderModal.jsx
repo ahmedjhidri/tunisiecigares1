@@ -336,7 +336,7 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           orderRef: orderData.order_ref,
         });
         
-        await sendAdminNotification({
+        const adminResult = await sendAdminNotification({
           orderRef: orderData.order_ref,
           customerName: `${formData.firstName} ${formData.lastName}`,
           customerEmail: formData.email,
@@ -346,7 +346,16 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           total: orderData.total
         });
         
-        console.log('[OrderModal] ✅ Admin notification sent successfully');
+        if (adminResult?.success) {
+          console.log('[OrderModal] ✅ Admin notification sent successfully');
+        } else if (adminResult?.skipped) {
+          console.warn('[OrderModal] ⚠️ Admin notification skipped:', {
+            reason: adminResult.reason,
+            action: 'Add VITE_ADMIN_EMAIL to GitHub Secrets (Settings → Secrets → Actions)',
+          });
+        } else {
+          console.warn('[OrderModal] ⚠️ Admin notification failed (non-blocking):', adminResult);
+        }
       } catch (adminErr) {
         // Silently fail - admin notification is not critical
         console.error('[OrderModal] ❌ Admin notification failed (non-blocking):', {

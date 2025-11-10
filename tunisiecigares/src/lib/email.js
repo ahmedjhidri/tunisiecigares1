@@ -460,11 +460,14 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
   
   // Only send if admin email is configured
   if (!ADMIN_EMAIL || !isEmailEnabled()) {
+    const reason = !ADMIN_EMAIL ? 'VITE_ADMIN_EMAIL not configured' : 'Email not enabled';
     console.warn('[Email] ⚠️ Admin notification skipped:', {
       hasAdminEmail: Boolean(ADMIN_EMAIL),
       isEmailEnabled: isEmailEnabled(),
+      reason,
+      action: 'Add VITE_ADMIN_EMAIL to GitHub Secrets or .env file',
     });
-    return;
+    return { success: false, skipped: true, reason };
   }
   
   console.log('[Email] ✅ Admin notification enabled, proceeding...');
@@ -603,13 +606,16 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
         fullResponse: responseText,
       });
       // Don't throw - admin notification failure shouldn't block order processing
-      return;
+      return { success: false, error: errorData?.message || `HTTP ${res.status}` };
     }
 
     console.log('[Email] ✅ Admin notification sent successfully!', {
       orderRef,
       duration: `${duration}ms`,
+      to: `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}`,
     });
+    
+    return { success: true, orderRef, to: ADMIN_EMAIL };
   } catch (error) {
     console.error('[Email] ❌ Admin notification error:', {
       errorName: error.name,
@@ -617,6 +623,7 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
       stack: error.stack,
     });
     // Don't throw - admin notification failure shouldn't block order processing
+    return { success: false, error: error.message };
   }
 }
 
