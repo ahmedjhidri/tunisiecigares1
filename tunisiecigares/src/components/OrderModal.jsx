@@ -285,8 +285,16 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
 
       // Send confirmation email to customer
       try {
+        console.log('[OrderModal] 📧 Preparing to send customer confirmation email...', {
+          orderRef: orderData.order_ref,
+          customerEmail: formData.email ? `${formData.email.substring(0, 3)}***@${formData.email.split('@')[1]}` : 'MISSING',
+          itemsCount: orderData.order_items?.length || 0,
+          total: orderData.total,
+        });
+        
         if (isEmailEnabled()) {
-          await sendOrderEmail({
+          console.log('[OrderModal] ✅ Email is enabled, sending confirmation...');
+          const emailResult = await sendOrderEmail({
             toEmail: formData.email,
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -296,17 +304,27 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             total: orderData.total,
             orderRef: orderData.order_ref
           });
+          
+          console.log('[OrderModal] ✅ Customer confirmation email sent successfully:', emailResult);
           showSuccessOverlay("✅  Votre commande a été confirmée et l'email a été envoyé ! Merci pour votre confiance.");
         } else {
+          console.warn('[OrderModal] ⚠️ Email is not enabled - skipping email send');
           showSuccessOverlay("✅  Votre commande a été confirmée ! Merci pour votre confiance.");
         }
       } catch (emailErr) {
         // Handle email errors gracefully - don't block order success
         const errorMessage = emailErr instanceof EmailError 
           ? emailErr.message 
-          : 'Email sending failed, but your order was saved successfully.';
+          : emailErr.message || 'Email sending failed, but your order was saved successfully.';
         
-        console.warn('[OrderModal] Email confirmation failed (non-blocking):', emailErr);
+        console.error('[OrderModal] ❌ Email confirmation failed (non-blocking):', {
+          error: emailErr,
+          errorName: emailErr.name,
+          errorMessage: emailErr.message,
+          errorCode: emailErr.code,
+          originalError: emailErr.originalError,
+          stack: emailErr.stack,
+        });
         
         // Still show success, but mention email issue
         showSuccessOverlay("✅  Votre commande a été confirmée ! (Note: Email de confirmation non envoyé)");
@@ -314,6 +332,10 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
 
       // Send admin notification (fire and forget - don't block on failure)
       try {
+        console.log('[OrderModal] 📧 Preparing to send admin notification...', {
+          orderRef: orderData.order_ref,
+        });
+        
         await sendAdminNotification({
           orderRef: orderData.order_ref,
           customerName: `${formData.firstName} ${formData.lastName}`,
@@ -323,9 +345,17 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           items: orderData.order_items,
           total: orderData.total
         });
+        
+        console.log('[OrderModal] ✅ Admin notification sent successfully');
       } catch (adminErr) {
         // Silently fail - admin notification is not critical
-        console.warn('[OrderModal] Admin notification failed (non-blocking):', adminErr);
+        console.error('[OrderModal] ❌ Admin notification failed (non-blocking):', {
+          error: adminErr,
+          errorName: adminErr.name,
+          errorMessage: adminErr.message,
+          errorCode: adminErr.code,
+          stack: adminErr.stack,
+        });
       }
       
       // Clear cart if it was a cart order

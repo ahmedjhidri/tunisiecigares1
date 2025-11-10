@@ -9,7 +9,149 @@ const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
 
 export function isEmailEnabled() {
-  return Boolean(SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY);
+  const enabled = Boolean(SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY);
+  
+  if (import.meta.env.DEV) {
+    console.log('[Email] Configuration check:', {
+      enabled,
+      hasServiceId: Boolean(SERVICE_ID),
+      hasTemplateId: Boolean(TEMPLATE_ID),
+      hasPublicKey: Boolean(PUBLIC_KEY),
+      hasAdminEmail: Boolean(ADMIN_EMAIL),
+      serviceId: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
+      templateId: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
+      publicKey: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
+    });
+  }
+  
+  return enabled;
+}
+
+/**
+ * Test EmailJS configuration by sending a test email
+ * @param {string} testEmail - Email address to send test to
+ * @returns {Promise<{success: boolean, message: string, details?: any}>}
+ */
+export async function testEmailConfiguration(testEmail) {
+  console.log('[Email] Testing EmailJS configuration...');
+  
+  if (!isEmailEnabled()) {
+    const missing = [];
+    if (!SERVICE_ID) missing.push('VITE_EMAILJS_SERVICE_ID');
+    if (!TEMPLATE_ID) missing.push('VITE_EMAILJS_TEMPLATE_ID');
+    if (!PUBLIC_KEY) missing.push('VITE_EMAILJS_PUBLIC_KEY');
+    
+    return {
+      success: false,
+      message: `EmailJS is not configured. Missing: ${missing.join(', ')}`,
+      details: { missing }
+    };
+  }
+  
+  if (!testEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testEmail)) {
+    return {
+      success: false,
+      message: 'Invalid test email address',
+      details: { testEmail }
+    };
+  }
+  
+  const testPayload = {
+    service_id: SERVICE_ID,
+    template_id: TEMPLATE_ID,
+    user_id: PUBLIC_KEY,
+    template_params: {
+      to_email: testEmail,
+      to: testEmail,
+      user_email: testEmail,
+      subject: 'Test Email from Tunisie Cigares',
+      customer_name: 'Test User',
+      order_ref: 'TEST-' + Date.now(),
+      customer_phone: '+216 XX XXX XXX',
+      customer_address: 'Test Address',
+      order_details: '1x Test Product - 100 TND',
+      total: '100 TND',
+    }
+  };
+  
+  console.log('[Email] Sending test email with payload:', {
+    service_id: SERVICE_ID.substring(0, 8) + '...',
+    template_id: TEMPLATE_ID.substring(0, 8) + '...',
+    user_id: PUBLIC_KEY.substring(0, 8) + '...',
+    to_email: testEmail,
+    template_params_keys: Object.keys(testPayload.template_params),
+  });
+  
+  try {
+    const startTime = Date.now();
+    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(testPayload),
+      signal: AbortSignal.timeout(30000)
+    });
+    
+    const duration = Date.now() - startTime;
+    const responseText = await res.text();
+    
+    console.log('[Email] Test email response:', {
+      status: res.status,
+      statusText: res.statusText,
+      duration: `${duration}ms`,
+      responseLength: responseText.length,
+    });
+    
+    if (!res.ok) {
+      let errorDetails;
+      try {
+        errorDetails = JSON.parse(responseText);
+      } catch {
+        errorDetails = { raw: responseText.substring(0, 200) };
+      }
+      
+      console.error('[Email] Test email failed:', {
+        status: res.status,
+        error: errorDetails,
+        fullResponse: responseText,
+      });
+      
+      return {
+        success: false,
+        message: `EmailJS API returned error: ${res.status}`,
+        details: {
+          status: res.status,
+          statusText: res.statusText,
+          error: errorDetails,
+          response: responseText.substring(0, 500),
+        }
+      };
+    }
+    
+    console.log('[Email] ✅ Test email sent successfully!');
+    return {
+      success: true,
+      message: 'Test email sent successfully',
+      details: {
+        status: res.status,
+        duration: `${duration}ms`,
+      }
+    };
+  } catch (error) {
+    console.error('[Email] Test email error:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    });
+    
+    return {
+      success: false,
+      message: `Test email failed: ${error.message}`,
+      details: {
+        errorName: error.name,
+        errorMessage: error.message,
+      }
+    };
+  }
 }
 
 // Error types for better error handling
@@ -37,19 +179,36 @@ export class EmailError extends Error {
  * @throws {EmailError} If email sending fails
  */
 export async function sendOrderEmail({ toEmail, firstName, lastName, phone, address, items, total, orderRef }) {
+  console.log('[Email] 📧 Starting order email send...', {
+    toEmail: toEmail ? `${toEmail.substring(0, 3)}***@${toEmail.split('@')[1]}` : 'MISSING',
+    orderRef,
+    itemsCount: items?.length || 0,
+    total,
+  });
+  
   if (!isEmailEnabled()) {
-    throw new EmailError('Email is not configured. Please check your environment variables.', 'NOT_CONFIGURED');
+    const error = new EmailError('Email is not configured. Please check your environment variables.', 'NOT_CONFIGURED');
+    console.error('[Email] ❌ Configuration check failed:', {
+      hasServiceId: Boolean(SERVICE_ID),
+      hasTemplateId: Boolean(TEMPLATE_ID),
+      hasPublicKey: Boolean(PUBLIC_KEY),
+    });
+    throw error;
   }
   
   const to = (toEmail || '').trim();
   if (!to) {
+    console.error('[Email] ❌ Recipient email is empty');
     throw new EmailError('Recipient email is empty', 'INVALID_EMAIL');
   }
   
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRe.test(to)) {
+    console.error('[Email] ❌ Invalid email format:', to);
     throw new EmailError('Recipient email is invalid', 'INVALID_EMAIL');
   }
+
+  console.log('[Email] ✅ Email validation passed:', { to: `${to.substring(0, 3)}***@${to.split('@')[1]}` });
 
   // Format order details as text for EmailJS template
   const orderDetails = (items || []).map(i => 
@@ -83,7 +242,22 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
     }
   };
 
+  console.log('[Email] 📤 Sending email via EmailJS API...', {
+    serviceId: SERVICE_ID.substring(0, 8) + '...',
+    templateId: TEMPLATE_ID.substring(0, 8) + '...',
+    templateParams: {
+      to_email: `${to.substring(0, 3)}***`,
+      customer_name: customerName,
+      order_ref: orderRef,
+      subject,
+      hasOrderDetails: Boolean(orderDetails),
+      total: `${total} TND`,
+    },
+    allTemplateParamKeys: Object.keys(payload.template_params),
+  });
+
   try {
+    const startTime = Date.now();
     const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -92,23 +266,56 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       signal: AbortSignal.timeout(30000) // 30 second timeout
     });
 
+    const duration = Date.now() - startTime;
+    const responseText = await res.text();
+    
+    console.log('[Email] 📥 EmailJS API response received:', {
+      status: res.status,
+      statusText: res.statusText,
+      duration: `${duration}ms`,
+      responseLength: responseText.length,
+      responsePreview: responseText.substring(0, 200),
+    });
+
     if (!res.ok) {
-      const text = await res.text();
-      let errorMessage = `Email sending failed: ${res.status}`;
+      let errorData;
+      let errorMessage = `Email sending failed: ${res.status} ${res.statusText}`;
+      
       try {
-        const errorData = JSON.parse(text);
-        errorMessage = errorData.message || errorMessage;
+        errorData = JSON.parse(responseText);
+        errorMessage = errorData.message || errorData.text || errorMessage;
+        console.error('[Email] ❌ EmailJS API error response:', {
+          status: res.status,
+          error: errorData,
+          fullResponse: responseText,
+        });
       } catch {
-        errorMessage = `${errorMessage} - ${text.substring(0, 100)}`;
+        errorMessage = `${errorMessage} - ${responseText.substring(0, 200)}`;
+        console.error('[Email] ❌ EmailJS API error (non-JSON):', {
+          status: res.status,
+          rawResponse: responseText,
+        });
       }
-      throw new EmailError(errorMessage, `HTTP_${res.status}`);
+      
+      throw new EmailError(errorMessage, `HTTP_${res.status}`, { response: responseText, errorData });
     }
 
-    // Log success in development
-    if (import.meta.env.DEV) {
-      console.log('[Email] Order confirmation sent successfully to', to);
-    }
+    console.log('[Email] ✅ Order confirmation email sent successfully!', {
+      to: `${to.substring(0, 3)}***@${to.split('@')[1]}`,
+      orderRef,
+      duration: `${duration}ms`,
+    });
+    
+    return { success: true, orderRef, to };
   } catch (error) {
+    console.error('[Email] ❌ Email sending error:', {
+      errorName: error.name,
+      errorMessage: error.message,
+      errorCode: error.code,
+      originalError: error.originalError,
+      stack: error.stack,
+    });
+    
     // Handle network errors, timeouts, etc.
     if (error.name === 'AbortError' || error.name === 'TimeoutError') {
       throw new EmailError('Email sending timed out. Please try again.', 'TIMEOUT', error);
@@ -133,13 +340,24 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
  * @returns {Promise<void>}
  */
 export async function sendAdminNotification({ orderRef, customerName, customerEmail, customerPhone, address, items, total }) {
+  console.log('[Email] 📧 Starting admin notification...', {
+    orderRef,
+    customerName,
+    customerEmail: customerEmail ? `${customerEmail.substring(0, 3)}***@${customerEmail.split('@')[1]}` : 'MISSING',
+    itemsCount: items?.length || 0,
+    total,
+  });
+  
   // Only send if admin email is configured
   if (!ADMIN_EMAIL || !isEmailEnabled()) {
-    if (import.meta.env.DEV) {
-      console.warn('[Email] Admin notification skipped - ADMIN_EMAIL not configured');
-    }
+    console.warn('[Email] ⚠️ Admin notification skipped:', {
+      hasAdminEmail: Boolean(ADMIN_EMAIL),
+      isEmailEnabled: isEmailEnabled(),
+    });
     return;
   }
+  
+  console.log('[Email] ✅ Admin notification enabled, proceeding...');
 
   const itemRows = (items || []).map(i => `
     <tr>
@@ -214,7 +432,17 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
     }
   };
 
+  console.log('[Email] 📤 Sending admin notification via EmailJS API...', {
+    serviceId: SERVICE_ID.substring(0, 8) + '...',
+    templateId: TEMPLATE_ID.substring(0, 8) + '...',
+    toEmail: `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}`,
+    replyTo: customerEmail ? `${customerEmail.substring(0, 3)}***@${customerEmail.split('@')[1]}` : ADMIN_EMAIL,
+    subject,
+    htmlLength: html.length,
+  });
+
   try {
+    const startTime = Date.now();
     const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -222,18 +450,44 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
       signal: AbortSignal.timeout(30000)
     });
 
+    const duration = Date.now() - startTime;
+    const responseText = await res.text();
+    
+    console.log('[Email] 📥 Admin notification API response:', {
+      status: res.status,
+      statusText: res.statusText,
+      duration: `${duration}ms`,
+      responseLength: responseText.length,
+    });
+
     if (!res.ok) {
-      const text = await res.text();
-      console.error('[Email] Admin notification failed:', res.status, text);
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch {
+        errorData = { raw: responseText.substring(0, 200) };
+      }
+      
+      console.error('[Email] ❌ Admin notification failed:', {
+        status: res.status,
+        statusText: res.statusText,
+        error: errorData,
+        fullResponse: responseText,
+      });
       // Don't throw - admin notification failure shouldn't block order processing
       return;
     }
 
-    if (import.meta.env.DEV) {
-      console.log('[Email] Admin notification sent successfully');
-    }
+    console.log('[Email] ✅ Admin notification sent successfully!', {
+      orderRef,
+      duration: `${duration}ms`,
+    });
   } catch (error) {
-    console.error('[Email] Admin notification error:', error);
+    console.error('[Email] ❌ Admin notification error:', {
+      errorName: error.name,
+      errorMessage: error.message,
+      stack: error.stack,
+    });
     // Don't throw - admin notification failure shouldn't block order processing
   }
 }
