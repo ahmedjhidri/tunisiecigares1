@@ -339,6 +339,15 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
 
   try {
     const startTime = Date.now();
+    
+    console.log('[Email] 🔄 Making EmailJS API request...', {
+      url: 'https://api.emailjs.com/api/v1.0/email/send',
+      method: 'POST',
+      payloadSize: JSON.stringify(payload).length,
+      hasHtmlMessage: Boolean(payload.template_params.html_message),
+      htmlMessageLength: payload.template_params.html_message?.length || 0,
+    });
+    
     const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -356,6 +365,8 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       duration: `${duration}ms`,
       responseLength: responseText.length,
       responsePreview: responseText.substring(0, 200),
+      ok: res.ok,
+      headers: Object.fromEntries(res.headers.entries()),
     });
 
     if (!res.ok) {
