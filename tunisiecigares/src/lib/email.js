@@ -245,6 +245,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
   console.log('[Email] 📤 Sending email via EmailJS API...', {
     serviceId: SERVICE_ID.substring(0, 8) + '...',
     templateId: TEMPLATE_ID.substring(0, 8) + '...',
+    recipient: `${to.substring(0, 3)}***@${to.split('@')[1]}`,
     templateParams: {
       to_email: `${to.substring(0, 3)}***`,
       customer_name: customerName,
@@ -254,6 +255,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       total: `${total} TND`,
     },
     allTemplateParamKeys: Object.keys(payload.template_params),
+    important: '⚠️ Make sure your EmailJS template "To Email" field uses {{to_email}}',
   });
 
   try {
@@ -284,10 +286,24 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       try {
         errorData = JSON.parse(responseText);
         errorMessage = errorData.message || errorData.text || errorMessage;
+        
+        // Provide specific error messages for common EmailJS errors
+        if (res.status === 400) {
+          errorMessage = `EmailJS Template Error (400): ${errorData.text || errorData.message || 'Check your template configuration. Make sure "To Email" field uses {{to_email}}'}`;
+        } else if (res.status === 401) {
+          errorMessage = `EmailJS Authentication Error (401): Invalid Public Key. Check VITE_EMAILJS_PUBLIC_KEY`;
+        } else if (res.status === 404) {
+          errorMessage = `EmailJS Not Found (404): Service or Template ID incorrect. Check VITE_EMAILJS_SERVICE_ID and VITE_EMAILJS_TEMPLATE_ID`;
+        } else if (res.status === 429) {
+          errorMessage = `EmailJS Quota Exceeded (429): You have reached your email limit. Check your EmailJS dashboard.`;
+        }
+        
         console.error('[Email] ❌ EmailJS API error response:', {
           status: res.status,
+          statusText: res.statusText,
           error: errorData,
           fullResponse: responseText,
+          suggestion: res.status === 400 ? '⚠️ IMPORTANT: Check your EmailJS template. The "To Email" field MUST use {{to_email}}' : null,
         });
       } catch {
         errorMessage = `${errorMessage} - ${responseText.substring(0, 200)}`;
@@ -298,6 +314,21 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       }
       
       throw new EmailError(errorMessage, `HTTP_${res.status}`, { response: responseText, errorData });
+    }
+    
+    // Verify response indicates success
+    if (res.status === 200) {
+      try {
+        const responseData = JSON.parse(responseText);
+        console.log('[Email] ✅ EmailJS confirmed email sent:', {
+          status: res.status,
+          response: responseData,
+          recipient: `${to.substring(0, 3)}***@${to.split('@')[1]}`,
+        });
+      } catch {
+        // Response is not JSON but status is 200, which is OK
+        console.log('[Email] ✅ EmailJS returned 200 OK (email should be sent)');
+      }
     }
 
     console.log('[Email] ✅ Order confirmation email sent successfully!', {
