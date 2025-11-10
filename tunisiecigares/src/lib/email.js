@@ -624,21 +624,59 @@ export async function sendAdminNotification({ orderRef, customerName, customerEm
 
   try {
     const startTime = Date.now();
-    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    const requestUrl = 'https://api.emailjs.com/api/v1.0/email/send';
+    const requestBody = JSON.stringify(payload);
+    
+    console.log('[Email] 🔄 ADMIN STEP 1: Preparing EmailJS API request...', {
+      url: requestUrl,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(30000)
+      payloadSize: requestBody.length,
+      toEmail: ADMIN_EMAIL,
+      templateId: adminTemplateId,
     });
+    
+    console.log('[Email] 🔄 ADMIN STEP 2: Making fetch() call to EmailJS...');
+    
+    let res;
+    try {
+      res = await fetch(requestUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: requestBody,
+        signal: AbortSignal.timeout(30000)
+      });
+      console.log('[Email] 🔄 ADMIN STEP 3: Fetch completed:', {
+        status: res.status,
+        ok: res.ok,
+      });
+    } catch (fetchError) {
+      console.error('[Email] ❌ ADMIN STEP 3 FAILED: Fetch error:', {
+        errorName: fetchError.name,
+        errorMessage: fetchError.message,
+      });
+      throw fetchError;
+    }
 
     const duration = Date.now() - startTime;
-    const responseText = await res.text();
+    console.log('[Email] 🔄 ADMIN STEP 4: Reading response text...');
+    
+    let responseText;
+    try {
+      responseText = await res.text();
+      console.log('[Email] 🔄 ADMIN STEP 5: Response text read:', {
+        length: responseText.length,
+      });
+    } catch (textError) {
+      console.error('[Email] ❌ ADMIN STEP 5 FAILED: Error reading response:', textError);
+      throw textError;
+    }
     
     console.log('[Email] 📥 Admin notification API response:', {
       status: res.status,
       statusText: res.statusText,
       duration: `${duration}ms`,
       responseLength: responseText.length,
+      responsePreview: responseText.substring(0, 200),
     });
 
     if (!res.ok) {
