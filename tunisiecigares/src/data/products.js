@@ -25,7 +25,7 @@ export const products = [
     stock: 5,
     in_stock: true,
     stock_quantity: 5,
-    box_size: 'Unité',
+    box_size: 'Boîte de 10',
     unit_info: 'À l\'unité',
     origin: 'Cuba',
     format: 'Robusto',
@@ -33,12 +33,31 @@ export const products = [
     ring_gauge: '50',
     strength: 'Medium to Full',
     smoking_time: '45-60 minutes',
-    short_desc: 'Iconic Cohiba with rich, creamy smoke and impeccable construction.',
-    long_desc:
-      'The Cohiba Robusto is a benchmark of Cuban craftsmanship, offering a balanced profile of cedar, cocoa, and subtle spice. Perfect draw and consistent burn make it a true classic for aficionados.',
-    tasting_notes: ['Cedar', 'Cocoa', 'Leather', 'Pepper', 'Earth'],
-    pairing_suggestions: ['Espresso', 'Dark Rum', 'Cognac'],
-    tags: ['Premium', 'Balanced', 'Cuban'],
+    short_desc: 'Le Cohiba Robusto est l\'un des cigares cubains les plus emblématiques, reconnu pour sa qualité exceptionnelle et son profil de saveurs complexe.',
+    long_desc: `Le Cohiba Robusto incarne l'excellence de l'artisanat cubain. Fabriqué à la main dans les plus prestigieuses manufactures de La Havane, ce cigare offre une expérience sensorielle incomparable.
+
+**Caractéristiques principales :**
+- Format : Robusto (124mm x 50)
+- Temps de fumage : 45 à 60 minutes
+- Force : Moyenne à Pleine
+- Provenance : Cuba (Habanos S.A.)
+
+**Profil de saveurs :**
+Le Cohiba Robusto révèle une progression complexe de saveurs. Les premières bouffées offrent des notes de cèdre et de noisette, qui évoluent progressivement vers des saveurs plus riches de cacao, de cuir et d'épices douces. La finale apporte des touches de terre et de poivre noir, créant une expérience équilibrée et raffinée.
+
+**Conseils de dégustation :**
+- Coupez le cigare avec soin pour préserver la capa
+- Allumez-le uniformément pour assurer une combustion régulière
+- Prenez votre temps pour apprécier chaque bouffée
+- Accompagnez d'un espresso, d'un rhum vieilli ou d'un cognac
+
+**Conservation :**
+Conservez ce cigare dans un humidor à 65-70% d'humidité et à une température de 18-20°C pour préserver ses qualités optimales.`,
+    tasting_notes: ['Cèdre', 'Cacao', 'Cuir', 'Poivre', 'Terre', 'Noisette'],
+    pairing_suggestions: ['Espresso', 'Rhum vieilli', 'Cognac'],
+    tags: ['Premium', 'Équilibré', 'Cubain', 'Icônique'],
+    // Pour utiliser de vraies images, remplacez par :
+    // images: ['/images/products/cohiba-robusto/main.jpg', '/images/products/cohiba-robusto/detail-1.jpg', '/images/products/cohiba-robusto/detail-2.jpg'],
     images: [getCigarImg(0), getCigarImg(1), getCigarImg(2)],
     premium: true,
     featured: true,
@@ -56,7 +75,7 @@ export const products = [
     stock: 0,
     in_stock: false,
     stock_quantity: 0,
-    box_size: 'Unité',
+    box_size: 'Boîte de 10',
     unit_info: 'À l\'unité',
     origin: 'Cuba',
     format: 'Robusto',
@@ -64,12 +83,37 @@ export const products = [
     ring_gauge: '50',
     strength: 'Medium',
     smoking_time: '40-50 minutes',
-    short_desc: 'Elegant and smooth with notes of cedar and toasted nuts.',
-    long_desc:
-      'A refined expression from Romeo y Julieta featuring medium body and approachable character. Delivers classic Cuban flavors with a modern, compact format for any occasion.',
-    tasting_notes: ['Cedar', 'Toasted Nuts', 'Cream', 'Vanilla'],
-    pairing_suggestions: ['Coffee', 'Whiskey', 'Port'],
-    tags: ['Elegant', 'Medium'],
+    short_desc: 'Expression élégante et raffinée de Romeo y Julieta, alliant la tradition cubaine à un format moderne et compact.',
+    long_desc: `Le Romeo y Julieta Short Churchill est une création raffinée qui capture l'essence de la marque légendaire dans un format compact et moderne. Ce cigare allie élégance et accessibilité, parfait pour les occasions quotidiennes comme pour les moments spéciaux.
+
+**Caractéristiques principales :**
+- Format : Robusto (110mm x 50)
+- Temps de fumage : 40 à 50 minutes
+- Force : Moyenne
+- Provenance : Cuba (Habanos S.A.)
+
+**Profil de saveurs :**
+Ce cigare dévoile un profil délicat et harmonieux. Les premières bouffées révèlent des notes de cèdre frais et de noisette toastée, suivies d'une progression vers des saveurs crémeuses et vanillées. La finale apporte une touche subtile de miel et d'amande, créant une expérience douce et agréable.
+
+**Conseils de dégustation :**
+- Format compact, idéal pour une pause déjeuner ou un après-midi
+- Coupe nette recommandée pour une tirade optimale
+- Accompagnez d'un café ou d'un whisky léger
+- Parfait pour les amateurs débutants comme pour les connaisseurs
+
+**Accompagnements recommandés :**
+- Café ou espresso
+- Whisky Highland ou Lowland
+- Porto rubis
+- Vin rouge léger
+
+**Conservation :**
+Conservez dans un humidor à 65-70% d'humidité relative à une température de 18-20°C.`,
+    tasting_notes: ['Cèdre', 'Noisette toastée', 'Crème', 'Vanille', 'Miel'],
+    pairing_suggestions: ['Café', 'Whisky', 'Porto'],
+    tags: ['Élégant', 'Moyen', 'Accessible', 'Cubain'],
+    // Pour utiliser de vraies images, remplacez par :
+    // images: ['/images/products/romeo-y-julieta-short-churchill/main.jpg', '/images/products/romeo-y-julieta-short-churchill/detail-1.jpg'],
     images: [getCigarImg(3), getCigarImg(4)],
     premium: false,
     featured: false,
