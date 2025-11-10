@@ -139,13 +139,36 @@ Conservez dans un humidor à 65-70% d'humidité relative à une température de 
     ring_gauge: '52',
     strength: 'Full',
     smoking_time: '60-75 minutes',
-    short_desc: 'Legendary torpedo with bold cocoa, leather, and spice.',
-    long_desc:
-      'Montecristo No. 2 stands among the most revered cigars. Expect a dynamic evolution from creamy cedar to robust spice, all within a beautifully tapered torpedo format.',
-    tasting_notes: ['Cocoa', 'Leather', 'Spice', 'Cedar', 'Coffee'],
-    pairing_suggestions: ['Cognac', 'Single Malt Whiskey', 'Dark Chocolate'],
-    tags: ['Iconic', 'Torpedo', 'Robust'],
-    images: [getCigarImg(5), getCigarImg(6)],
+    short_desc: 'Légendaire torpedo cubain reconnu dans le monde entier pour son profil de saveurs complexe et sa construction impeccable.',
+    long_desc: `Le Montecristo No. 2 est une légende parmi les cigares cubains. Cette forme torpedo élégante est reconnue dans le monde entier pour son profil de saveurs complexe et sa construction impeccable.
+
+**Caractéristiques :**
+- Format : Torpedo (156mm x 52)
+- Temps de fumage : 60 à 75 minutes
+- Force : Pleine
+- Origine : Cuba (Habanos S.A.)
+
+**Expérience de dégustation :**
+Le Montecristo No. 2 offre un voyage sensoriel exceptionnel. Les premières bouffées révèlent des notes de cèdre crémeux et de noisette, qui évoluent progressivement vers des saveurs plus intenses de cacao noir, de cuir et d'épices. Le tiers final apporte une complexité remarquable avec des notes de terre, de café torréfié et une pointe de poivre noir, créant une finale longue et persistante.
+
+**Construction :**
+Chaque cigare est roulé à la main par des maîtres torcedores cubains, garantissant une tirade parfaite et une combustion uniforme. La cape, fabriquée à partir des meilleures feuilles de tabac cubain, assure une expérience visuelle et gustative exceptionnelle.
+
+**Accompagnements recommandés :**
+- Espresso ou café corsé
+- Rhum cubain vieilli (Havana Club, Santiago de Cuba)
+- Cognac ou Armagnac
+- Porto vintage
+- Whisky single malt (Highland ou Speyside)
+
+**Conservation :**
+Pour préserver toutes les qualités de ce cigare exceptionnel, conservez-le dans un humidor à 65-70% d'humidité relative et à une température constante de 18-20°C. Laissez-le reposer au moins 2-3 semaines après réception pour une expérience optimale.`,
+    tasting_notes: ['Cèdre', 'Cacao noir', 'Cuir', 'Épices', 'Café torréfié', 'Poivre'],
+    pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac', 'Porto vintage'],
+    tags: ['Légendaire', 'Pleine', 'Complexe', 'Icônique'],
+    // Pour utiliser de vraies images, remplacez par :
+    // images: ['/images/products/montecristo-no-2/main.jpg', '/images/products/montecristo-no-2/detail-1.jpg', '/images/products/montecristo-no-2/detail-2.jpg'],
+    images: [getCigarImg(5), getCigarImg(6), getCigarImg(7)],
     premium: true,
     featured: true,
     new_arrival: false,
