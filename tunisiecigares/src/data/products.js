@@ -11,6 +11,23 @@ const cigarImages = [
   'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1600&auto=format&fit=crop',
 ];
 
+// Helper to get correct image path based on environment
+const getImagePath = (path) => {
+  // If it's a full URL (http/https), return as is
+  if (path.startsWith('http')) return path;
+  
+  // Get the base URL from Vite environment
+  // Default to '/' if not set (local dev)
+  // In production (GitHub Pages), this will be '/tunisiecigares1/'
+  const baseUrl = import.meta.env.BASE_URL;
+  
+  // Ensure path doesn't start with slash to avoid double slashes
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  
+  // Combine base URL and path
+  return `${baseUrl}${cleanPath}`;
+};
+
 // Get image with variety
 const getCigarImg = (index) => cigarImages[index % cigarImages.length];
 
@@ -59,7 +76,7 @@ Ce cigare révèle un profil délicat et harmonieux. Les premières bouffées of
     pairing_suggestions: ['Café léger', 'Thé', 'Whisky doux'],
     tags: ['Doux', 'Accessible', 'Sumatra', 'Format compact'],
     images: [
-      '/images/products/villiger-premium-no5-sumatra-paquet.webp',
+      getImagePath('/images/products/villiger-premium-no5-sumatra-paquet.webp'),
     ],
     premium: false,
     featured: false,
@@ -110,7 +127,7 @@ Ce cigare révèle un profil délicat et harmonieux. Les premières bouffées of
     pairing_suggestions: ['Café léger', 'Thé', 'Whisky doux'],
     tags: ['Doux', 'Accessible', 'Sumatra', 'Format compact'],
     images: [
-      '/images/products/villiger-premium-no5-sumatra-unite.webp',
+      getImagePath('/images/products/villiger-premium-no5-sumatra-unite.webp'),
     ],
     premium: false,
     featured: false,
@@ -162,7 +179,7 @@ Ce cigare dévoile un profil harmonieux et équilibré. Les premières bouffées
     pairing_suggestions: ['Café', 'Whisky léger', 'Porto rubis'],
     tags: ['Classique', 'Équilibré', 'Sumatra', 'Facile à fumer'],
     images: [
-      '/images/products/villiger-premium-no5-sumatra-paquet.webp',
+      getImagePath('/images/products/villiger-premium-no5-sumatra-paquet.webp'),
     ],
     premium: false,
     featured: false,
@@ -213,7 +230,7 @@ Ce cigare dévoile un profil harmonieux et équilibré. Les premières bouffées
     pairing_suggestions: ['Café', 'Whisky léger', 'Porto rubis'],
     tags: ['Classique', 'Équilibré', 'Sumatra', 'Facile à fumer'],
     images: [
-      '/images/products/villiger-premium-no5-sumatra-unite.webp',
+      getImagePath('/images/products/villiger-premium-no5-sumatra-unite.webp'),
     ],
     premium: false,
     featured: false,
@@ -263,8 +280,8 @@ Joya de Nicaragua est la première marque de cigares premium du Nicaragua, fond�
     pairing_suggestions: ['Espresso', 'Rhum vieilli', 'Cognac'],
     tags: ['Légendaire', 'Moyen', 'Complexe', 'Nicaragua'],
     images: [
-      '/images/products/joya-de-nicaragua-clasico-no6.webp',
-      '/images/products/joya-de-nicaragua-clasico-no6-1.webp',
+      getImagePath('/images/products/joya-de-nicaragua-clasico-no6.webp'),
+      getImagePath('/images/products/joya-de-nicaragua-clasico-no6-1.webp'),
     ],
     premium: true,
     featured: true,
