@@ -16,319 +16,368 @@ const getCigarImg = (index) => cigarImages[index % cigarImages.length];
 
 export const products = [
   {
-    id: 'cohiba-robusto',
-    name: 'Cohiba Robusto',
-    name_fr: 'Cigare Cohiba Robusto',
-    brand: 'Cohiba',
-    price_TND: 45,
-    price_EUR: 14,
+    id: 'villiger-premium-no7-sumatra-paquet',
+    name: 'Villiger Premium No 7 Sumatra - Paquet de 5',
+    name_fr: 'Cigares Villiger Premium No 7 Sumatra - Paquet de 5',
+    brand: 'Villiger',
+    price_TND: 100,
+    price_EUR: 30,
     stock: 5,
     in_stock: true,
     stock_quantity: 5,
-    box_size: 'Boîte de 10',
-    unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Robusto',
-    length: '124mm',
-    ring_gauge: '50',
-    strength: 'Medium to Full',
-    smoking_time: '45-60 minutes',
-    short_desc: 'Le Cohiba Robusto est l\'un des cigares cubains les plus emblématiques, reconnu pour sa qualité exceptionnelle et son profil de saveurs complexe.',
-    long_desc: `Le Cohiba Robusto incarne l'excellence de l'artisanat cubain. Fabriqué à la main dans les plus prestigieuses manufactures de La Havane, ce cigare offre une expérience sensorielle incomparable.
+    box_size: 'Paquet de 5',
+    unit_info: 'Paquet de 5 pièces',
+    origin: 'Sumatra',
+    format: 'Petit format',
+    length: '90mm',
+    ring_gauge: '38',
+    strength: 'Mild',
+    smoking_time: '25-35 minutes',
+    short_desc: 'Cigare doux et élégant au tabac Sumatra, parfait pour les amateurs débutants et les moments de détente.',
+    long_desc: `Le Villiger Premium No 7 Sumatra est un cigare d'exception qui allie douceur et élégance dans un format compact et pratique. Fabriqué avec des feuilles de tabac sélectionnées de Sumatra, ce cigare offre une expérience de dégustation raffinée et accessible.
 
 **Caractéristiques principales :**
-- Format : Robusto (124mm x 50)
-- Temps de fumage : 45 à 60 minutes
-- Force : Moyenne à Pleine
-- Provenance : Cuba (Habanos S.A.)
+- Format : Petit format (90mm x 38)
+- Temps de fumage : 25 à 35 minutes
+- Force : Doux
+- Provenance : Sumatra (Indonésie)
+- Conditionnement : Paquet de 5 pièces
 
 **Profil de saveurs :**
-Le Cohiba Robusto révèle une progression complexe de saveurs. Les premières bouffées offrent des notes de cèdre et de noisette, qui évoluent progressivement vers des saveurs plus riches de cacao, de cuir et d'épices douces. La finale apporte des touches de terre et de poivre noir, créant une expérience équilibrée et raffinée.
+Ce cigare révèle un profil délicat et harmonieux. Les premières bouffées offrent des notes douces de cèdre et de noisette, qui évoluent progressivement vers des saveurs crémeuses et légèrement sucrées. La finale apporte une touche subtile de miel et d'amande, créant une expérience agréable et équilibrée, parfaite pour les amateurs débutants comme pour les connaisseurs recherchant un moment de détente.
 
 **Conseils de dégustation :**
-- Coupez le cigare avec soin pour préserver la capa
-- Allumez-le uniformément pour assurer une combustion régulière
-- Prenez votre temps pour apprécier chaque bouffée
-- Accompagnez d'un espresso, d'un rhum vieilli ou d'un cognac
+- Format compact, idéal pour une pause courte ou un moment de détente
+- Parfait pour les amateurs débutants grâce à sa douceur
+- Accompagnez d'un café léger, d'un thé ou d'un whisky doux
+- Conservation recommandée dans un humidor à 65-70% d'humidité
 
-**Conservation :**
-Conservez ce cigare dans un humidor à 65-70% d'humidité et à une température de 18-20°C pour préserver ses qualités optimales.`,
-    tasting_notes: ['Cèdre', 'Cacao', 'Cuir', 'Poivre', 'Terre', 'Noisette'],
-    pairing_suggestions: ['Espresso', 'Rhum vieilli', 'Cognac'],
-    tags: ['Premium', 'Équilibré', 'Cubain', 'Icônique'],
-    // Pour utiliser de vraies images, remplacez par :
-    // images: ['/images/products/cohiba-robusto/main.jpg', '/images/products/cohiba-robusto/detail-1.jpg', '/images/products/cohiba-robusto/detail-2.jpg'],
-    images: [getCigarImg(0), getCigarImg(1), getCigarImg(2)],
-    premium: true,
-    featured: true,
-    new_arrival: false,
-    rating: 4.8,
-    reviews_count: 24,
-  },
-  {
-    id: 'romeo-y-julieta-short-churchill',
-    name: 'Romeo y Julieta Short Churchill',
-    name_fr: 'Cigare Romeo y Julieta Short Churchill',
-    brand: 'Romeo y Julieta',
-    price_TND: 40,
-    price_EUR: 12,
-    stock: 0,
-    in_stock: false,
-    stock_quantity: 0,
-    box_size: 'Boîte de 10',
-    unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Robusto',
-    length: '110mm',
-    ring_gauge: '50',
-    strength: 'Medium',
-    smoking_time: '40-50 minutes',
-    short_desc: 'Expression élégante et raffinée de Romeo y Julieta, alliant la tradition cubaine à un format moderne et compact.',
-    long_desc: `Le Romeo y Julieta Short Churchill est une création raffinée qui capture l'essence de la marque légendaire dans un format compact et moderne. Ce cigare allie élégance et accessibilité, parfait pour les occasions quotidiennes comme pour les moments spéciaux.
-
-**Caractéristiques principales :**
-- Format : Robusto (110mm x 50)
-- Temps de fumage : 40 à 50 minutes
-- Force : Moyenne
-- Provenance : Cuba (Habanos S.A.)
-
-**Profil de saveurs :**
-Ce cigare dévoile un profil délicat et harmonieux. Les premières bouffées révèlent des notes de cèdre frais et de noisette toastée, suivies d'une progression vers des saveurs crémeuses et vanillées. La finale apporte une touche subtile de miel et d'amande, créant une expérience douce et agréable.
-
-**Conseils de dégustation :**
-- Format compact, idéal pour une pause déjeuner ou un après-midi
-- Coupe nette recommandée pour une tirade optimale
-- Accompagnez d'un café ou d'un whisky léger
-- Parfait pour les amateurs débutants comme pour les connaisseurs
-
-**Accompagnements recommandés :**
-- Café ou espresso
-- Whisky Highland ou Lowland
-- Porto rubis
-- Vin rouge léger
-
-**Conservation :**
-Conservez dans un humidor à 65-70% d'humidité relative à une température de 18-20°C.`,
-    tasting_notes: ['Cèdre', 'Noisette toastée', 'Crème', 'Vanille', 'Miel'],
-    pairing_suggestions: ['Café', 'Whisky', 'Porto'],
-    tags: ['Élégant', 'Moyen', 'Accessible', 'Cubain'],
-    // Pour utiliser de vraies images, remplacez par :
-    // images: ['/images/products/romeo-y-julieta-short-churchill/main.jpg', '/images/products/romeo-y-julieta-short-churchill/detail-1.jpg'],
-    images: [getCigarImg(3), getCigarImg(4)],
+**Prix :**
+- Paquet de 5 pièces : 100 TND
+- Prix unitaire : 22 TND`,
+    tasting_notes: ['Cèdre', 'Noisette', 'Crème', 'Miel', 'Amande'],
+    pairing_suggestions: ['Café léger', 'Thé', 'Whisky doux'],
+    tags: ['Doux', 'Accessible', 'Sumatra', 'Format compact'],
+    images: [
+      '/images/products/villiger-premium-no5-sumatra-paquet.webp',
+    ],
     premium: false,
     featured: false,
-    new_arrival: false,
-    rating: 4.5,
-    reviews_count: 18,
-  },
-  {
-    id: 'montecristo-no-2',
-    name: 'Montecristo No. 2',
-    name_fr: 'Cigare Montecristo No. 2',
-    brand: 'Montecristo',
-    price_TND: 55,
-    price_EUR: 17,
-    stock: 8,
-    in_stock: true,
-    stock_quantity: 8,
-    box_size: 'Boîte de 10',
-    unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Piramide',
-    length: '156mm',
-    ring_gauge: '52',
-    strength: 'Full',
-    smoking_time: '60-75 minutes',
-    short_desc: 'Légendaire torpedo cubain reconnu dans le monde entier pour son profil de saveurs complexe et sa construction impeccable.',
-    long_desc: `Le Montecristo No. 2 est une légende parmi les cigares cubains. Cette forme torpedo élégante est reconnue dans le monde entier pour son profil de saveurs complexe et sa construction impeccable.
-
-**Caractéristiques :**
-- Format : Torpedo (156mm x 52)
-- Temps de fumage : 60 à 75 minutes
-- Force : Pleine
-- Origine : Cuba (Habanos S.A.)
-
-**Expérience de dégustation :**
-Le Montecristo No. 2 offre un voyage sensoriel exceptionnel. Les premières bouffées révèlent des notes de cèdre crémeux et de noisette, qui évoluent progressivement vers des saveurs plus intenses de cacao noir, de cuir et d'épices. Le tiers final apporte une complexité remarquable avec des notes de terre, de café torréfié et une pointe de poivre noir, créant une finale longue et persistante.
-
-**Construction :**
-Chaque cigare est roulé à la main par des maîtres torcedores cubains, garantissant une tirade parfaite et une combustion uniforme. La cape, fabriquée à partir des meilleures feuilles de tabac cubain, assure une expérience visuelle et gustative exceptionnelle.
-
-**Accompagnements recommandés :**
-- Espresso ou café corsé
-- Rhum cubain vieilli (Havana Club, Santiago de Cuba)
-- Cognac ou Armagnac
-- Porto vintage
-- Whisky single malt (Highland ou Speyside)
-
-**Conservation :**
-Pour préserver toutes les qualités de ce cigare exceptionnel, conservez-le dans un humidor à 65-70% d'humidité relative et à une température constante de 18-20°C. Laissez-le reposer au moins 2-3 semaines après réception pour une expérience optimale.`,
-    tasting_notes: ['Cèdre', 'Cacao noir', 'Cuir', 'Épices', 'Café torréfié', 'Poivre'],
-    pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac', 'Porto vintage'],
-    tags: ['Légendaire', 'Pleine', 'Complexe', 'Icônique'],
-    // Pour utiliser de vraies images, remplacez par :
-    // images: ['/images/products/montecristo-no-2/main.jpg', '/images/products/montecristo-no-2/detail-1.jpg', '/images/products/montecristo-no-2/detail-2.jpg'],
-    images: [getCigarImg(5), getCigarImg(6), getCigarImg(7)],
-    premium: true,
-    featured: true,
-    new_arrival: false,
-    rating: 4.9,
-    reviews_count: 42,
-  },
-  {
-    id: 'partagas-serie-d-no-4',
-    name: 'Partagas Serie D No. 4',
-    name_fr: 'Cigare Partagas Serie D No. 4',
-    brand: 'Partagas',
-    price_TND: 50,
-    price_EUR: 15,
-    stock: 2,
-    in_stock: true,
-    stock_quantity: 2,
-    box_size: 'Unité',
-    unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Robusto',
-    length: '124mm',
-    ring_gauge: '50',
-    strength: 'Full',
-    smoking_time: '45-60 minutes',
-    short_desc: 'Full-bodied classic with earthy depth and peppery finish.',
-    long_desc:
-      'A powerhouse robusto from Partagas, the Serie D No. 4 delivers earthy richness, espresso, and black pepper with unmistakable Cuban intensity and impeccable balance.',
-    tasting_notes: ['Earth', 'Espresso', 'Black Pepper', 'Cocoa', 'Leather'],
-    pairing_suggestions: ['Espresso', 'Bourbon', 'Red Wine'],
-    tags: ['Full-bodied', 'Classic'],
-    images: [getCigarImg(7), getCigarImg(0)],
-    premium: true,
-    featured: true,
-    new_arrival: false,
-    rating: 4.7,
-    reviews_count: 31,
-  },
-  {
-    id: 'hoyo-de-monterrey-epicure-no-2',
-    name: 'Hoyo de Monterrey Epicure No.2',
-    name_fr: 'Cigare Hoyo de Monterrey Epicure No.2',
-    brand: 'Hoyo de Monterrey',
-    price_TND: 48,
-    price_EUR: 15,
-    stock: 10,
-    in_stock: true,
-    stock_quantity: 10,
-    box_size: 'Unité',
-    unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Robusto',
-    length: '124mm',
-    ring_gauge: '50',
-    strength: 'Medium',
-    smoking_time: '45-60 minutes',
-    short_desc: 'Silky and aromatic with cream, honey, and florals.',
-    long_desc:
-      'Epicure No. 2 charms with a gentle, aromatic profile – hints of cream, honey sweetness, and floral undertones – backed by superb construction and an elegant burn.',
-    tasting_notes: ['Cream', 'Honey', 'Floral', 'Cedar', 'Nuts'],
-    pairing_suggestions: ['Champagne', 'White Wine', 'Light Tea'],
-    tags: ['Aromatic', 'Silky'],
-    images: [getCigarImg(1)],
-    premium: false,
-    featured: false,
-    new_arrival: false,
-    rating: 4.6,
-    reviews_count: 19,
-  },
-  {
-    id: 'punch-rothschild',
-    name: 'Punch Rothschild',
-    name_fr: 'Cigare Punch Rothschild',
-    brand: 'Punch',
-    price_TND: 35,
-    price_EUR: 11,
-    stock: 0,
-    in_stock: false,
-    stock_quantity: 0,
-    box_size: 'Unité',
-    unit_info: 'À l\'unité',
-    origin: 'Honduras',
-    format: 'Rothschild',
-    length: '120mm',
-    ring_gauge: '50',
-    strength: 'Medium',
-    smoking_time: '40-50 minutes',
-    short_desc: 'Approachable yet flavorful with wood, cocoa, and gentle spice.',
-    long_desc:
-      'An excellent value selection delivering classic notes of wood, cocoa powder, and a touch of baking spice. Ideal for daily enjoyment without compromise.',
-    tasting_notes: ['Wood', 'Cocoa', 'Baking Spice', 'Leather'],
-    pairing_suggestions: ['Beer', 'Coffee', 'Whiskey'],
-    tags: ['Value', 'Approachable'],
-    images: [getCigarImg(2)],
-    premium: false,
-    featured: false,
-    new_arrival: false,
-    rating: 4.3,
+    new_arrival: true,
+    rating: 4.4,
     reviews_count: 12,
   },
   {
-    id: 'h-upmann-no-2',
-    name: 'H. Upmann No. 2',
-    name_fr: 'Cigare H. Upmann No. 2',
-    brand: 'H. Upmann',
-    price_TND: 52,
-    price_EUR: 16,
-    stock: 3,
+    id: 'villiger-premium-no7-sumatra-unite',
+    name: 'Villiger Premium No 7 Sumatra - À l\'unité',
+    name_fr: 'Cigare Villiger Premium No 7 Sumatra - À l\'unité',
+    brand: 'Villiger',
+    price_TND: 22,
+    price_EUR: 6.5,
+    stock: 25,
     in_stock: true,
-    stock_quantity: 3,
+    stock_quantity: 25,
     box_size: 'Unité',
     unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Piramide',
-    length: '156mm',
-    ring_gauge: '52',
-    strength: 'Medium to Full',
-    smoking_time: '60-75 minutes',
-    short_desc: 'Refined torpedo with cedar, almond, and subtle cream.',
-    long_desc:
-      'A refined expression from H. Upmann showcasing balance and finesse. Expect cedarwood, toasted almond, and a creamy finish that lingers gracefully.',
-    tasting_notes: ['Cedar', 'Almond', 'Cream', 'Vanilla', 'Honey'],
-    pairing_suggestions: ['Cognac', 'Port', 'Coffee'],
-    tags: ['Refined', 'Balanced'],
-    images: [getCigarImg(3)],
-    premium: true,
+    origin: 'Sumatra',
+    format: 'Petit format',
+    length: '90mm',
+    ring_gauge: '38',
+    strength: 'Mild',
+    smoking_time: '25-35 minutes',
+    short_desc: 'Cigare doux et élégant au tabac Sumatra, parfait pour les amateurs débutants et les moments de détente.',
+    long_desc: `Le Villiger Premium No 7 Sumatra est un cigare d'exception qui allie douceur et élégance dans un format compact et pratique. Fabriqué avec des feuilles de tabac sélectionnées de Sumatra, ce cigare offre une expérience de dégustation raffinée et accessible.
+
+**Caractéristiques principales :**
+- Format : Petit format (90mm x 38)
+- Temps de fumage : 25 à 35 minutes
+- Force : Doux
+- Provenance : Sumatra (Indonésie)
+
+**Profil de saveurs :**
+Ce cigare révèle un profil délicat et harmonieux. Les premières bouffées offrent des notes douces de cèdre et de noisette, qui évoluent progressivement vers des saveurs crémeuses et légèrement sucrées. La finale apporte une touche subtile de miel et d'amande, créant une expérience agréable et équilibrée, parfaite pour les amateurs débutants comme pour les connaisseurs recherchant un moment de détente.
+
+**Conseils de dégustation :**
+- Format compact, idéal pour une pause courte ou un moment de détente
+- Parfait pour les amateurs débutants grâce à sa douceur
+- Accompagnez d'un café léger, d'un thé ou d'un whisky doux
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Prix :**
+- Prix unitaire : 22 TND
+- Paquet de 5 pièces : 100 TND (économie de 10 TND)`,
+    tasting_notes: ['Cèdre', 'Noisette', 'Crème', 'Miel', 'Amande'],
+    pairing_suggestions: ['Café léger', 'Thé', 'Whisky doux'],
+    tags: ['Doux', 'Accessible', 'Sumatra', 'Format compact'],
+    images: [
+      '/images/products/villiger-premium-no5-sumatra-unite.webp',
+    ],
+    premium: false,
     featured: false,
+    new_arrival: true,
+    rating: 4.4,
+    reviews_count: 12,
+  },
+  {
+    id: 'villiger-premium-no5-sumatra-paquet',
+    name: 'Villiger Premium No 5 Sumatra - Paquet de 5',
+    name_fr: 'Cigares Villiger Premium No 5 Sumatra - Paquet de 5',
+    brand: 'Villiger',
+    price_TND: 90,
+    price_EUR: 27,
+    stock: 5,
+    in_stock: true,
+    stock_quantity: 5,
+    box_size: 'Paquet de 5',
+    unit_info: 'Paquet de 5 pièces',
+    origin: 'Sumatra',
+    format: 'Classique',
+    length: '110mm',
+    ring_gauge: '42',
+    strength: 'Mild to Medium',
+    smoking_time: '30-40 minutes',
+    short_desc: 'Cigare facile à fumer au tabac Sumatra, format classique apprécié pour son équilibre et sa régularité.',
+    long_desc: `Le Villiger Premium No 5 Sumatra incarne la tradition et l'excellence de la marque suisse Villiger. Ce cigare classique, facile à fumer, est fabriqué avec des feuilles de tabac premium de Sumatra, offrant une expérience de dégustation équilibrée et régulière.
+
+**Caractéristiques principales :**
+- Format : Classique (110mm x 42)
+- Temps de fumage : 30 à 40 minutes
+- Force : Doux à Moyen
+- Provenance : Sumatra (Indonésie)
+- Conditionnement : Paquet de 5 pièces
+
+**Profil de saveurs :**
+Ce cigare dévoile un profil harmonieux et équilibré. Les premières bouffées révèlent des notes de cèdre frais et de noisette toastée, suivies d'une progression vers des saveurs crémeuses et vanillées. La finale apporte une touche subtile de miel et d'amande, créant une expérience douce et agréable, parfaite pour tous les moments de la journée.
+
+**Conseils de dégustation :**
+- Format classique, facile à fumer et apprécié pour sa régularité
+- Idéal pour les amateurs débutants comme pour les connaisseurs
+- Accompagnez d'un café, d'un whisky léger ou d'un porto rubis
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Prix :**
+- Paquet de 5 pièces : 90 TND
+- Prix unitaire : 20 TND`,
+    tasting_notes: ['Cèdre', 'Noisette toastée', 'Crème', 'Vanille', 'Miel'],
+    pairing_suggestions: ['Café', 'Whisky léger', 'Porto rubis'],
+    tags: ['Classique', 'Équilibré', 'Sumatra', 'Facile à fumer'],
+    images: [
+      '/images/products/villiger-premium-no5-sumatra-paquet.webp',
+    ],
+    premium: false,
+    featured: false,
+    new_arrival: true,
+    rating: 4.5,
+    reviews_count: 15,
+  },
+  {
+    id: 'villiger-premium-no5-sumatra-unite',
+    name: 'Villiger Premium No 5 Sumatra - À l\'unité',
+    name_fr: 'Cigare Villiger Premium No 5 Sumatra - À l\'unité',
+    brand: 'Villiger',
+    price_TND: 20,
+    price_EUR: 6,
+    stock: 25,
+    in_stock: true,
+    stock_quantity: 25,
+    box_size: 'Unité',
+    unit_info: 'À l\'unité',
+    origin: 'Sumatra',
+    format: 'Classique',
+    length: '110mm',
+    ring_gauge: '42',
+    strength: 'Mild to Medium',
+    smoking_time: '30-40 minutes',
+    short_desc: 'Cigare facile à fumer au tabac Sumatra, format classique apprécié pour son équilibre et sa régularité.',
+    long_desc: `Le Villiger Premium No 5 Sumatra incarne la tradition et l'excellence de la marque suisse Villiger. Ce cigare classique, facile à fumer, est fabriqué avec des feuilles de tabac premium de Sumatra, offrant une expérience de dégustation équilibrée et régulière.
+
+**Caractéristiques principales :**
+- Format : Classique (110mm x 42)
+- Temps de fumage : 30 à 40 minutes
+- Force : Doux à Moyen
+- Provenance : Sumatra (Indonésie)
+
+**Profil de saveurs :**
+Ce cigare dévoile un profil harmonieux et équilibré. Les premières bouffées révèlent des notes de cèdre frais et de noisette toastée, suivies d'une progression vers des saveurs crémeuses et vanillées. La finale apporte une touche subtile de miel et d'amande, créant une expérience douce et agréable, parfaite pour tous les moments de la journée.
+
+**Conseils de dégustation :**
+- Format classique, facile à fumer et apprécié pour sa régularité
+- Idéal pour les amateurs débutants comme pour les connaisseurs
+- Accompagnez d'un café, d'un whisky léger ou d'un porto rubis
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Prix :**
+- Prix unitaire : 20 TND
+- Paquet de 5 pièces : 90 TND (économie de 10 TND)`,
+    tasting_notes: ['Cèdre', 'Noisette toastée', 'Crème', 'Vanille', 'Miel'],
+    pairing_suggestions: ['Café', 'Whisky léger', 'Porto rubis'],
+    tags: ['Classique', 'Équilibré', 'Sumatra', 'Facile à fumer'],
+    images: [
+      '/images/products/villiger-premium-no5-sumatra-unite.webp',
+    ],
+    premium: false,
+    featured: false,
+    new_arrival: true,
+    rating: 4.5,
+    reviews_count: 15,
+  },
+  {
+    id: 'joya-de-nicaragua-clasico-no6',
+    name: 'Joya de Nicaragua Clasico No. 6',
+    name_fr: 'Cigare Joya de Nicaragua Clasico No. 6',
+    brand: 'Joya de Nicaragua',
+    price_TND: 35,
+    price_EUR: 10.5,
+    stock: 25,
+    in_stock: true,
+    stock_quantity: 25,
+    box_size: 'Unité',
+    unit_info: 'À l\'unité',
+    origin: 'Nicaragua',
+    format: 'Toro',
+    length: '152mm',
+    ring_gauge: '52',
+    strength: 'Medium',
+    smoking_time: '60-75 minutes',
+    short_desc: 'Cigare légendaire du Nicaragua au corps moyen, reconnu pour sa complexité et sa construction impeccable.',
+    long_desc: `Le Joya de Nicaragua Clasico No. 6 est un cigare légendaire qui incarne l'excellence de l'artisanat nicaraguayen. Cette référence emblématique de la marque est reconnue dans le monde entier pour sa complexité, son équilibre parfait et sa construction impeccable.
+
+**Caractéristiques principales :**
+- Format : Toro (152mm x 52)
+- Temps de fumage : 60 à 75 minutes
+- Force : Moyenne
+- Provenance : Nicaragua (Estelí)
+
+**Profil de saveurs :**
+Ce cigare offre un voyage sensoriel exceptionnel. Les premières bouffées révèlent des notes de cèdre crémeux et de noisette, qui évoluent progressivement vers des saveurs plus riches de cacao, de cuir et d'épices douces. Le tiers final apporte une complexité remarquable avec des notes de terre, de café torréfié et une pointe de poivre noir, créant une finale longue et persistante.
+
+**Conseils de dégustation :**
+- Format généreux, idéal pour une longue dégustation
+- Accompagnez d'un espresso, d'un rhum vieilli ou d'un cognac
+- Parfait pour les occasions spéciales et les moments de détente prolongés
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Histoire :**
+Joya de Nicaragua est la première marque de cigares premium du Nicaragua, fondée en 1968. Le Clasico No. 6 est l'un de ses formats les plus appréciés, représentant l'essence même de l'artisanat nicaraguayen.`,
+    tasting_notes: ['Cèdre', 'Cacao', 'Cuir', 'Épices', 'Café torréfié', 'Poivre'],
+    pairing_suggestions: ['Espresso', 'Rhum vieilli', 'Cognac'],
+    tags: ['Légendaire', 'Moyen', 'Complexe', 'Nicaragua'],
+    images: [
+      '/images/products/joya-de-nicaragua-clasico-no6.webp',
+      '/images/products/joya-de-nicaragua-clasico-no6-1.webp',
+    ],
+    premium: true,
+    featured: true,
     new_arrival: false,
     rating: 4.7,
     reviews_count: 28,
   },
   {
-    id: 'bolivar-belicosos-finos',
-    name: 'Bolivar Belicosos Finos',
-    name_fr: 'Cigare Bolivar Belicosos Finos',
-    brand: 'Bolivar',
-    price_TND: 60,
-    price_EUR: 18,
-    stock: 6,
+    id: 'consul-joya-de-nicaragua',
+    name: 'Consul Joya de Nicaragua',
+    name_fr: 'Cigare Consul Joya de Nicaragua',
+    brand: 'Joya de Nicaragua',
+    price_TND: 30,
+    price_EUR: 9,
+    stock: 25,
     in_stock: true,
-    stock_quantity: 6,
+    stock_quantity: 25,
     box_size: 'Unité',
     unit_info: 'À l\'unité',
-    origin: 'Cuba',
-    format: 'Belicoso',
-    length: '140mm',
-    ring_gauge: '52',
-    strength: 'Full',
-    smoking_time: '55-70 minutes',
-    short_desc: 'Intense, earthy profile with cocoa and dried fruit.',
-    long_desc:
-      'A bold, complex Cuban with deep earth, cocoa, and touches of dried fruit. The belicoso shape concentrates aroma and flavor for a memorable experience.',
-    tasting_notes: ['Earth', 'Cocoa', 'Dried Fruit', 'Spice', 'Leather'],
-    pairing_suggestions: ['Single Malt Whiskey', 'Dark Rum', 'Espresso'],
-    tags: ['Intense', 'Complex'],
-    images: [getCigarImg(4), getCigarImg(5)],
+    origin: 'Nicaragua',
+    format: 'Robusto',
+    length: '127mm',
+    ring_gauge: '50',
+    strength: 'Medium',
+    smoking_time: '45-60 minutes',
+    short_desc: 'Cigare robuste du Nicaragua à l\'intensité moyenne, alliant puissance et finesse dans un format équilibré.',
+    long_desc: `Le Consul Joya de Nicaragua est un cigare robuste qui allie avec maestria puissance et finesse. Fabriqué dans les prestigieuses manufactures d'Estelí au Nicaragua, ce cigare offre une intensité moyenne parfaitement équilibrée, créant une expérience de dégustation mémorable.
+
+**Caractéristiques principales :**
+- Format : Robusto (127mm x 50)
+- Temps de fumage : 45 à 60 minutes
+- Force : Moyenne
+- Provenance : Nicaragua (Estelí)
+
+**Profil de saveurs :**
+Ce cigare dévoile un profil riche et complexe. Les premières bouffées révèlent des notes de cèdre et de noisette toastée, qui évoluent progressivement vers des saveurs plus intenses de cacao, de cuir et d'épices. La finale apporte une touche de terre et de poivre noir, créant une expérience équilibrée entre puissance et finesse, caractéristique de l'excellence nicaraguayenne.
+
+**Conseils de dégustation :**
+- Format robuste, parfait pour une dégustation équilibrée
+- Accompagnez d'un café corsé, d'un rhum ou d'un whisky single malt
+- Idéal pour les amateurs de cigares à l'intensité moyenne
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Qualité :**
+Le Consul représente l'excellence de Joya de Nicaragua, avec une construction impeccable et des feuilles de tabac sélectionnées, garantissant une tirade parfaite et une combustion uniforme.`,
+    tasting_notes: ['Cèdre', 'Noisette toastée', 'Cacao', 'Cuir', 'Épices', 'Poivre'],
+    pairing_suggestions: ['Café corsé', 'Rhum', 'Whisky single malt'],
+    tags: ['Robuste', 'Moyen', 'Équilibré', 'Nicaragua'],
+    images: [
+      'https://images.unsplash.com/photo-1516570161787-2fd917215a3d?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1600&auto=format&fit=crop',
+    ],
     premium: true,
     featured: true,
     new_arrival: false,
-    rating: 4.8,
-    reviews_count: 35,
+    rating: 4.6,
+    reviews_count: 22,
+  },
+  {
+    id: 'trinidad-reyes-boite-12',
+    name: 'Trinidad Reyes - Boîte de 12',
+    name_fr: 'Cigares Trinidad Reyes - Boîte de 12',
+    brand: 'Trinidad',
+    price_TND: 1800,
+    price_EUR: 540,
+    stock: 1,
+    in_stock: true,
+    stock_quantity: 1,
+    box_size: 'Boîte de 12',
+    unit_info: 'Boîte de 12 cigares',
+    origin: 'Cuba',
+    format: 'Petit Panetela',
+    length: '110mm',
+    ring_gauge: '40',
+    strength: 'Medium to Full',
+    smoking_time: '30-40 minutes',
+    short_desc: 'Marque premium cubaine légendaire en format petit panetela, offrant une expérience sensorielle exceptionnelle dans un format compact.',
+    long_desc: `Le Trinidad Reyes est une référence absolue parmi les cigares cubains premium. Cette marque légendaire, créée exclusivement pour Fidel Castro et les dignitaires cubains, est aujourd'hui l'une des plus prestigieuses et recherchées au monde. Le format Reyes, petit panetela élégant, incarne l'excellence de l'artisanat cubain dans un format compact et raffiné.
+
+**Caractéristiques principales :**
+- Format : Petit Panetela (110mm x 40)
+- Temps de fumage : 30 à 40 minutes
+- Force : Moyenne à Pleine
+- Provenance : Cuba (Habanos S.A.)
+- Conditionnement : Boîte de 12 cigares
+
+**Profil de saveurs :**
+Ce cigare offre une expérience sensorielle exceptionnelle. Les premières bouffées révèlent des notes complexes de cèdre, de noisette et de miel, qui évoluent progressivement vers des saveurs plus riches de cacao, de cuir et d'épices douces. La finale apporte des touches de terre, de café et une pointe de poivre, créant une expérience équilibrée et raffinée, caractéristique de l'excellence cubaine.
+
+**Histoire et prestige :**
+Trinidad est née en 1969 comme marque exclusive pour les dignitaires cubains. Ce n'est qu'en 1998 que cette marque légendaire a été rendue disponible au grand public, devenant instantanément l'une des références les plus prestigieuses. Le Reyes, avec son format compact et élégant, est parfait pour les connaisseurs recherchant l'excellence dans un format pratique.
+
+**Conseils de dégustation :**
+- Format compact, idéal pour une dégustation raffinée
+- Accompagnez d'un espresso, d'un rhum cubain vieilli ou d'un cognac premium
+- Parfait pour les occasions spéciales et les collectionneurs
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Prix :**
+- Boîte de 12 cigares : 1800 TND (150 TND par cigare)`,
+    tasting_notes: ['Cèdre', 'Noisette', 'Miel', 'Cacao', 'Cuir', 'Épices', 'Café', 'Poivre'],
+    pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac premium'],
+    tags: ['Premium', 'Cubain', 'Légendaire', 'Collection'],
+    images: [
+      'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?q=80&w=1600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop',
+    ],
+    premium: true,
+    featured: true,
+    new_arrival: false,
+    rating: 4.9,
+    reviews_count: 45,
   },
 ];
 

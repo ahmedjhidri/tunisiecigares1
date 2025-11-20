@@ -3,12 +3,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { LazyImage } from './LoadingStates.jsx';
+import QuickViewModal from './QuickViewModal.jsx';
 import { ShoppingCart, Eye } from 'lucide-react';
 import { trackEvent } from '../lib/analytics';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const [isHovered, setIsHovered] = useState(false);
+  const [showQuickView, setShowQuickView] = useState(false);
 
   const {
     id,
@@ -87,15 +89,19 @@ export default function ProductCard({ product }) {
               <ShoppingCart className="w-4 h-4" />
               Ajouter
             </button>
-            <Link
-              to={`/product/${id}`}
-              onClick={(e) => e.stopPropagation()}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowQuickView(true);
+                trackEvent('quick_view', 'ecommerce', product.name);
+              }}
               className="px-4 py-2 bg-white/20 text-white font-semibold rounded hover:bg-white/30 transition-base flex items-center gap-2 backdrop-blur-sm"
-              aria-label={`Voir détails de ${displayName}`}
+              aria-label={`Aperçu rapide de ${displayName}`}
             >
               <Eye className="w-4 h-4" />
-              Voir
-            </Link>
+              Aperçu
+            </button>
           </div>
         </div>
 
@@ -139,6 +145,13 @@ export default function ProductCard({ product }) {
           </div>
         </div>
       </div>
+      
+      {/* Quick View Modal */}
+      <QuickViewModal
+        product={product}
+        isOpen={showQuickView}
+        onClose={() => setShowQuickView(false)}
+      />
     </Link>
   );
 }

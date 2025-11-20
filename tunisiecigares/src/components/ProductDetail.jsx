@@ -4,6 +4,8 @@ import { useCart } from '../context/CartContext.jsx';
 import OrderModal from './OrderModal.jsx';
 import ImageZoom from './ImageZoom.jsx';
 import FloatingAddToCart from './FloatingAddToCart.jsx';
+import ShareButtons from './ShareButtons.jsx';
+import TrustBadges from './TrustBadges.jsx';
 import { Plus, Minus } from 'lucide-react';
 
 export default function ProductDetail({ product }) {
@@ -165,6 +167,11 @@ export default function ProductDetail({ product }) {
             </button>
           </div>
 
+          {/* Share Buttons */}
+          <div className="mt-6">
+            <ShareButtons product={product} />
+          </div>
+
           {/* Additional Info Card */}
           <div className="card p-4 mt-6">
             <h3 className="font-display text-gold text-lg mb-3">Informations</h3>
@@ -184,6 +191,11 @@ export default function ProductDetail({ product }) {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="mt-6">
+            <TrustBadges variant="inline" />
           </div>
 
           {/* Warning Message */}

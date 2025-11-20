@@ -6,6 +6,7 @@ import FilterChips from '../components/FilterChips.jsx';
 import SearchAutocomplete from '../components/SearchAutocomplete.jsx';
 import CollapsibleFilters from '../components/CollapsibleFilters.jsx';
 import ProductSort from '../components/ProductSort.jsx';
+import Breadcrumbs from '../components/Breadcrumbs.jsx';
 import products from '../data/products.js';
 
 export default function Products() {
@@ -144,9 +145,16 @@ export default function Products() {
   };
 
   return (
-    <div className="container-page py-8 md:py-12">
-      {/* Page Header */}
-      <div className="mb-8">
+    <>
+      <Breadcrumbs
+        items={[
+          { label: 'Accueil', path: '/' },
+          { label: 'Nos Cigares', path: '/products' }
+        ]}
+      />
+      <div className="container-page py-8 md:py-12">
+        {/* Page Header */}
+        <div className="mb-8">
         <h1 className="title-gold text-3xl md:text-4xl mb-2">Nos Cigares</h1>
         <p className="text-white/70 text-sm md:text-base">
           Découvrez notre sélection de cigares premium
@@ -344,6 +352,7 @@ export default function Products() {
           </>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
