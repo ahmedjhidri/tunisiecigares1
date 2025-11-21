@@ -1,47 +1,30 @@
 // Lightweight EmailJS REST integration (client-side)
 // Requires env vars:
 //  VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY
-//  VITE_ADMIN_EMAIL (optional, for admin notifications)
+
+import { logger } from '../utils/logger.js';
 
 // Load EmailJS configuration from environment variables
 // Note: Vite requires VITE_ prefix and variables must be available at build time
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
-const ADMIN_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_ADMIN_TEMPLATE_ID || TEMPLATE_ID; // Fallback to same template if not set
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
 
 // Debug: Log configuration on module load (only in dev mode)
 if (import.meta.env.DEV) {
-  console.log('[Email] Module loaded - Environment variables:', {
-    SERVICE_ID: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
-    TEMPLATE_ID: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
-    ADMIN_TEMPLATE_ID: ADMIN_TEMPLATE_ID ? `${ADMIN_TEMPLATE_ID.substring(0, 8)}...` : 'MISSING (using customer template)',
-    PUBLIC_KEY: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
-    ADMIN_EMAIL: ADMIN_EMAIL ? `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}` : 'MISSING',
-    allEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_EMAILJS') || key.startsWith('VITE_ADMIN')),
-    note: ADMIN_TEMPLATE_ID === TEMPLATE_ID ? '⚠️ Using same template for customer and admin - consider using separate templates' : '✅ Using separate templates',
+  logger.debug('Email module loaded', {
+    hasServiceId: Boolean(SERVICE_ID),
+    hasTemplateId: Boolean(TEMPLATE_ID),
+    hasPublicKey: Boolean(PUBLIC_KEY),
   });
 }
 
 export function isEmailEnabled() {
   const enabled = Boolean(SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY);
   
-  // Log in both dev and production to help diagnose issues
-  console.log('[Email] Configuration check:', {
-    enabled,
-    hasServiceId: Boolean(SERVICE_ID),
-    hasTemplateId: Boolean(TEMPLATE_ID),
-    hasPublicKey: Boolean(PUBLIC_KEY),
-    hasAdminEmail: Boolean(ADMIN_EMAIL),
-    hasAdminTemplate: Boolean(ADMIN_TEMPLATE_ID && ADMIN_TEMPLATE_ID !== TEMPLATE_ID),
-    serviceId: SERVICE_ID ? `${SERVICE_ID.substring(0, 8)}...` : 'MISSING',
-    templateId: TEMPLATE_ID ? `${TEMPLATE_ID.substring(0, 8)}...` : 'MISSING',
-    adminTemplateId: ADMIN_TEMPLATE_ID ? `${ADMIN_TEMPLATE_ID.substring(0, 8)}...` : 'MISSING (using customer template)',
-    publicKey: PUBLIC_KEY ? `${PUBLIC_KEY.substring(0, 8)}...` : 'MISSING',
-    environment: import.meta.env.MODE || 'unknown',
-    warning: !enabled ? '❌ Email is NOT enabled - check GitHub Secrets or .env file' : '✅ Email is enabled',
-  });
+  if (!enabled) {
+    logger.warn('Email is not enabled - check environment variables');
+  }
   
   return enabled;
 }
@@ -232,7 +215,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
   const customerName = `${escapeHtml(firstName)} ${escapeHtml(lastName)}`;
   const subject = `✅ Commande ${orderRef || ''} confirmée - Tunisie Cigares`;
 
-  // Generate HTML email content (same format as admin email)
+  // Generate HTML email content
   const itemRows = (items || []).map(i => `
     <tr>
       <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;">${escapeHtml(i.product_name || i.name || 'Unknown')}</td>
@@ -291,7 +274,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       </div>
     </div>`;
 
-  // EmailJS template variables - use html_message for both customer and admin
+  // EmailJS template variables
   // Template should use: {{to_email}} and {{{html_message}}}
   const payload = {
     service_id: SERVICE_ID,
@@ -303,7 +286,7 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
       user_email: to,
       reply_to: to,
       subject,
-      html_message: html, // Customer email now uses HTML (same as admin)
+      html_message: html,
       // Also include text variables for compatibility
       customer_name: customerName,
       order_ref: orderRef || 'N/A',
@@ -488,238 +471,6 @@ export async function sendOrderEmail({ toEmail, firstName, lastName, phone, addr
   }
 }
 
-/**
- * Send admin notification email when a new order is placed
- * @param {Object} params - Order details
- * @param {string} params.orderRef - Order reference number
- * @param {string} params.customerName - Customer full name
- * @param {string} params.customerEmail - Customer email
- * @param {string} params.customerPhone - Customer phone
- * @param {string} params.address - Delivery address
- * @param {Array} params.items - Order items
- * @param {number} params.total - Order total
- * @returns {Promise<void>}
- */
-export async function sendAdminNotification({ orderRef, customerName, customerEmail, customerPhone, address, items, total }) {
-  console.log('[Email] 📧 Starting admin notification...', {
-    orderRef,
-    customerName,
-    customerEmail: customerEmail ? `${customerEmail.substring(0, 3)}***@${customerEmail.split('@')[1]}` : 'MISSING',
-    itemsCount: items?.length || 0,
-    total,
-  });
-  
-  // Only send if admin email is configured
-  if (!ADMIN_EMAIL || !isEmailEnabled()) {
-    const reason = !ADMIN_EMAIL ? 'VITE_ADMIN_EMAIL not configured' : 'Email not enabled';
-    console.warn('[Email] ⚠️ Admin notification skipped:', {
-      hasAdminEmail: Boolean(ADMIN_EMAIL),
-      isEmailEnabled: isEmailEnabled(),
-      reason,
-      action: 'Add VITE_ADMIN_EMAIL to GitHub Secrets or .env file',
-    });
-    return { success: false, skipped: true, reason };
-  }
-  
-  console.log('[Email] ✅ Admin notification enabled, proceeding...');
-
-  const itemRows = (items || []).map(i => `
-    <tr>
-      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;">${escapeHtml(i.product_name || i.name || 'Unknown')}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:center;">${i.quantity || 1}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:right;">${i.price || i.price_TND || 0} TND</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#eee;text-align:right;">${(i.subtotal || (i.price || i.price_TND || 0) * (i.quantity || 1))} TND</td>
-    </tr>`).join('');
-
-  const subject = `🆕 New Order: ${orderRef || 'No Ref'}`;
-  const html = `
-    <div style="background:#0B0B0B;color:#fff;font-family:Inter,Arial,sans-serif;padding:24px;">
-      <div style="max-width:640px;margin:0 auto;background:#111111;border:1px solid #3a2f1b;border-radius:12px;overflow:hidden;">
-        <div style="padding:20px 24px;border-bottom:1px solid #3a2f1b;background:#141414;display:flex;align-items:center;gap:12px;">
-          <div style="width:10px;height:10px;border-radius:50%;background:#C9A14A;"></div>
-          <h1 style="margin:0;font-size:18px;color:#C9A14A;">New Order Alert</h1>
-        </div>
-        <div style="padding:24px;">
-          <h2 style="margin:0 0 8px;font-size:20px;color:#C9A14A;">New Order Received</h2>
-          <p style="margin:0 0 16px;color:#ddd;">Order No: <strong>${orderRef || 'N/A'}</strong></p>
-          
-          <h3 style="margin:24px 0 8px;color:#eee;font-size:16px;">Customer Information</h3>
-          <p style="margin:0 0 16px;color:#ccc;">
-            <strong>Name:</strong> ${escapeHtml(customerName || 'N/A')}<br/>
-            <strong>Email:</strong> ${escapeHtml(customerEmail || 'N/A')}<br/>
-            <strong>Phone:</strong> ${escapeHtml(customerPhone || 'N/A')}<br/>
-            <strong>Address:</strong> ${escapeHtml(address || 'N/A')}
-          </p>
-
-          <h3 style="margin:24px 0 8px;color:#eee;font-size:16px;">Order Items</h3>
-          <table style="width:100%;border-collapse:collapse;background:#121212;border:1px solid #2a2a2a;">
-            <thead>
-              <tr>
-                <th style="padding:10px 12px;text-align:left;color:#aaa;border-bottom:1px solid #2a2a2a;">Product</th>
-                <th style="padding:10px 12px;text-align:center;color:#aaa;border-bottom:1px solid #2a2a2a;">Qty</th>
-                <th style="padding:10px 12px;text-align:right;color:#aaa;border-bottom:1px solid #2a2a2a;">Unit</th>
-                <th style="padding:10px 12px;text-align:right;color:#aaa;border-bottom:1px solid #2a2a2a;">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${itemRows}
-            </tbody>
-          </table>
-
-          <div style="margin-top:16px;text-align:right;color:#eee;">
-            <div style="margin:8px 0;color:#C9A14A;font-size:18px;">Total: <strong>${total} TND</strong></div>
-          </div>
-
-          <div style="margin-top:20px;padding:12px;background:#1a1a1a;border-left:3px solid #C9A14A;">
-            <p style="margin:0;color:#ddd;font-size:14px;">
-              <strong>Action Required:</strong> Please contact the customer via Messenger to confirm delivery details.
-            </p>
-          </div>
-        </div>
-        <div style="padding:16px 24px;border-top:1px solid #3a2f1b;background:#141414;color:#aaa;font-size:12px;">
-          <p style="margin:0;">Cigar Lounge Tunisia • Admin Notification</p>
-        </div>
-      </div>
-    </div>`;
-
-  // Use the same template as customer (both use html_message now)
-  // IMPORTANT: Template should use {{{html_message}}} (triple braces) to render HTML
-  const adminTemplateId = ADMIN_TEMPLATE_ID !== TEMPLATE_ID ? ADMIN_TEMPLATE_ID : TEMPLATE_ID;
-
-  const payload = {
-    service_id: SERVICE_ID,
-    template_id: adminTemplateId,
-    user_id: PUBLIC_KEY,
-    template_params: {
-      to_email: ADMIN_EMAIL,
-      to: ADMIN_EMAIL,
-      user_email: ADMIN_EMAIL,
-      reply_to: customerEmail || ADMIN_EMAIL,
-      subject,
-      html_message: html, // Admin email uses same HTML format as customer
-      // Also include text variables for compatibility
-      customer_name: customerName || 'N/A',
-      customer_email: customerEmail || 'N/A',
-      customer_phone: customerPhone || 'N/A',
-      order_ref: orderRef || 'N/A',
-      total: `${total} TND`,
-    }
-  };
-  
-  console.log('[Email] Using admin template (same HTML format as customer):', {
-    templateId: adminTemplateId.substring(0, 8) + '...',
-    isSameAsCustomer: adminTemplateId === TEMPLATE_ID,
-    hasHtmlMessage: true,
-    note: adminTemplateId === TEMPLATE_ID ? '✅ Using same template as customer (both use html_message)' : '✅ Using separate admin template',
-  });
-
-  console.log('[Email] 📤 Sending admin notification via EmailJS API...', {
-    serviceId: SERVICE_ID.substring(0, 8) + '...',
-    templateId: adminTemplateId.substring(0, 8) + '...',
-    toEmail: `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}`,
-    replyTo: customerEmail ? `${customerEmail.substring(0, 3)}***@${customerEmail.split('@')[1]}` : ADMIN_EMAIL,
-    subject,
-    htmlLength: html.length,
-    hasHtmlMessage: true, // Admin email uses HTML
-  });
-
-  try {
-    const startTime = Date.now();
-    const requestUrl = 'https://api.emailjs.com/api/v1.0/email/send';
-    const requestBody = JSON.stringify(payload);
-    
-    console.log('[Email] 🔄 ADMIN STEP 1: Preparing EmailJS API request...', {
-      url: requestUrl,
-      method: 'POST',
-      payloadSize: requestBody.length,
-      toEmail: ADMIN_EMAIL,
-      templateId: adminTemplateId,
-    });
-    
-    console.log('[Email] 🔄 ADMIN STEP 2: Making fetch() call to EmailJS...');
-    
-    let res;
-    try {
-      res = await fetch(requestUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: requestBody,
-        signal: AbortSignal.timeout(30000)
-      });
-      console.log('[Email] 🔄 ADMIN STEP 3: Fetch completed:', {
-        status: res.status,
-        ok: res.ok,
-      });
-    } catch (fetchError) {
-      console.error('[Email] ❌ ADMIN STEP 3 FAILED: Fetch error:', {
-        errorName: fetchError.name,
-        errorMessage: fetchError.message,
-      });
-      throw fetchError;
-    }
-
-    const duration = Date.now() - startTime;
-    console.log('[Email] 🔄 ADMIN STEP 4: Reading response text...');
-    
-    let responseText;
-    try {
-      responseText = await res.text();
-      console.log('[Email] 🔄 ADMIN STEP 5: Response text read:', {
-        length: responseText.length,
-      });
-    } catch (textError) {
-      console.error('[Email] ❌ ADMIN STEP 5 FAILED: Error reading response:', textError);
-      throw textError;
-    }
-    
-    console.log('[Email] 📥 Admin notification API response:', {
-      status: res.status,
-      statusText: res.statusText,
-      duration: `${duration}ms`,
-      responseLength: responseText.length,
-      responsePreview: responseText.substring(0, 200),
-    });
-
-    if (!res.ok) {
-      let errorData;
-      try {
-        errorData = JSON.parse(responseText);
-      } catch {
-        errorData = { raw: responseText.substring(0, 200) };
-      }
-      
-      console.error('[Email] ❌ Admin notification failed:', {
-        status: res.status,
-        statusText: res.statusText,
-        error: errorData,
-        fullResponse: responseText,
-      });
-      // Don't throw - admin notification failure shouldn't block order processing
-      return { success: false, error: errorData?.message || `HTTP ${res.status}` };
-    }
-
-    console.log('[Email] ✅ Admin notification sent successfully!', {
-      orderRef,
-      duration: `${duration}ms`,
-      to: `${ADMIN_EMAIL.substring(0, 3)}***@${ADMIN_EMAIL.split('@')[1]}`,
-    });
-    
-    console.log('✅ Email admin sent successfully');
-    
-    return { success: true, orderRef, to: ADMIN_EMAIL };
-  } catch (error) {
-    console.error('[Email] ❌ Admin notification error:', {
-      errorName: error.name,
-      errorMessage: error.message,
-      stack: error.stack,
-    });
-    
-    console.error(`❌ Email admin failed: ${error.message}`);
-    
-    // Don't throw - admin notification failure shouldn't block order processing
-    return { success: false, error: error.message };
-  }
-}
 
 function escapeHtml(s = '') {
   return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));

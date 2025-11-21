@@ -26,14 +26,20 @@ export const isSupabaseConfigured = () => {
   return configured;
 };
 
-// Test connection
+// Test connection (async, non-blocking)
 if (supabase) {
-  supabase.from('orders').select('count', { count: 'exact', head: true })
-    .then(({ count, error }) => {
-      if (error) {
-        console.error('❌ Supabase connection test failed:', error.message);
-      } else {
-        console.log('✅ Supabase connected - Orders count:', count);
-      }
-    });
+  // Run connection test asynchronously to avoid blocking app initialization
+  setTimeout(() => {
+    supabase.from('orders').select('count', { count: 'exact', head: true })
+      .then(({ count, error }) => {
+        if (error) {
+          console.error('❌ Supabase connection test failed:', error.message);
+        } else {
+          console.log('✅ Supabase connected - Orders count:', count);
+        }
+      })
+      .catch(err => {
+        console.error('❌ Supabase connection test error:', err);
+      });
+  }, 100);
 }

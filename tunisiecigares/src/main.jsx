@@ -8,18 +8,36 @@ import { RecentlyViewedProvider } from './context/RecentlyViewedContext.jsx';
 import App from './App.jsx';
 import './styles/index.css';
 
-createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <HashRouter>
-      <HelmetProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <RecentlyViewedProvider>
-              <App />
-            </RecentlyViewedProvider>
-          </WishlistProvider>
-        </CartProvider>
-      </HelmetProvider>
-    </HashRouter>
-  </React.StrictMode>
-);
+// Add error handling for React mounting
+try {
+  const rootElement = document.getElementById('root');
+  if (!rootElement) {
+    throw new Error('Root element not found');
+  }
+  
+  console.log('🚀 Starting React app...');
+  
+  createRoot(rootElement).render(
+    <React.StrictMode>
+      <HashRouter>
+        <HelmetProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <RecentlyViewedProvider>
+                <App />
+              </RecentlyViewedProvider>
+            </WishlistProvider>
+          </CartProvider>
+        </HelmetProvider>
+      </HashRouter>
+    </React.StrictMode>
+  );
+  
+  console.log('✅ React app mounted successfully');
+} catch (error) {
+  console.error('❌ Failed to mount React app:', error);
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+  document.getElementById('error').innerHTML = 
+    '<h1>Error Loading Site</h1><p>' + error.message + '</p><p>Check browser console (F12) for details.</p>';
+}

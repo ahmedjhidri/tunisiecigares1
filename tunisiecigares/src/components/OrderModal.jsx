@@ -1,15 +1,11 @@
 // tunisiecigares/src/components/OrderModal.jsx
 import { useEffect, useRef, useState } from 'react';
 import { showSuccessOverlay } from './SuccessOverlay.jsx';
-console.log('EmailJS Config:', {
-  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID ? '✓ Set' : '✗ Missing',
-  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ? '✓ Set' : '✗ Missing',
-  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY ? '✓ Set' : '✗ Missing'
-});
-import { sendOrderEmail, sendAdminNotification, isEmailEnabled, EmailError } from '../lib/email';
+import { sendOrderEmail, isEmailEnabled, EmailError } from '../lib/email';
 import { useCart } from '../context/CartContext.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { formatPhoneNumber, validatePhoneNumber } from '../utils/phoneMask.js';
+import { validateOrderForm } from '../utils/validation.js';
 import LoadingSpinner from './LoadingSpinner.jsx';
 
 export default function OrderModal({ isOpen, onClose, productName, productPrice, isCartOrder = false }) {
@@ -202,6 +198,17 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       return;
     }
 
+    // Validate and sanitize all inputs using validation utilities
+    const validation = validateOrderForm(formData);
+    if (!validation.valid) {
+      setError('Veuillez corriger les erreurs dans le formulaire.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Use sanitized data
+    const sanitized = validation.sanitized;
+
     try {
       if (!isSupabaseConfigured()) {
         throw new Error('Supabase n\'est pas configuré. Veuillez configurer vos variables d\'environnement.');
@@ -227,46 +234,46 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
         const averagePrice = total / totalQuantity;
 
         orderData = {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          age: parseInt(formData.age),
+          first_name: sanitized.firstName,      // ✅ Sanitized
+          last_name: sanitized.lastName,         // ✅ Sanitized
+          email: sanitized.email,                // ✅ Sanitized
+          phone: sanitized.phone,                // ✅ Sanitized
+          address: sanitized.address,            // ✅ Sanitized
+          age: sanitized.age,                    // ✅ Validated
           product_name: `Commande de ${cart.length} produit(s)`, // Summary
-          product_price: averagePrice, // ← CHANGED: Average price instead of null
-          quantity: totalQuantity, // Total items
+          product_price: averagePrice,
+          quantity: totalQuantity,
           total: total,
-          notes: formData.notes || null,
-          order_items: items, // store as JSON array (not string)
+          notes: sanitized.notes || null,        // ✅ Sanitized
+          order_items: items,
           order_type: 'cart',
           order_ref: orderRef,
           status: 'pending'
         };
       } else {
         // SINGLE PRODUCT ORDER
-        const total = productPrice * formData.quantity;
+        const total = productPrice * sanitized.quantity;
 
         const item = {
           product_name: productName,
           price: productPrice,
-          quantity: parseInt(formData.quantity),
+          quantity: sanitized.quantity,          // ✅ Validated
           subtotal: total
         };
 
         orderData = {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          age: parseInt(formData.age),
+          first_name: sanitized.firstName,       // ✅ Sanitized
+          last_name: sanitized.lastName,         // ✅ Sanitized
+          email: sanitized.email,                // ✅ Sanitized
+          phone: sanitized.phone,                // ✅ Sanitized
+          address: sanitized.address,            // ✅ Sanitized
+          age: sanitized.age,                    // ✅ Validated
           product_name: productName,
           product_price: productPrice,
-          quantity: parseInt(formData.quantity),
+          quantity: sanitized.quantity,          // ✅ Validated
           total: total,
-          notes: formData.notes || null,
-          order_items: [item], // store as JSON array (not string)
+          notes: sanitized.notes || null,        // ✅ Sanitized
+          order_items: [item],
           order_type: 'single',
           order_ref: orderRef,
           status: 'pending'
@@ -298,11 +305,11 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           
           try {
             const emailResult = await sendOrderEmail({
-              toEmail: formData.email,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              phone: formData.phone,
-              address: formData.address,
+              toEmail: sanitized.email,
+              firstName: sanitized.firstName,
+              lastName: sanitized.lastName,
+              phone: sanitized.phone,
+              address: sanitized.address,
               items: orderData.order_items,
               total: orderData.total,
               orderRef: orderData.order_ref
@@ -337,43 +344,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
         showSuccessOverlay("✅  Votre commande a été confirmée ! (Note: Email de confirmation non envoyé)");
       }
 
-      // Send admin notification (fire and forget - don't block on failure)
-      try {
-        console.log('[OrderModal] 📧 Preparing to send admin notification...', {
-          orderRef: orderData.order_ref,
-        });
-        
-        const adminResult = await sendAdminNotification({
-          orderRef: orderData.order_ref,
-          customerName: `${formData.firstName} ${formData.lastName}`,
-          customerEmail: formData.email,
-          customerPhone: formData.phone,
-          address: formData.address,
-          items: orderData.order_items,
-          total: orderData.total
-        });
-        
-        if (adminResult?.success) {
-          console.log('[OrderModal] ✅ Admin notification sent successfully');
-        } else if (adminResult?.skipped) {
-          console.warn('[OrderModal] ⚠️ Admin notification skipped:', {
-            reason: adminResult.reason,
-            action: 'Add VITE_ADMIN_EMAIL to GitHub Secrets (Settings → Secrets → Actions)',
-          });
-        } else {
-          console.warn('[OrderModal] ⚠️ Admin notification failed (non-blocking):', adminResult);
-        }
-      } catch (adminErr) {
-        // Silently fail - admin notification is not critical
-        console.error('[OrderModal] ❌ Admin notification failed (non-blocking):', {
-          error: adminErr,
-          errorName: adminErr.name,
-          errorMessage: adminErr.message,
-          errorCode: adminErr.code,
-          stack: adminErr.stack,
-        });
-      }
-      
       // Clear cart if it was a cart order
       if (isCartOrder) {
         clearCart();
@@ -505,10 +475,27 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
               )}
 
               {!isSupabaseConfigured() && (
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-                  <p className="text-yellow-400 text-sm">
-                    ⚠️ Base de données non configurée. Veuillez nous contacter via Messenger.
-                  </p>
+                <div className="bg-red-500/20 border-2 border-red-500/50 rounded-lg p-4 mb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="text-red-400 text-2xl">⚠️</div>
+                    <div className="flex-1">
+                      <p className="text-red-300 text-sm font-bold mb-2">
+                        Impossible de confirmer la commande
+                      </p>
+                      <p className="text-red-200 text-xs mb-2">
+                        Supabase n'est pas configuré. Les commandes ne peuvent pas être enregistrées.
+                      </p>
+                      <div className="bg-black/30 rounded p-2 mt-2">
+                        <p className="text-white/80 text-xs font-mono mb-1">Pour activer :</p>
+                        <p className="text-white/60 text-xs">
+                          1. Créez un fichier <code className="bg-black/50 px-1 rounded">.env</code> dans le dossier <code className="bg-black/50 px-1 rounded">tunisiecigares/</code>
+                        </p>
+                        <p className="text-white/60 text-xs">
+                          2. Ajoutez : <code className="bg-black/50 px-1 rounded">VITE_SUPABASE_URL=...</code> et <code className="bg-black/50 px-1 rounded">VITE_SUPABASE_ANON_KEY=...</code>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -749,12 +736,17 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                   type="submit"
                   disabled={isSubmitting || !isSupabaseConfigured() || Object.keys(fieldErrors).length > 0}
                   className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  title={!isSupabaseConfigured() ? 'Supabase non configuré - Impossible de confirmer la commande' : Object.keys(fieldErrors).length > 0 ? 'Veuillez corriger les erreurs du formulaire' : ''}
                 >
                   {isSubmitting ? (
                     <>
                       <LoadingSpinner size="sm" />
                       Envoi en cours...
                     </>
+                  ) : !isSupabaseConfigured() ? (
+                    'Configuration requise'
+                  ) : Object.keys(fieldErrors).length > 0 ? (
+                    'Corriger les erreurs'
                   ) : (
                     'Confirmer la commande'
                   )}

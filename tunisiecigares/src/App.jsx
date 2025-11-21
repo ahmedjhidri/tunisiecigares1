@@ -7,8 +7,11 @@ import SuccessOverlay from './components/SuccessOverlay.jsx';
 import AgeVerificationModal from './components/AgeVerificationModal.jsx';
 import CartNotification from './components/CartNotification.jsx';
 import CartConfirmationModal from './components/CartConfirmationModal.jsx';
-import CookieConsent from './components/CookieConsent.jsx';
-import PromoBanner from './components/PromoBanner.jsx';
+// Lazy load CookieConsent to handle ad blocker interference
+import { lazy, Suspense } from 'react';
+const CookieConsent = lazy(() => 
+  import('./components/CookieConsent.jsx').catch(() => ({ default: () => null }))
+);
 import SEO from './components/SEO.jsx';
 import { useCart } from './context/CartContext.jsx';
 import Home from './pages/Home.jsx';
@@ -17,7 +20,6 @@ import Products from './pages/Products.jsx';
 import Product from './pages/Product.jsx';
 import Contact from './pages/Contact.jsx';
 import Cart from './pages/Cart.jsx';
-import AdminOrders from './pages/AdminOrders.jsx';
 import MyOrders from './pages/MyOrders.jsx';
 import Accessories from './pages/Accessories.jsx';
 import NotFound from './pages/NotFound.jsx';
@@ -37,8 +39,9 @@ function AppContent() {
         onClose={() => setShowCartModal(false)}
         product={lastAdded}
       />
-      <CookieConsent />
-      <PromoBanner />
+      <Suspense fallback={null}>
+        <CookieConsent />
+      </Suspense>
       <Header />
       <main className="flex-1" id="main-content">
         <Routes>
@@ -47,7 +50,6 @@ function AppContent() {
           <Route path="/product/:id" element={<Product />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/accessories" element={<Accessories />} />
           <Route path="/privacy" element={<Privacy />} />

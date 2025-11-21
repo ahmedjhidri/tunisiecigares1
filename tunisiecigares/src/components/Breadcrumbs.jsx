@@ -27,7 +27,6 @@ export default function Breadcrumbs({ items = [] }) {
         'contact': 'Contact',
         'accessories': 'Accessoires',
         'privacy': 'Confidentialité',
-        'admin': 'Administration',
         'my-orders': 'Mes Commandes'
       };
       

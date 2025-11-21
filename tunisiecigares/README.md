@@ -78,19 +78,11 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here
 VITE_EMAILJS_SERVICE_ID=service_xxxxxxxxx
 VITE_EMAILJS_TEMPLATE_ID=template_xxxxxxxxx
 VITE_EMAILJS_PUBLIC_KEY=your-public-key-here
-
-# Admin Panel Password
-# Set a secure password for accessing the admin orders page
-VITE_ADMIN_PASSWORD=your-secure-password-here
 ```
 
 ### Optional Variables
 
 ```bash
-# Admin Email (for order notifications)
-# When set, admin will receive email notifications for new orders
-VITE_ADMIN_EMAIL=admin@example.com
-
 # Analytics (optional)
 # VITE_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
 
@@ -110,7 +102,6 @@ VITE_ADMIN_EMAIL=admin@example.com
 - The `.env` file is automatically ignored by git (see `.gitignore`)
 - Never share your `.env` file or commit it to version control
 - For production deployments, use environment variables or secrets management
-- The admin password should be strong and unique
 
 ## Email Configuration
 
@@ -129,7 +120,6 @@ The app uses EmailJS for sending order confirmation emails. To set up:
 
 - Email failures are non-blocking - orders are still saved to Supabase
 - If email fails, users see a success message but are notified that email wasn't sent
-- Admin notifications are sent separately and failures don't affect order processing
 - All email errors are logged to console in development mode
 
 ## GitHub Pages Deployment Setup
@@ -145,8 +135,6 @@ Add these secrets:
 - `VITE_EMAILJS_SERVICE_ID`: Your EmailJS service ID
 - `VITE_EMAILJS_TEMPLATE_ID`: Your EmailJS template ID  
 - `VITE_EMAILJS_PUBLIC_KEY`: Your EmailJS public key
-- `VITE_ADMIN_PASSWORD`: Admin panel password
-- `VITE_ADMIN_EMAIL`: (Optional) Admin notification email
 
 ### Manual Deployment
 

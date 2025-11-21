@@ -23,6 +23,15 @@ export default defineConfig(({ mode }) => {
       open: false, // Change to true to auto-open browser automatically
       host: true, // Allow access from network (for mobile testing)
     },
+    build: {
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: mode === 'production', // Remove console.log in production
+          drop_debugger: mode === 'production',
+        },
+      },
+    },
   };
 });
 

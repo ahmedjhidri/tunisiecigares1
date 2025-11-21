@@ -6,16 +6,22 @@ import { X, Plus, Minus, ShoppingCart } from 'lucide-react';
 
 export default function CartConfirmationModal({ isOpen, onClose, product }) {
   const navigate = useNavigate();
-  const { cart, updateQuantity, getTotal } = useCart();
+  const { cart, confirmAddToCart, updateQuantity, getTotal } = useCart();
   const [quantity, setQuantity] = useState(1);
   const modalRef = useRef(null);
   const overlayRef = useRef(null);
 
-  // Find the product in cart to get current quantity
+  // Initialize quantity from pending quantity or existing cart item
   useEffect(() => {
     if (product && isOpen) {
-      const cartItem = cart.find(item => item.id === product.id);
-      setQuantity(cartItem ? cartItem.quantity : 1);
+      // Check if this is a pending addition (has pendingQuantity)
+      if (product.pendingQuantity) {
+        setQuantity(product.pendingQuantity);
+      } else {
+        // Otherwise check if already in cart
+        const cartItem = cart.find(item => item.id === product.id);
+        setQuantity(cartItem ? cartItem.quantity : 1);
+      }
     }
   }, [product, cart, isOpen]);
 
@@ -62,16 +68,50 @@ export default function CartConfirmationModal({ isOpen, onClose, product }) {
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity < 1) return;
     setQuantity(newQuantity);
-    updateQuantity(product.id, newQuantity);
+    
+    // If product is already in cart, update it immediately
+    const cartItem = cart.find(item => item.id === product.id);
+    if (cartItem) {
+      updateQuantity(product.id, newQuantity);
+    }
+    // Otherwise, just update local state (will be added on confirm)
   };
 
   const handleContinueShopping = () => {
+    // If product is pending (not yet in cart), don't add it - user cancelled
+    const cartItem = cart.find(item => item.id === product.id);
+    if (!cartItem && product.pendingQuantity) {
+      // User cancelled - don't add to cart, just close
+      onClose();
+      return;
+    }
+    
+    // If already in cart, just close (quantity was already updated if changed)
     onClose();
   };
 
   const handleProceedToCheckout = () => {
+    // If product is pending (not yet in cart), add it first
+    const cartItem = cart.find(item => item.id === product.id);
+    if (!cartItem && product.pendingQuantity) {
+      // Remove pendingQuantity from product object before adding
+      const productToAdd = { ...product };
+      delete productToAdd.pendingQuantity;
+      confirmAddToCart(productToAdd, quantity);
+    }
+    
     onClose();
     navigate('/cart');
+  };
+
+  // Handle confirm button (add to cart)
+  const handleConfirm = () => {
+    // Remove pendingQuantity from product object before adding
+    const productToAdd = { ...product };
+    delete productToAdd.pendingQuantity;
+    
+    confirmAddToCart(productToAdd, quantity);
+    onClose();
   };
 
   return (
@@ -207,14 +247,24 @@ export default function CartConfirmationModal({ isOpen, onClose, product }) {
             onClick={handleContinueShopping}
             className="flex-1 px-6 py-3.5 rounded-lg bg-cocoa/30 border-2 border-cocoa/60 text-white font-semibold hover:bg-cocoa/50 hover:border-cocoa/80 active:scale-95 transition-all duration-200"
           >
-            Poursuivre les achats
+            {cart.find(item => item.id === product.id) ? 'Fermer' : 'Annuler'}
           </button>
-          <button
-            onClick={handleProceedToCheckout}
-            className="flex-1 px-6 py-3.5 rounded-lg bg-gold text-ebony font-bold hover:bg-gold/90 hover:shadow-lg hover:shadow-gold/30 active:scale-95 transition-all duration-200"
-          >
-            Procéder au paiement
-          </button>
+          {!cart.find(item => item.id === product.id) && (
+            <button
+              onClick={handleConfirm}
+              className="flex-1 px-6 py-3.5 rounded-lg bg-gold/80 border-2 border-gold text-ebony font-bold hover:bg-gold hover:shadow-lg hover:shadow-gold/30 active:scale-95 transition-all duration-200"
+            >
+              Confirmer l'ajout
+            </button>
+          )}
+          {cart.find(item => item.id === product.id) && (
+            <button
+              onClick={handleProceedToCheckout}
+              className="flex-1 px-6 py-3.5 rounded-lg bg-gold text-ebony font-bold hover:bg-gold/90 hover:shadow-lg hover:shadow-gold/30 active:scale-95 transition-all duration-200"
+            >
+              Procéder au paiement
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -28,8 +28,23 @@ export function CartProvider({ children }) {
     localStorage.setItem('tunisie_cigares_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Ajouter un produit au panier avec quantité optionnelle (par défaut 1)
-  const addToCart = (product, quantity = 1) => {
+  // Show confirmation modal before adding to cart
+  const showAddToCartConfirmation = (product, quantity = 1) => {
+    // Ne pas afficher si le produit n'est pas en stock
+    if (product.stock <= 0) {
+      showNotification('Ce produit n\'est pas disponible');
+      return;
+    }
+    
+    // Track product to be added (pending confirmation)
+    setLastAdded({ ...product, pendingQuantity: quantity });
+    
+    // Show cart confirmation modal
+    setShowCartModal(true);
+  };
+
+  // Actually add product to cart (called after user confirms)
+  const confirmAddToCart = (product, quantity = 1) => {
     // Ne pas ajouter si le produit n'est pas en stock
     if (product.stock <= 0) {
       showNotification('Ce produit n\'est pas disponible');
@@ -61,12 +76,14 @@ export function CartProvider({ children }) {
     // Track last added product
     setLastAdded(product);
     
-    // Show cart confirmation modal
-    setShowCartModal(true);
-    
     // Afficher une notification (use French name if available)
     const displayName = product.name_fr || product.name;
     showNotification(`${displayName} ajouté au panier !`);
+  };
+
+  // Legacy function for backward compatibility - now shows confirmation first
+  const addToCart = (product, quantity = 1) => {
+    showAddToCartConfirmation(product, quantity);
   };
 
   // Retirer un produit du panier
@@ -118,6 +135,8 @@ export function CartProvider({ children }) {
       value={{
         cart,
         addToCart,
+        showAddToCartConfirmation,
+        confirmAddToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
