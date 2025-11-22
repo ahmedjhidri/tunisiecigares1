@@ -12,6 +12,14 @@ export const supabase = (supabaseUrl && supabaseAnonKey)
       auth: {
         persistSession: false,
         autoRefreshToken: false
+      },
+      db: {
+        schema: 'public'
+      },
+      global: {
+        headers: {
+          'apikey': supabaseAnonKey
+        }
       }
     })
   : null;
@@ -29,11 +37,19 @@ export const isSupabaseConfigured = () => {
 // Test connection (async, non-blocking)
 if (supabase) {
   // Run connection test asynchronously to avoid blocking app initialization
+  // Note: This SELECT will fail if RLS blocks SELECT for anon (which is expected/secure)
+  // We're just testing if the client can connect, not if SELECT works
   setTimeout(() => {
+    // Check if we can at least reach Supabase (this doesn't require RLS)
     supabase.from('orders').select('count', { count: 'exact', head: true })
       .then(({ count, error }) => {
         if (error) {
-          console.error('❌ Supabase connection test failed:', error.message);
+          // SELECT errors are expected if RLS blocks SELECT (which is secure)
+          if (error.code === '42501' || error.message?.includes('row-level security')) {
+            console.log('✅ Supabase connected (RLS blocking SELECT is expected/secure)');
+          } else {
+            console.error('❌ Supabase connection test failed:', error.message);
+          }
         } else {
           console.log('✅ Supabase connected - Orders count:', count);
         }

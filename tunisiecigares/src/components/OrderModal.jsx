@@ -281,14 +281,47 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
       }
 
       // Insert into Supabase
-      const { data, error: supabaseError } = await supabase
+      // Ensure order_items is properly formatted as JSONB
+      const insertData = {
+        ...orderData,
+        order_items: Array.isArray(orderData.order_items) 
+          ? orderData.order_items 
+          : JSON.parse(JSON.stringify(orderData.order_items || []))
+      };
+
+      // Log the data being inserted for debugging
+      console.log('[OrderModal] Inserting order data:', {
+        orderRef: insertData.order_ref,
+        email: insertData.email,
+        age: insertData.age,
+        ageType: typeof insertData.age,
+        total: insertData.total,
+        orderItems: insertData.order_items,
+        orderItemsType: typeof insertData.order_items,
+        orderType: insertData.order_type,
+        fullData: insertData
+      });
+
+      // Insert into Supabase (without .select() to avoid RLS SELECT policy requirement)
+      const { error: supabaseError } = await supabase
         .from('orders')
-        .insert([orderData])
-        .select();
+        .insert([insertData]);
 
-      if (supabaseError) throw supabaseError;
+      if (supabaseError) {
+        console.error('[OrderModal] Supabase insert error:', {
+          code: supabaseError.code,
+          message: supabaseError.message,
+          details: supabaseError.details,
+          hint: supabaseError.hint
+        });
+        throw supabaseError;
+      }
 
-      console.log('Commande créée:', data);
+      console.log('✅ Commande créée avec succès:', {
+        orderRef: insertData.order_ref,
+        total: insertData.total,
+        itemsCount: Array.isArray(insertData.order_items) ? insertData.order_items.length : 0
+      });
 
       // Send confirmation email to customer
       try {
