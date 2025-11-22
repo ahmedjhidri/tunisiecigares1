@@ -6,7 +6,7 @@ export default function Privacy() {
     <>
       <SEO 
         title="Privacy Policy"
-        description="Learn about how we collect, use, and protect your personal information at Cigar Lounge Tunisia."
+        description="Learn about how we collect, use, and protect your personal information at Tunisie Cigares."
       />
       <div className="container-page py-12">
         <div className="max-w-4xl mx-auto">

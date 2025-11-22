@@ -11,7 +11,7 @@ export default function ShareButtons({ product, className = '' }) {
     : '';
   
   const productName = product.name_fr || product.name;
-  const shareText = `Découvrez ${productName} - ${product.price_TND} TND sur Cigar Lounge Tunisia`;
+  const shareText = `Découvrez ${productName} - ${product.price_TND} TND sur Tunisie Cigares`;
   
   const shareToFacebook = () => {
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;

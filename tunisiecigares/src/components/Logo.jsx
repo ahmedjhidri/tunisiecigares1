@@ -29,10 +29,7 @@ export default function Logo({ size = 'md', variant = 'full' }) {
       {variant === 'full' && (
         <div className="flex flex-col justify-center">
           <span className="font-display text-gold font-bold leading-tight tracking-wide text-lg md:text-xl">
-            CIGAR LOUNGE
-          </span>
-          <span className="font-accent text-cream text-xs tracking-widest">
-            TUNISIA
+            TUNISIE CIGARES
           </span>
         </div>
       )}

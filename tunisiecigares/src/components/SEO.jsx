@@ -29,14 +29,14 @@ export function generateProductMetaDescription(product) {
 }
 
 export default function SEO({ 
-  title = 'Cigar Lounge Tunisia - Premium Cigars',
+  title = 'Tunisie Cigares - Premium Cigars',
   description = 'Discover an elegant selection of premium Cuban, Nicaraguan, and Dominican cigars. Concierge ordering via Messenger.',
   keywords = 'cigars, premium cigars, cuban cigars, tunisia, cigar lounge, cohiba, montecristo',
   image = '/og-image.jpg',
   url = typeof window !== 'undefined' ? window.location.href : '',
   product = null // Optional product for dynamic meta
 }) {
-  const siteName = 'Cigar Lounge Tunisia';
+  const siteName = 'Tunisie Cigares';
   
   // Use dynamic description if product provided
   const finalDescription = product 
@@ -84,7 +84,7 @@ export default function SEO({
       <meta name="robots" content="index, follow" />
       <meta name="language" content="English, French" />
       <meta name="revisit-after" content="7 days" />
-      <meta name="author" content="Cigar Lounge Tunisia" />
+      <meta name="author" content="Tunisie Cigares" />
 
       {/* Structured Data */}
       <script type="application/ld+json">

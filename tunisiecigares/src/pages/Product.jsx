@@ -51,7 +51,7 @@ export default function Product() {
             '@context': 'https://schema.org/',
             '@type': 'Product',
             name: product.name,
-            brand: product.brand || 'Cigar Lounge Tunisia',
+            brand: product.brand || 'Tunisie Cigares',
             category: 'Cigar',
             image: product.images && product.images.length ? product.images : undefined,
             description: product.long_desc || product.short_desc,

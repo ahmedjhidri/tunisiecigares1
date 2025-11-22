@@ -12,7 +12,7 @@ export default function Footer() {
         
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <h3 className="title-gold text-xl mb-2">Cigar Lounge Tunisia</h3>
+            <h3 className="title-gold text-xl mb-2">Tunisie Cigares</h3>
             <p className="text-white/70">Premium selection, concierge ordering via Messenger.</p>
           </div>
           <div>
@@ -29,7 +29,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-cocoa/60 text-center py-4 text-white/60 text-sm">
-        © {year} Cigar Lounge Tunisia
+        © {year} Tunisie Cigares
       </div>
     </footer>
   );

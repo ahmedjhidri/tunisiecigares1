@@ -29,7 +29,7 @@ export default function Home() {
           <div>
             <h2 className="title-gold text-2xl">About</h2>
             <p className="mt-3 text-white/80">
-              Cigar Lounge Tunisia curates a premium selection of cigars with an
+              Tunisie Cigares curates a premium selection of cigars with an
               elegant, concierge experience. Discover iconic Cuban classics and
               refined international blends. Orders are placed securely via
               Messenger with personalized service.
