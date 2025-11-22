@@ -19,7 +19,7 @@ export default function Hero() {
         <div className="relative z-10 bg-black/40 backdrop-blur-sm px-6 py-4 rounded-lg border border-gold/20">
           <h1 className="title-gold text-4xl sm:text-5xl md:text-6xl drop-shadow-lg">Tunisie Cigares</h1>
           <p className="mt-3 text-white/90 max-w-2xl drop-shadow-md">
-            Discover an elegant selection of premium cigars. Order easily via Messenger.
+            Discover an elegant selection of premium cigars.
           </p>
           <div className="mt-6 flex items-center gap-3">
             <Link to="/products" className="btn-primary">View Our Products</Link>
