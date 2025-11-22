@@ -9,7 +9,7 @@ export default function Hero() {
       <div
         className="h-[60vh] min-h-[420px] w-full bg-center bg-cover"
         style={{
-          backgroundImage: "url('/images/fondécrant1.webp')",
+          backgroundImage: "url('/images/products/fondécrant1.webp')",
         }}
         role="img"
         aria-label="Elegant cigar background"
