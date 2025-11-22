@@ -7,14 +7,14 @@ export default function Hero() {
       aria-label="Tunisie Cigares hero section"
     >
       <div
-        className="h-[60vh] min-h-[420px] w-full bg-center bg-cover"
+        className="h-[60vh] min-h-[420px] w-full bg-center bg-cover bg-no-repeat"
         style={{
           backgroundImage: "url('/images/products/fondécrant1.webp')",
         }}
         role="img"
         aria-label="Elegant cigar background"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-ebony via-ebony/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ebony/60 via-ebony/10 to-transparent" />
       <div className="container-page absolute inset-0 flex items-end pb-12">
         <div>
           <h1 className="title-gold text-4xl sm:text-5xl md:text-6xl">Tunisie Cigares</h1>
