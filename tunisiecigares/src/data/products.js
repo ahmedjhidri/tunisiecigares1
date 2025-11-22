@@ -393,6 +393,57 @@ Trinidad est née en 1969 comme marque exclusive pour les dignitaires cubains. C
     rating: 4.9,
     reviews_count: 45,
   },
+  {
+    id: 'joya-de-nicaragua-clasico-senoritas',
+    name: 'Joya de Nicaragua Clasico Señoritas',
+    name_fr: 'Cigare Joya de Nicaragua Clasico Señoritas',
+    brand: 'Joya de Nicaragua',
+    price_TND: 25,
+    price_EUR: 7.5,
+    stock: 30,
+    in_stock: true,
+    stock_quantity: 30,
+    box_size: 'Unité',
+    unit_info: 'À l\'unité',
+    origin: 'Nicaragua',
+    format: 'Petit Corona',
+    length: '110mm',
+    ring_gauge: '42',
+    strength: 'Medium',
+    smoking_time: '35-45 minutes',
+    short_desc: 'Cigare élégant du Nicaragua au format petit corona, offrant une expérience équilibrée et raffinée.',
+    long_desc: `Le Joya de Nicaragua Clasico Señoritas est un cigare élégant qui incarne la finesse de l'artisanat nicaraguayen. Ce format petit corona offre une expérience de dégustation équilibrée et raffinée, parfaite pour les moments de détente.
+
+**Caractéristiques principales :**
+- Format : Petit Corona (110mm x 42)
+- Temps de fumage : 35 à 45 minutes
+- Force : Moyenne
+- Provenance : Nicaragua (Estelí)
+
+**Profil de saveurs :**
+Ce cigare révèle un profil harmonieux et raffiné. Les premières bouffées offrent des notes douces de cèdre et de noisette, qui évoluent progressivement vers des saveurs plus complexes de cacao, de cuir et d'épices douces. La finale apporte une touche subtile de terre et de café torréfié, créant une expérience équilibrée et satisfaisante.
+
+**Conseils de dégustation :**
+- Format compact, idéal pour une pause dégustation
+- Accompagnez d'un café, d'un thé ou d'un rhum léger
+- Parfait pour les amateurs recherchant un format pratique sans compromis sur la qualité
+- Conservation recommandée dans un humidor à 65-70% d'humidité
+
+**Prix :**
+- Prix unitaire : 25 TND`,
+    tasting_notes: ['Cèdre', 'Noisette', 'Cacao', 'Cuir', 'Épices douces', 'Café torréfié'],
+    pairing_suggestions: ['Café', 'Thé', 'Rhum léger'],
+    tags: ['Élégant', 'Moyen', 'Équilibré', 'Nicaragua', 'Petit Corona'],
+    images: [
+      getImagePath('/images/products/seniorita1.webp'),
+      getImagePath('/images/products/seniorita2.webp'),
+    ],
+    premium: true,
+    featured: true,
+    new_arrival: true,
+    rating: 4.6,
+    reviews_count: 18,
+  },
 ];
 
 // Product categories

@@ -14,11 +14,11 @@ export default function Hero() {
         role="img"
         aria-label="Elegant cigar background"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-ebony/60 via-ebony/10 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ebony/80 via-ebony/20 to-transparent" />
       <div className="container-page absolute inset-0 flex items-end pb-12">
-        <div>
-          <h1 className="title-gold text-4xl sm:text-5xl md:text-6xl">Tunisie Cigares</h1>
-          <p className="mt-3 text-white/80 max-w-2xl">
+        <div className="relative z-10 bg-black/40 backdrop-blur-sm px-6 py-4 rounded-lg border border-gold/20">
+          <h1 className="title-gold text-4xl sm:text-5xl md:text-6xl drop-shadow-lg">Tunisie Cigares</h1>
+          <p className="mt-3 text-white/90 max-w-2xl drop-shadow-md">
             Discover an elegant selection of premium cigars. Order easily via Messenger.
           </p>
           <div className="mt-6 flex items-center gap-3">
