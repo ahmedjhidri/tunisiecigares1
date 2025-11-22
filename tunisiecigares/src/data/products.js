@@ -331,8 +331,8 @@ Le Consul représente l'excellence de Joya de Nicaragua, avec une construction i
     pairing_suggestions: ['Café corsé', 'Rhum', 'Whisky single malt'],
     tags: ['Robuste', 'Moyen', 'Équilibré', 'Nicaragua'],
     images: [
-      'https://joyacigars.com/wp-content/uploads/2014/05/Antano-1970-Consul.png',
-      'https://www.cigaraficionado.com/images/ratings/9207_1.jpg',
+       getImagePath('/images/products/ConsulJoyadeNicaaragua1.webp'),
+       getImagePath('/images/products/joyadenicaraguaconsul2.jpg'),
     ],
     premium: true,
     featured: true,
@@ -386,8 +386,8 @@ Trinidad est née en 1969 comme marque exclusive pour les dignitaires cubains. C
     pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac premium'],
     tags: ['Premium', 'Cubain', 'Légendaire', 'Collection'],
     images: [
-      'TrinidadReyes-Boîtede12.jpeg',
-      'TrinidadReyes1.jpeg',
+      getImagePath('/images/products/TrinidadReyes-Boîtede12.jpeg'),
+      getImagePath('/images/products/TrinidadReyes1.jpeg'),
     ],
     premium: true,
     featured: true,
