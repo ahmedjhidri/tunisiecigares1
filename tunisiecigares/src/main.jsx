@@ -7,6 +7,7 @@ import { WishlistProvider } from './context/WishlistContext.jsx';
 import { RecentlyViewedProvider } from './context/RecentlyViewedContext.jsx';
 import App from './App.jsx';
 import './styles/index.css';
+import { Analytics } from '@vercel/analytics/react';
 
 // Add error handling for React mounting
 try {
@@ -25,6 +26,7 @@ try {
             <WishlistProvider>
               <RecentlyViewedProvider>
                 <App />
+                <Analytics />
               </RecentlyViewedProvider>
             </WishlistProvider>
           </CartProvider>
