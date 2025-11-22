@@ -331,8 +331,8 @@ Le Consul représente l'excellence de Joya de Nicaragua, avec une construction i
     pairing_suggestions: ['Café corsé', 'Rhum', 'Whisky single malt'],
     tags: ['Robuste', 'Moyen', 'Équilibré', 'Nicaragua'],
     images: [
-      'https://images.unsplash.com/photo-1516570161787-2fd917215a3d?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1600&auto=format&fit=crop',
+      'https://joyacigars.com/wp-content/uploads/2014/05/Antano-1970-Consul.png',
+      'https://www.cigaraficionado.com/images/ratings/9207_1.jpg',
     ],
     premium: true,
     featured: true,
@@ -386,9 +386,8 @@ Trinidad est née en 1969 comme marque exclusive pour les dignitaires cubains. C
     pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac premium'],
     tags: ['Premium', 'Cubain', 'Légendaire', 'Collection'],
     images: [
-      'https://images.unsplash.com/photo-1541534401786-2077eed87a72?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?q=80&w=1600&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop',
+      'https://www.lacasadelhabano.com/wp-content/uploads/2021/11/Trinidad-Reyes-SBN-12.jpg',
+      'https://www.hahnemanns.ch/media/image/47/96/32/trinidad-reyes-kistli-12er.jpg',
     ],
     premium: true,
     featured: true,
