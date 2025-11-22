@@ -386,8 +386,8 @@ Trinidad est née en 1969 comme marque exclusive pour les dignitaires cubains. C
     pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac premium'],
     tags: ['Premium', 'Cubain', 'Légendaire', 'Collection'],
     images: [
-      'https://www.lacasadelhabano.com/wp-content/uploads/2021/11/Trinidad-Reyes-SBN-12.jpg',
-      'https://www.hahnemanns.ch/media/image/47/96/32/trinidad-reyes-kistli-12er.jpg',
+      'TrinidadReyes-Boîtede12.jpeg',
+      'TrinidadReyes1.jpeg',
     ],
     premium: true,
     featured: true,
