@@ -863,10 +863,18 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
                   <p className="text-white/80 text-sm mb-2">
                     Votre commande actuelle contient : <strong className="text-gold">{currentQuantity} cigare{currentQuantity > 1 ? 's' : ''}</strong>
                   </p>
-                  <p className="text-white/60 text-xs mb-4">
-                    Souhaitez-vous continuer avec cette commande ? Vous devrez peut-être récupérer 
-                    votre commande en magasin ou attendre d'ajouter plus de produits.
+                  <p className="text-white/60 text-xs mb-3">
+                    Souhaitez-vous continuer avec cette commande ? 
                   </p>
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4">
+                    <p className="text-yellow-200 text-xs font-semibold mb-1">
+                      ⚠️ Important :
+                    </p>
+                    <p className="text-yellow-100/90 text-xs">
+                      Pour les commandes de moins de 5 cigares, vous devrez récupérer votre commande 
+                      à <strong className="text-yellow-100"> Menzah</strong> ou au <strong className="text-yellow-100">Jardin de Carthage</strong>.
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-3">
