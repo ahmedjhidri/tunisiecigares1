@@ -386,7 +386,6 @@ Trinidad est née en 1969 comme marque exclusive pour les dignitaires cubains. C
     pairing_suggestions: ['Espresso', 'Rhum cubain vieilli', 'Cognac premium'],
     tags: ['Premium', 'Cubain', 'Légendaire', 'Collection'],
     images: [
-      getImagePath('/images/products/TrinidadReyes-Boîtede12.jpeg'),
       getImagePath('/images/products/TrinidadReyes1.jpeg'),
     ],
     premium: true,
