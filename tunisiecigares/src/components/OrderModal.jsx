@@ -542,43 +542,6 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
-              {showDeliveryWarning && (
-                <div className="bg-yellow-500/10 border-2 border-yellow-500/50 rounded-lg p-5 mb-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-yellow-400 text-2xl">⚠️</div>
-                    <div className="flex-1">
-                      <h3 className="text-yellow-300 text-lg font-bold mb-2">
-                        Livraison minimale requise
-                      </h3>
-                      <p className="text-yellow-200 text-sm mb-4">
-                        La livraison n'est possible qu'à partir de <strong>5 cigares</strong>. 
-                        Votre commande actuelle contient <strong>{currentQuantity} cigare{currentQuantity > 1 ? 's' : ''}</strong>.
-                      </p>
-                      <p className="text-yellow-100/80 text-xs mb-4">
-                        Souhaitez-vous continuer avec cette commande ? Vous devrez peut-être récupérer 
-                        votre commande en magasin ou attendre d'ajouter plus de produits.
-                      </p>
-                      <div className="flex gap-3">
-                        <button
-                          type="button"
-                          onClick={handleConfirmDelivery}
-                          className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-lg transition-base"
-                        >
-                          Continuer quand même
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleCancelDelivery}
-                          className="flex-1 bg-cocoa/50 hover:bg-cocoa/70 text-white font-semibold py-2 px-4 rounded-lg transition-base border border-gold/30"
-                        >
-                          Annuler
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {error && (
                 <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                   <p className="text-red-400 text-sm mb-2">{error}</p>
@@ -876,6 +839,56 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
           )}
         </div>
       </div>
+
+      {/* Delivery Warning Popup Modal */}
+      {showDeliveryWarning && (
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={handleCancelDelivery}
+        >
+          <div 
+            className="relative w-full max-w-md bg-ebony border-2 border-yellow-500/50 rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="text-yellow-400 text-4xl">⚠️</div>
+                <div className="flex-1">
+                  <h3 className="text-yellow-300 text-xl font-bold mb-3">
+                    Livraison minimale requise
+                  </h3>
+                  <p className="text-yellow-200 text-sm mb-3">
+                    La livraison n'est possible qu'à partir de <strong className="text-yellow-100">5 cigares</strong>.
+                  </p>
+                  <p className="text-white/80 text-sm mb-2">
+                    Votre commande actuelle contient : <strong className="text-gold">{currentQuantity} cigare{currentQuantity > 1 ? 's' : ''}</strong>
+                  </p>
+                  <p className="text-white/60 text-xs mb-4">
+                    Souhaitez-vous continuer avec cette commande ? Vous devrez peut-être récupérer 
+                    votre commande en magasin ou attendre d'ajouter plus de produits.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleConfirmDelivery}
+                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3 px-4 rounded-lg transition-base"
+                >
+                  Continuer quand même
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelDelivery}
+                  className="flex-1 bg-cocoa/50 hover:bg-cocoa/70 text-white font-semibold py-3 px-4 rounded-lg transition-base border border-gold/30"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
