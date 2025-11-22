@@ -28,6 +28,19 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
   // Real-time validation states
   const [fieldErrors, setFieldErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
+  // Delivery minimum confirmation
+  const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState(null);
+  const [currentQuantity, setCurrentQuantity] = useState(0);
+
+  // Reset delivery warning when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setShowDeliveryWarning(false);
+      setPendingSubmission(null);
+      setCurrentQuantity(0);
+    }
+  }, [isOpen]);
 
   // Real-time validation
   const validateField = (name, value) => {
@@ -208,6 +221,29 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
 
     // Use sanitized data
     const sanitized = validation.sanitized;
+
+    // Calculate total quantity of cigars
+    const totalQuantity = isCartOrder 
+      ? cart.reduce((sum, item) => sum + item.quantity, 0)
+      : parseInt(sanitized.quantity) || 0;
+
+    // Check if delivery minimum (5 cigars) is met
+    if (totalQuantity < 5) {
+      setCurrentQuantity(totalQuantity);
+      setShowDeliveryWarning(true);
+      setPendingSubmission(() => () => processOrderSubmission(sanitized));
+      setIsSubmitting(false);
+      return;
+    }
+
+    // If minimum is met, proceed with submission
+    processOrderSubmission(sanitized);
+  };
+
+  const processOrderSubmission = async (sanitized) => {
+    setIsSubmitting(true);
+    setError('');
+    setShowDeliveryWarning(false);
 
     try {
       if (!isSupabaseConfigured()) {
@@ -443,6 +479,20 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
     handleSubmit({ preventDefault: () => {} }); // Retry submission
   };
 
+  const handleConfirmDelivery = () => {
+    if (pendingSubmission) {
+      pendingSubmission();
+      setPendingSubmission(null);
+    }
+  };
+
+  const handleCancelDelivery = () => {
+    setShowDeliveryWarning(false);
+    setPendingSubmission(null);
+    setCurrentQuantity(0);
+    setIsSubmitting(false);
+  };
+
   if (!isOpen) return null;
 
   // Calculate display values
@@ -492,6 +542,43 @@ export default function OrderModal({ isOpen, onClose, productName, productPrice,
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {showDeliveryWarning && (
+                <div className="bg-yellow-500/10 border-2 border-yellow-500/50 rounded-lg p-5 mb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="text-yellow-400 text-2xl">⚠️</div>
+                    <div className="flex-1">
+                      <h3 className="text-yellow-300 text-lg font-bold mb-2">
+                        Livraison minimale requise
+                      </h3>
+                      <p className="text-yellow-200 text-sm mb-4">
+                        La livraison n'est possible qu'à partir de <strong>5 cigares</strong>. 
+                        Votre commande actuelle contient <strong>{currentQuantity} cigare{currentQuantity > 1 ? 's' : ''}</strong>.
+                      </p>
+                      <p className="text-yellow-100/80 text-xs mb-4">
+                        Souhaitez-vous continuer avec cette commande ? Vous devrez peut-être récupérer 
+                        votre commande en magasin ou attendre d'ajouter plus de produits.
+                      </p>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={handleConfirmDelivery}
+                          className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-lg transition-base"
+                        >
+                          Continuer quand même
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCancelDelivery}
+                          className="flex-1 bg-cocoa/50 hover:bg-cocoa/70 text-white font-semibold py-2 px-4 rounded-lg transition-base border border-gold/30"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                   <p className="text-red-400 text-sm mb-2">{error}</p>
