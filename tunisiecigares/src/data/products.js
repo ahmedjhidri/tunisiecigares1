@@ -135,63 +135,12 @@ Ce cigare dévoile un profil harmonieux et équilibré. Les premières bouffées
     reviews_count: 15,
   },
   {
-    id: 'joya-de-nicaragua-clasico-no6',
-    name: 'Joya de Nicaragua Clasico No. 6',
-    name_fr: 'Cigare Joya de Nicaragua Clasico No. 6',
-    brand: 'Joya de Nicaragua',
-    price_TND: 35,
-    price_EUR: 10.5,
-    stock: 25,
-    in_stock: true,
-    stock_quantity: 25,
-    box_size: 'Unité',
-    unit_info: 'À l\'unité',
-    origin: 'Nicaragua',
-    format: 'Toro',
-    length: '152mm',
-    ring_gauge: '52',
-    strength: 'Medium',
-    smoking_time: '60-75 minutes',
-    short_desc: 'Cigare légendaire du Nicaragua au corps moyen, reconnu pour sa complexité et sa construction impeccable.',
-    long_desc: `Le Joya de Nicaragua Clasico No. 6 est un cigare légendaire qui incarne l'excellence de l'artisanat nicaraguayen. Cette référence emblématique de la marque est reconnue dans le monde entier pour sa complexité, son équilibre parfait et sa construction impeccable.
-
-**Caractéristiques principales :**
-- Format : Toro (152mm x 52)
-- Temps de fumage : 60 à 75 minutes
-- Force : Moyenne
-- Provenance : Nicaragua (Estelí)
-
-**Profil de saveurs :**
-Ce cigare offre un voyage sensoriel exceptionnel. Les premières bouffées révèlent des notes de cèdre crémeux et de noisette, qui évoluent progressivement vers des saveurs plus riches de cacao, de cuir et d'épices douces. Le tiers final apporte une complexité remarquable avec des notes de terre, de café torréfié et une pointe de poivre noir, créant une finale longue et persistante.
-
-**Conseils de dégustation :**
-- Format généreux, idéal pour une longue dégustation
-- Accompagnez d'un espresso, d'un rhum vieilli ou d'un cognac
-- Parfait pour les occasions spéciales et les moments de détente prolongés
-- Conservation recommandée dans un humidor à 65-70% d'humidité
-
-**Histoire :**
-Joya de Nicaragua est la première marque de cigares premium du Nicaragua, fondée en 1968. Le Clasico No. 6 est l'un de ses formats les plus appréciés, représentant l'essence même de l'artisanat nicaraguayen.`,
-    tasting_notes: ['Cèdre', 'Cacao', 'Cuir', 'Épices', 'Café torréfié', 'Poivre'],
-    pairing_suggestions: ['Espresso', 'Rhum vieilli', 'Cognac'],
-    tags: ['Légendaire', 'Moyen', 'Complexe', 'Nicaragua'],
-    images: [
-      getImagePath('/images/products/joya-de-nicaragua-clasico-no6.webp'),
-      getImagePath('/images/products/joya-de-nicaragua-clasico-no6-1.webp'),
-    ],
-    premium: true,
-    featured: true,
-    new_arrival: false,
-    rating: 4.7,
-    reviews_count: 28,
-  },
-  {
     id: 'consul-joya-de-nicaragua',
     name: 'Consul Joya de Nicaragua',
     name_fr: 'Cigare Consul Joya de Nicaragua',
     brand: 'Joya de Nicaragua',
-    price_TND: 30,
-    price_EUR: 9,
+    price_TND: 35,
+    price_EUR: 10.5,
     stock: 25,
     in_stock: true,
     stock_quantity: 25,
