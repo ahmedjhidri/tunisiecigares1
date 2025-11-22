@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from './context/CartContext.jsx';
 import { WishlistProvider } from './context/WishlistContext.jsx';
@@ -19,7 +19,7 @@ try {
   
   createRoot(rootElement).render(
     <React.StrictMode>
-      <HashRouter>
+      <BrowserRouter>
         <HelmetProvider>
           <CartProvider>
             <WishlistProvider>
@@ -29,7 +29,7 @@ try {
             </WishlistProvider>
           </CartProvider>
         </HelmetProvider>
-      </HashRouter>
+      </BrowserRouter>
     </React.StrictMode>
   );
   

@@ -17,9 +17,8 @@ const getImagePath = (path) => {
   if (path.startsWith('http')) return path;
   
   // Get the base URL from Vite environment
-  // Default to '/' if not set (local dev)
-  // In production (GitHub Pages), this will be '/tunisiecigares1/'
-  const baseUrl = import.meta.env.BASE_URL;
+  // Default to '/' for all environments (Vercel, local dev, etc.)
+  const baseUrl = import.meta.env.BASE_URL || '/';
   
   // Ensure path doesn't start with slash to avoid double slashes
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;

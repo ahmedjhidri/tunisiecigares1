@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd tunisiecigares && npm run build",
+  "outputDirectory": "tunisiecigares/dist",
+  "installCommand": "cd tunisiecigares && npm install",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+

@@ -44,17 +44,69 @@ Currently using Unsplash placeholders. Replace with real product images by editi
 
 ## Deployment
 
-### Vercel
+### Vercel (Recommended)
 
-- `vercel.json` is included for SPA routing.
+Vercel is the recommended deployment platform for this project. It provides automatic HTTPS, CDN, and seamless deployments.
+
+#### Quick Deploy with Vercel CLI
+
+1. **Install Vercel CLI** (if not already installed):
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Login to Vercel**:
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy from the project directory**:
+   ```bash
+   cd tunisiecigares
+   vercel
+   ```
+   Follow the prompts to link your project.
+
+4. **Add Environment Variables**:
+   - Go to your project dashboard on [Vercel](https://vercel.com)
+   - Navigate to **Settings** → **Environment Variables**
+   - Add the following variables:
+     - `VITE_SUPABASE_URL` - Your Supabase project URL
+     - `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+     - `VITE_EMAILJS_SERVICE_ID` - Your EmailJS service ID
+     - `VITE_EMAILJS_TEMPLATE_ID` - Your EmailJS template ID
+     - `VITE_EMAILJS_PUBLIC_KEY` - Your EmailJS public key
+     - `VITE_EMAILJS_ADMIN_TEMPLATE_ID` (optional) - Admin template ID
+     - `VITE_ADMIN_EMAIL` (optional) - Admin email address
+     - `VITE_ADMIN_PASSWORD` (optional) - Admin password
+
+5. **Connect GitHub Repository** (for automatic deployments):
+   - In your Vercel project dashboard, go to **Settings** → **Git**
+   - Connect your GitHub repository
+   - Every push to `main` will automatically trigger a deployment
+
+#### Benefits of Vercel
+
+- ✅ No base path required (clean URLs like `your-site.vercel.app`)
+- ✅ Automatic HTTPS and CDN
+- ✅ Custom domain support (add your domain in project settings)
+- ✅ Automatic deployments on git push
+- ✅ Global edge network for better performance
+- ✅ Preview deployments for pull requests
+
+#### Configuration
+
+The `vercel.json` file is already configured with:
 - Build command: `npm run build`
 - Output directory: `dist`
+- SPA routing: All routes redirect to `index.html`
 
-### Netlify
+### GitHub Pages (Legacy)
 
-- Build: `npm run build`
-- Publish directory: `dist`
-- Redirects: Add `_redirects` with `/* /index.html 200` (optional; not included by default)
+<details>
+<summary>Click to expand GitHub Pages deployment instructions</summary>
+
+GitHub Pages deployment is still supported but requires a base path. For better deployment experience, consider using Vercel instead.
 
 ## Customization
 
@@ -87,7 +139,7 @@ VITE_EMAILJS_PUBLIC_KEY=your-public-key-here
 # VITE_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
 
 # Site URL (for SEO and email links)
-# VITE_SITE_URL=https://yourusername.github.io/tunisiecigares1
+# VITE_SITE_URL=https://your-site.vercel.app
 ```
 
 ### Setup Instructions
@@ -95,7 +147,9 @@ VITE_EMAILJS_PUBLIC_KEY=your-public-key-here
 1. Copy `.env.example` to `.env` (if it exists)
 2. Fill in all required variables with your actual values
 3. **Never commit `.env` to git** - it's already in `.gitignore`
-4. For GitHub Pages deployment, add these as GitHub Secrets in your repository settings
+4. For production deployments:
+   - **Vercel**: Add environment variables in Vercel dashboard (Settings → Environment Variables)
+   - **GitHub Pages**: Add these as GitHub Secrets in your repository settings
 
 ### Security Notes
 
@@ -122,9 +176,7 @@ The app uses EmailJS for sending order confirmation emails. To set up:
 - If email fails, users see a success message but are notified that email wasn't sent
 - All email errors are logged to console in development mode
 
-## GitHub Pages Deployment Setup
-
-### Required GitHub Secrets
+#### Required GitHub Secrets
 
 Go to your repository → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
 
@@ -135,8 +187,9 @@ Add these secrets:
 - `VITE_EMAILJS_SERVICE_ID`: Your EmailJS service ID
 - `VITE_EMAILJS_TEMPLATE_ID`: Your EmailJS template ID  
 - `VITE_EMAILJS_PUBLIC_KEY`: Your EmailJS public key
+- `VITE_BASE_PATH`: Set to `/tunisiecigares1/` for GitHub Pages
 
-### Manual Deployment
+#### Manual Deployment
 
 ```bash
 npm run build
@@ -144,6 +197,14 @@ npm run build
 # Deploy the dist/ folder to GitHub Pages
 # Or use GitHub Actions (automated on push to main)
 ```
+
+</details>
+
+### Netlify
+
+- Build: `npm run build`
+- Publish directory: `dist`
+- Redirects: Add `_redirects` with `/* /index.html 200` (optional; not included by default)
 
 ### EmailJS Template Configuration
 
@@ -226,7 +287,8 @@ Cigar Lounge Tunisia
 
 - Check browser console for JavaScript errors
 - Ensure React Router is properly configured
-- Verify HashRouter is used (required for GitHub Pages)
+- For Vercel: Use BrowserRouter (default)
+- For GitHub Pages: Use HashRouter (required for base path)
 
 ## Notes
 
